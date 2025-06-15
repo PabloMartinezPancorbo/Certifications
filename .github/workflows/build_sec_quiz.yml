@@ -1,4 +1,4 @@
-name: Build AWS Quizzes
+name: Build AWS Sec Quiz
 
 on:
   workflow_dispatch:            # run manually
