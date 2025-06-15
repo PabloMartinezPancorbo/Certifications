@@ -1,4 +1,4 @@
-// aws-quiz-src/postcss.config.js
+// aws-sysops-quiz-src/postcss.config.js
 module.exports = {
   plugins: {
     tailwindcss: {},
