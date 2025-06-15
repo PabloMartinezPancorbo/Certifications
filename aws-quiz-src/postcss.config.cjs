@@ -1,4 +1,5 @@
-export default {
+// aws-quiz-src/postcss.config.js
+module.exports = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {}
