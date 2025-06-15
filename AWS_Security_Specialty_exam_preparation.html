@@ -909,3 +909,364 @@ const AWSSecuritySpecialtyApp = () => {
                           >
                             <ExternalLink className="w-3 h-3" />
                             {resource.name}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderQuestion = (question) => {
+    const isAnswered = selectedAnswers[question.id] !== undefined;
+    const isCorrect = selectedAnswers[question.id] === question.correct;
+    
+    return (
+      <div key={question.id} className="bg-white rounded-lg shadow-md p-6 mb-4">
+        <div className="flex items-start gap-3 mb-4">
+          <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+            {question.domain}
+          </span>
+          <p className="text-gray-800 font-medium flex-1">{question.question}</p>
+        </div>
+        
+        <div className="space-y-2 mb-4">
+          {question.options.map((option, idx) => (
+            <label
+              key={idx}
+              className={`block p-3 rounded-lg border cursor-pointer transition-colors ${
+                selectedAnswers[question.id] === idx
+                  ? isAnswered && showAnswers[question.id]
+                    ? idx === question.correct
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-red-500 bg-red-50'
+                    : 'border-red-500 bg-red-50'
+                  : 'border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <input
+                type="radio"
+                name={`question-${question.id}`}
+                value={idx}
+                checked={selectedAnswers[question.id] === idx}
+                onChange={() => setSelectedAnswers(prev => ({ ...prev, [question.id]: idx }))}
+                className="mr-3"
+              />
+              <span className="text-gray-700">{option}</span>
+              {showAnswers[question.id] && idx === question.correct && (
+                <CheckCircle className="w-5 h-5 text-green-600 inline-block ml-2" />
+              )}
+            </label>
+          ))}
+        </div>
+        
+        <button
+          onClick={() => setShowAnswers(prev => ({ ...prev, [question.id]: true }))}
+          disabled={selectedAnswers[question.id] === undefined}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            selectedAnswers[question.id] === undefined
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-red-600 text-white hover:bg-red-700'
+          }`}
+        >
+          Check Answer
+        </button>
+        
+        {showAnswers[question.id] && (
+          <div className={`mt-4 p-4 rounded-lg ${
+            isCorrect ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'
+          }`}>
+            <div className="flex items-start gap-2">
+              {isCorrect ? (
+                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+              )}
+              <p className="text-gray-700 text-sm">{question.explanation}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-3 mb-2">
+            <Shield className="w-8 h-8" />
+            <h1 className="text-3xl font-bold">AWS Security Specialty Exam Reference</h1>
+          </div>
+          <p className="text-red-100">Master advanced security concepts for the SCS-C02 exam</p>
+        </div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="bg-white rounded-lg shadow-md p-1 mb-6">
+          <div className="flex flex-wrap gap-1">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'overview' 
+                  ? 'bg-red-600 text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Target className="w-4 h-4 inline-block mr-2" />
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('cheatsheet')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'cheatsheet' 
+                  ? 'bg-red-600 text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <FileText className="w-4 h-4 inline-block mr-2" />
+              Cheatsheet
+            </button>
+            <button
+              onClick={() => setActiveTab('practice')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'practice' 
+                  ? 'bg-red-600 text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Brain className="w-4 h-4 inline-block mr-2" />
+              Practice Questions
+            </button>
+            <button
+              onClick={() => setActiveTab('resources')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'resources' 
+                  ? 'bg-red-600 text-white' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <BookOpen className="w-4 h-4 inline-block mr-2" />
+              Resources
+            </button>
+          </div>
+        </div>
+        
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-bold mb-4">Exam Overview</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-semibold mb-2">Exam Details</h3>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• Exam Code: SCS-C02</li>
+                    <li>• Duration: 170 minutes</li>
+                    <li>• Questions: 65 (scenario-based and multiple choice)</li>
+                    <li>• Passing Score: 750/1000</li>
+                    <li>• Cost: $300 USD</li>
+                    <li>• Prerequisites: Associate-level certification recommended</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Required Experience</h3>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• 5+ years IT security experience</li>
+                    <li>• 2+ years hands-on AWS security</li>
+                    <li>• Security controls for workloads on AWS</li>
+                    <li>• Incident response experience</li>
+                    <li>• Understanding of security threats</li>
+                    <li>• Compliance and governance knowledge</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-bold mb-4">Exam Domains</h2>
+              <div className="space-y-3">
+                {examDomains.map((domain, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <domain.icon className="w-5 h-5 text-red-600" />
+                      <span className="font-medium text-gray-800">{domain.name}</span>
+                    </div>
+                    <span className="text-red-600 font-semibold">{domain.weight}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+              <h3 className="font-semibold text-red-900 mb-2">Security Specialty Focus Areas</h3>
+              <ul className="space-y-2 text-red-800">
+                <li>• Advanced IAM concepts: Permission boundaries, cross-account access, federation</li>
+                <li>• Security services deep dive: GuardDuty, Security Hub, Detective, Macie</li>
+                <li>• Encryption everywhere: KMS, CloudHSM, TLS, S3, database encryption</li>
+                <li>• Network security: VPC security, WAF, Shield, Network Firewall</li>
+                <li>• Incident response: Forensics, isolation, automation</li>
+                <li>• Compliance: Frameworks, audit trails, evidence collection</li>
+              </ul>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'cheatsheet' && (
+          <div className="space-y-6">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-red-800 text-sm">
+                🛡️ <strong>Security First:</strong> This exam tests deep security knowledge. Focus on defense-in-depth, least privilege, and automated response patterns.
+              </p>
+            </div>
+            {Object.entries(cheatsheet).map(([key, data]) => (
+              <div key={key}>
+                <h2 className="text-2xl font-bold mb-4 text-gray-800">{data.title}</h2>
+                {renderCheatsheetSection(data)}
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {activeTab === 'practice' && (
+          <div>
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-2xl font-bold mb-2">Practice Questions</h2>
+              <p className="text-gray-600">Advanced scenario-based questions testing real-world security knowledge.</p>
+            </div>
+            {practiceQuestions.map(question => renderQuestion(question))}
+          </div>
+        )}
+        
+        {activeTab === 'resources' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-bold mb-4">Essential Security Resources</h2>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Official AWS Resources</h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <a href="https://aws.amazon.com/certification/certified-security-specialty/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        AWS Certified Security - Specialty
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://d1.awsstatic.com/training-and-certification/docs-security-spec/AWS-Certified-Security-Specialty_Exam-Guide.pdf" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Exam Guide (PDF)
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://d1.awsstatic.com/training-and-certification/docs-security-spec/AWS-Certified-Security-Specialty_Sample-Questions.pdf" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Sample Questions (PDF)
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Security Documentation</h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <a href="https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Security Pillar - Well-Architected Framework
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://aws.amazon.com/architecture/security-identity-compliance/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Security Reference Architecture
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        AWS Security Reference Architecture (SRA)
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Security Best Practices</h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <a href="https://d1.awsstatic.com/whitepapers/aws-security-best-practices.pdf" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        AWS Security Best Practices Whitepaper
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://d1.awsstatic.com/whitepapers/Security/AWS_Security_Incident_Response_Guide.pdf" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        AWS Security Incident Response Guide
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://aws.amazon.com/blogs/security/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        AWS Security Blog
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Hands-On Security Labs</h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <a href="https://www.wellarchitectedlabs.com/security/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Well-Architected Security Labs
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://github.com/aws-samples/aws-security-workshops" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        AWS Security Workshops
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://aws.amazon.com/security/security-learning/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Security Learning Resources
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Preparation Tips</h3>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <ul className="space-y-2 text-gray-700">
+                      <li>• Build multi-account security architectures hands-on</li>
+                      <li>• Practice incident response scenarios</li>
+                      <li>• Deep dive into KMS key policies and encryption</li>
+                      <li>• Master IAM policy evaluation logic</li>
+                      <li>• Understand all security services and their integrations</li>
+                      <li>• Review compliance frameworks and audit procedures</li>
+                      <li>• Practice with security automation and remediation</li>
+                      <li>• Study network security patterns and DDoS mitigation</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AWSSecuritySpecialtyApp;
