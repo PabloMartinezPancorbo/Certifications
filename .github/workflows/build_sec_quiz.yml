@@ -10,22 +10,38 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write           # so we can push the build output
+      contents: write           # allow the Action to push build output
+
     defaults:
       run:
         working-directory: aws-quiz-src
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 1️⃣ install deps (no lock-file required)
-      - run: npm install --no-audit --no-fund
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
-      # 2️⃣ build —> writes to ../docs/aws-quiz  (per your vite.config.js)
-      - run: npm run build
+      - name: Build with Vite
+        run: npm run build
 
-      # 3️⃣ commit the freshly-built folder back to main
       - name: Commit build
+        run: |
+          # Configure Git for the Action
+          git config --global user.email "action@github.com"
+          git config --global user.name  "GitHub Action"
+
+          # Add the freshly built AWS quiz folder
+          git add -f "../docs/aws-quiz"
+
+          # Commit only if there are changes staged
+          git diff --quiet --cached || git commit -m "Build aws-quiz"
+
+          # Push back to main
+          git push
