@@ -1,0 +1,32 @@
+name: Build AWS SysOps Quiz
+
+on:
+  workflow_dispatch:            # run manually
+  push:
+    paths:
+      - 'aws-sysops-quiz-src/**'       # auto-run when any source file changes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write           # so we can push the build output
+    defaults:
+      run:
+        working-directory: aws-sysops-quiz-src
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 1️⃣ install deps (no lock-file required)
+      - run: npm install --no-audit --no-fund
+
+      # 2️⃣ build —> writes to ../docs/aws-sysops-quiz  (per your vite.config.js)
+      - run: npm run build
+
+      # 3️⃣ commit the freshly-built folder back to main
+      - name: Commit build
+      
