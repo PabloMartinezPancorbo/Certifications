@@ -1,0 +1,33 @@
+name: Build AWS Quiz
+
+on:
+  workflow_dispatch:      # run manually
+  push:
+    paths:
+      - 'aws-quiz-src/**' # run automatically when source changes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write     # allow the Action to commit the build
+    defaults:
+      run:
+        working-directory: aws-quiz-src
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+      - run: npm run build   # outputs to ../docs/aws-quiz
+
+      - name: Commit build
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name  "GitHub Action"
+          git add ../docs/aws-quiz
+          git commit -m "Build aws-quiz" || echo "No changes"
+          git push
