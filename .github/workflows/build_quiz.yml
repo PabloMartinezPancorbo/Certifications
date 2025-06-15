@@ -1,16 +1,16 @@
 name: Build AWS Quiz
 
 on:
-  workflow_dispatch:      # run manually
+  workflow_dispatch:            # run manually
   push:
     paths:
-      - 'aws-quiz-src/**' # run automatically when source changes
+      - 'aws-quiz-src/**'       # auto-run when any source file changes
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write     # allow the Action to commit the build
+      contents: write           # so we can push the build output
     defaults:
       run:
         working-directory: aws-quiz-src
@@ -21,13 +21,17 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm ci
-      - run: npm run build   # outputs to ../docs/aws-quiz
+      # 1️⃣ install deps (no lock-file required)
+      - run: npm install --no-audit --no-fund
 
+      # 2️⃣ build —> writes to ../docs/aws-quiz  (per your vite.config.js)
+      - run: npm run build
+
+      # 3️⃣ commit the freshly-built folder back to main
       - name: Commit build
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name  "GitHub Action"
-          git add ../docs/aws-quiz
+          git add -f ../docs/aws-quiz          # -f in case it’s in .gitignore
           git commit -m "Build aws-quiz" || echo "No changes"
           git push
