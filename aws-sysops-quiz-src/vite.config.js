@@ -3,9 +3,9 @@ import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 
 export default defineConfig({
-  base: "/Certifications/aws-quiz/",
+  base: "/Certifications/aws-sysops-quiz/",
   build: {
-    outDir: resolve(__dirname, "../docs/aws-quiz"),
+    outDir: resolve(__dirname, "../docs/aws-sysops-quiz"),
     emptyOutDir: true
   },
   plugins: [react()]
