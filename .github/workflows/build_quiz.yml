@@ -1,10 +1,11 @@
-name: Build AWS Quiz
+name: Build AWS Quizzes
 
 on:
   workflow_dispatch:            # run manually
   push:
     paths:
       - 'aws-quiz-src/**'       # auto-run when any source file changes
+      - 'aws-sysops-quiz-src/**'
 
 jobs:
   build:
