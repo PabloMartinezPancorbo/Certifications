@@ -1,32 +1,42 @@
-name: Build AWS SysOps Quiz
+name: Build SysOps Quiz
 
 on:
-  workflow_dispatch:            # run manually
+  workflow_dispatch:
   push:
     paths:
-      - 'aws-sysops-quiz-src/**'       # auto-run when any source file changes
+      - 'aws-sysops-quiz-src/**'
 
 jobs:
-  build:
+  build-sysops-quiz:
     runs-on: ubuntu-latest
     permissions:
-      contents: write           # so we can push the build output
+      contents: write
+
     defaults:
       run:
         working-directory: aws-sysops-quiz-src
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 1️⃣ install deps (no lock-file required)
-      - run: npm install --no-audit --no-fund
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
-      # 2️⃣ build —> writes to ../docs/aws-sysops-quiz  (per your vite.config.js)
-      - run: npm run build
+      - name: Build with Vite
+        run: npm run build
 
-      # 3️⃣ commit the freshly-built folder back to main
       - name: Commit build
-      
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name  "GitHub Action"
+
+          # Output folder name = “aws-sysops-quiz”
+          git add -f "../docs/aws-sysops-quiz"
+          git diff --quiet --cached || git commit -m "Build aws-sysops-quiz"
+          git push
