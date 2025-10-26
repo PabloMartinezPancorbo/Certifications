@@ -471,18 +471,7 @@ const AWSSysOpsExamApp = () => {
               resources: [
                 { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' },
                 { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html' }
-              ].map((resource, index) => (
-                <div key={index} className="resource-item">
-                  <p>{resource.name}</p>
-                  <a href={resource.url} 
-                     target="_blank" 
-                     rel="noopener noreferrer"
-                     className="resource-link">
-                    {resource.url}
-                  </a>
-                  {index < resources.length - 1 && <br />}
-                </div>
-              ))
+              ]
             }
           ]
         },
