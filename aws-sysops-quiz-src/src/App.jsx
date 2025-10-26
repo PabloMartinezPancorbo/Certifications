@@ -465,13 +465,24 @@ const AWSSysOpsExamApp = () => {
                 'VPN: IPSec encrypted tunnel',
                 'Direct Connect: Dedicated connection',
                 'Transit Gateway: Hub for VPCs',
-                '<strong>VPC Peering</strong>: A VPC peering connection is a <strong>networking connection between two VPCs</strong> that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).',
-                "VPC Peering VS Transit Gateway: <strong>VPC peering</strong> connects two VPCs directly, making it a simple, <strong>low-latency solution for smaller networks</strong>, while <strong>Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model</strong>, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs",
+                'VPC Peering: A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).',
+                "VPC Peering VS Transit Gateway: VPC peering connects two VPCs directly, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs",
               ],
               resources: [
                 { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' },
                 { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html' }
-              ]
+              ].map((resource, index) => (
+                <div key={index} className="resource-item">
+                  <p>{resource.name}</p>
+                  <a href={resource.url} 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     className="resource-link">
+                    {resource.url}
+                  </a>
+                  {index < resources.length - 1 && <br />}
+                </div>
+              ))
             }
           ]
         },
