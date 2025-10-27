@@ -774,6 +774,39 @@ const AWSSysOpsExamApp = () => {
                         </li>
                       ))}
                     </ul>
+                    {item.table && (
+                      <div className="mt-4 overflow-x-auto">
+                        <p className="text-sm font-semibold text-gray-700 mb-2">{item.table.title}</p>
+                        <table className="min-w-full border border-gray-300 text-sm">
+                          <thead className="bg-gray-100">
+                            <tr>
+                              {item.table.headers.map((header, hIdx) => (
+                                <th key={hIdx} className="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">{header}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {item.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-gray-50">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className="border border-gray-300 px-3 py-2 text-gray-600">{cell}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    {item.strategies && (
+                      <div className="mt-3">
+                        <p className="text-sm font-semibold text-gray-700 mb-1">DR Strategies:</p>
+                        <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
+                          {item.strategies.map((strategy, sIdx) => (
+                            <li key={sIdx}>{strategy}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                     {item.resources && (
                       <div className="mt-3 space-y-1">
                         {item.resources.map((resource, resIdx) => (
