@@ -747,8 +747,13 @@ const AWSSysOpsExamApp = () => {
                         <li key={detailIdx}>
                           {typeof detail === 'string' ? detail : (
                             <>
-                              <strong>{detail.name}:</strong>
-                              <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
+                              <strong>
+                                {detail.url ? (
+                                  <a href={detail.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                                    {detail.name}
+                                  </a>
+                                ) : detail.name}:
+                              </strong>                              <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
                                 {splitSentences(detail.text).map((sentence, sIdx) => (
                                   <li key={sIdx}>{parseBoldText(sentence)}</li>
                                 ))}
