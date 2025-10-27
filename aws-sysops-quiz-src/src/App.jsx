@@ -459,14 +459,14 @@ const AWSSysOpsExamApp = () => {
             {
               topic: 'VPC Connectivity',
               details: [
-                'Internet Gateway: a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.',
-                'NAT Gateway: it enables private subnet instances to connect to internet, other VPCs, on-premises networks; handles IPv4, IPv6 traffic routing, connectivity types. If you aim to provide Internet access to private instances, the NAT gateway must be located in a public subnet.',
-                'VPC Endpoints: Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.',
-                'VPN: IPSec encrypted tunnel',
-                'Direct Connect: a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs',
-                'Transit Gateway: a network transit hub used to interconnect virtual private clouds (VPCs) and on-premises networks',
-                'VPC Peering: A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).',
-                "VPC Peering VS Transit Gateway: VPC peering connects two VPCs directly, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs",
+                { name: 'Internet Gateway', text: 'a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.' },
+                { name: 'NAT Gateway', text: 'it enables **private subnet instances to connect to internet, other VPCs, on-premises networks**; handles IPv4, IPv6 traffic routing, connectivity types. If you aim **to provide Internet access to private instances, the NAT gateway must be located in a public subnet**.' },
+                { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
+                { name: 'VPN', text: 'IPSec encrypted tunnel' },
+                { name: 'Direct Connect', text: 'a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs' },
+                { name: 'Transit Gateway', text: 'a network transit hub used to **interconnect VPCs and on-premises networks**' },
+                { name: 'VPC Peering', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
+                { name: 'VPC Peering VS Transit Gateway', text: "**VPC peering connects two VPCs directly**, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs" },
               ],
               resources: [
                 { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' },
@@ -732,7 +732,11 @@ const AWSSysOpsExamApp = () => {
                     <h4 className="font-semibold text-gray-800 mb-2">{item.topic}</h4>
                     <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
                       {item.details.map((detail, detailIdx) => (
-                        <li key={detailIdx}>{detail}</li>
+                        <li key={detailIdx}>
+                          {typeof detail === 'string' ? detail : (
+                            <><strong>{detail.name}:</strong> {parseBoldText(detail.text)}</>
+                          )}
+                        </li>
                       ))}
                     </ul>
                     {item.resources && (
