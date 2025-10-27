@@ -779,8 +779,8 @@ const AWSSysOpsExamApp = () => {
                       ))}
                     </ul>
                     {item.image && (
-                      <div className="mt-4">
-                        <img src={item.image.url} alt={item.image.alt || 'Diagram'} className="max-w-full h-auto rounded-lg border border-gray-300" />
+                      <div className="mt-4 flex justify-center">
+                        <img src={item.image.url} alt={item.image.alt || 'Diagram'} className="max-w-full md:max-w-2xl h-auto rounded-lg border border-gray-300" />
                       </div>
                     )}
                     {item.table && (
