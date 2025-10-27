@@ -709,6 +709,13 @@ const AWSSysOpsExamApp = () => {
     }
   ];
 
+  const parseBoldText = (text) => {
+    const parts = text.split(/\*\*(.*?)\*\*/g);
+    return parts.map((part, i) => 
+      i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+    ).filter(part => part !== '');
+  };
+  
   const renderCheatsheetSection = (sectionData) => {
     return (
       <div className="space-y-6">
