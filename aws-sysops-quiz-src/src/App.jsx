@@ -177,6 +177,10 @@ const AWSSysOpsExamApp = () => {
                 { name: 'RPO (Recovery Point Objective)', text: 'How much data loss (in time) you can tolerate after a failure. Example: "Can lose max 15 minutes of data." Applies to databases, storage, backups.' },
                 { name: 'Rewind/Backtrack (Aurora)', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html', text: 'Instantly rewind DB to a specific time without full restore (up to 72 hours). Example: "Undo to state from 3 hours ago." **Aurora MySQL only**.' }
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-of-on-premises-applications-to-aws/images/recoveryobjectives.png',
+                alt: 'AWS Disaster Recovery Objectives'
+              },
               table: {
                 title: 'Typical RTO/RPO Targets',
                 headers: ['System Type', 'RTO', 'RPO'],
@@ -774,6 +778,11 @@ const AWSSysOpsExamApp = () => {
                         </li>
                       ))}
                     </ul>
+                    {item.image && (
+                      <div className="mt-4">
+                        <img src={item.image.url} alt={item.image.alt || 'Diagram'} className="max-w-full h-auto rounded-lg border border-gray-300" />
+                      </div>
+                    )}
                     {item.table && (
                       <div className="mt-4 overflow-x-auto">
                         <p className="text-sm font-semibold text-gray-700 mb-2">{item.table.title}</p>
