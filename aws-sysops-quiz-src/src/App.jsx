@@ -709,6 +709,11 @@ const AWSSysOpsExamApp = () => {
     }
   ];
 
+  
+  const splitSentences = (text) => {
+    return text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()) || [text];
+  };
+  
   const parseBoldText = (text) => {
     const parts = text.split(/\*\*(.*?)\*\*/g);
     return parts.map((part, i) => 
@@ -741,7 +746,14 @@ const AWSSysOpsExamApp = () => {
                       {item.details.map((detail, detailIdx) => (
                         <li key={detailIdx}>
                           {typeof detail === 'string' ? detail : (
-                            <><strong>{detail.name}:</strong> {parseBoldText(detail.text)}</>
+                            <>
+                              <strong>{detail.name}:</strong>
+                              <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
+                                {splitSentences(detail.text).map((sentence, sIdx) => (
+                                  <li key={sIdx}>{parseBoldText(sentence)}</li>
+                                ))}
+                              </ul>
+                            </>
                           )}
                         </li>
                       ))}
