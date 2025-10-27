@@ -173,8 +173,20 @@ const AWSSysOpsExamApp = () => {
             {
               topic: 'Disaster Recovery',
               details: [
-                'RPO (Recovery Point Objective): Data loss tolerance',
-                'RTO (Recovery Time Objective): Downtime tolerance',
+                { name: 'RTO (Recovery Time Objective)', text: 'How long you can be down before business impact becomes unacceptable. Example: "Service must be back online within 1 hour." Applies to systems, apps, databases, infrastructure.' },
+                { name: 'RPO (Recovery Point Objective)', text: 'How much data loss (in time) you can tolerate after a failure. Example: "Can lose max 15 minutes of data." Applies to databases, storage, backups.' },
+                { name: 'Rewind/Backtrack (Aurora)', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html', text: 'Instantly rewind DB to a specific time without full restore (up to 72 hours). Example: "Undo to state from 3 hours ago." **Aurora MySQL only**.' }
+              ],
+              table: {
+                title: 'Typical RTO/RPO Targets',
+                headers: ['System Type', 'RTO', 'RPO'],
+                rows: [
+                  ['Mission-critical (e.g., payments)', '≤ 5 min', '≤ 1 min'],
+                  ['Standard business apps', '≤ 1 hr', '≤ 15 min'],
+                  ['Non-critical (e.g., reports)', '≤ 24 hr', '≤ 24 hr']
+                ]
+              },
+              strategies: [
                 'Backup & Restore: High RPO/RTO, lowest cost',
                 'Pilot Light: Critical components always on',
                 'Warm Standby: Scaled-down version running',
