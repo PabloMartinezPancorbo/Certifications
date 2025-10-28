@@ -914,6 +914,32 @@ Where should you place the NAT Gateway?`,
   ],
   correct: 1,
   explanation: 'For IPv6, use an egress-only Internet Gateway to allow outbound traffic while preventing unsolicited inbound connections.'
+},
+{
+  id: 23,
+  domain: 'Networking',
+  question: 'A financial start-up has recently adopted a hybrid cloud infrastructure with AWS Cloud. They are planning to migrate their online payments system that supports an IPv6 address and uses an Oracle database in a RAC configuration. As the AWS Consultant, you have to make sure that the application can initiate outgoing traffic to the Internet but blocks any incoming connection from the Internet.\n\nWhich of the following options would you do to properly migrate the application to AWS?',
+  options: [
+    'Migrate the Oracle database to an EC2 instance. Launch an EC2 instance to host the application and then set up a NAT Instance.',
+    'Migrate the Oracle database to RDS. Launch the application on a separate EC2 instance and then set up a NAT Instance.',
+    'Migrate the Oracle database to an EC2 instance. Launch the application on a separate EC2 instance and then set up an egress-only Internet gateway.',
+    'Migrate the Oracle database to RDS. Launch an EC2 instance to host the application and then set up a NAT gateway instead of a NAT instance for better availability and higher bandwidth.'
+  ],
+  correct: 2,
+  explanation: 'An egress-only Internet gateway is a horizontally scaled, redundant, and highly available VPC component that allows outbound communication over IPv6 from instances in your VPC to the Internet, and prevents the Internet from initiating an IPv6 connection with your instances.\n\nIPv6 addresses are globally unique and therefore public by default. To enable outbound-only IPv6 communication, create an egress-only Internet gateway in your VPC and add a route (::/0) to it. NAT devices do not support IPv6 traffic. Since the Oracle database uses RAC, which is unsupported in RDS, it must be migrated to EC2. Hence, the correct answer is: Migrate the Oracle database to an EC2 instance. Launch the application on a separate EC2 instance and then set up an egress-only Internet gateway.'
+},
+{
+  id: 24,
+  domain: 'Deployment, Provisioning, and Automation',
+  question: 'A SysOps Administrator needs to create a CloudFormation template that should automatically rollback in the event that the entire stack failed to launch. The application stack requires the pre-requisite packages to be installed first in order for it to run properly, which could take about an hour or so to complete.\n\nWhat should the Administrator add in the template to accomplish this requirement?',
+  options: [
+    'In the ResourceSignal parameter of the Conditions resource attribute, add a Timeout property with a value of 2 hours.',
+    'In the ResourceSignal parameter of the UpdatePolicy resource attribute, add a Timeout property with a value of 2 hours.',
+    'In the ResourceSignal parameter of the CreationPolicy resource attribute, add a Timeout property with a value of 2 hours.',
+    'In the ResourceSignal parameter of the DependsOn resource attribute, add a Timeout property with a value of 2 hours.'
+  ],
+  correct: 2,
+  explanation: 'Associate the CreationPolicy attribute with a resource to prevent its status from reaching CREATE_COMPLETE until AWS CloudFormation receives a specified number of success signals or the timeout period is exceeded. The CreationPolicy is invoked only when AWS CloudFormation creates the associated resource (e.g., EC2, Auto Scaling Group, WaitCondition). Use the ResourceSignal parameter within CreationPolicy to specify Count and Timeout, and send success using cfn-signal once setup completes. Hence, the correct answer is: In the ResourceSignal parameter of the CreationPolicy resource attribute, add a Timeout property with a value of 2 hours.'
 }
   ];
 
