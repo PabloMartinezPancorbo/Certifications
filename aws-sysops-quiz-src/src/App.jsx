@@ -659,7 +659,11 @@ const AWSSysOpsExamApp = () => {
         'Use AWS Config to track changes'
       ],
       correct: 1,
-      explanation: 'CloudFormation event history shows detailed information about each resource creation/update, including error messages for failures.'
+      explanation: 'CloudFormation event history shows detailed information about each resource creation/update, including error messages for failures.',
+  image: {
+    url: 'https://docs.aws.amazon.com/images/AWSCloudFormation/latest/UserGuide/images/deployment-timeline-graph.PNG',
+    alt: ' Last deployment timelines'
+  }
     },
     {
       id: 4,
