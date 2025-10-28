@@ -748,7 +748,7 @@ IPv6 addresses are globally unique, and are therefore public by default. If you 
     {
       id: 10,
       domain: 'Networking',
-      question: You are designing a VPC with both public and private subnets. EC2 instances in the private subnets must download security updates from the internet.
+      question: `You are designing a VPC with both public and private subnets. EC2 instances in the private subnets must download security updates from the internet.
 Where should you place the NAT Gateway?`,
       options: [
         'In a private subnet',
