@@ -957,7 +957,16 @@ Where should you place the NAT Gateway?`,
 }
   ];
 
-  
+  // Helper to check if a question is multiple answer
+const isMultipleAnswer = (question) => Array.isArray(question.correct);
+
+// Helper to compare two arrays for equality (order-insensitive)
+const arraysEqual = (a, b) => {
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  return [...a].sort().every((val, idx) => [...b].sort()[idx] === val);
+};
+
   const splitSentences = (text) => {
     return text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()) || [text];
   };
@@ -1075,78 +1084,110 @@ Where should you place the NAT Gateway?`,
     );
   };
 
-  const renderQuestion = (question) => {
-    const isAnswered = selectedAnswers[question.id] !== undefined;
-    const isCorrect = selectedAnswers[question.id] === question.correct;
-    
-    return (
-      <div key={question.id} className="bg-white rounded-lg shadow-md p-6 mb-4">
-        <div className="flex items-start gap-3 mb-4">
-          <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
-            {question.domain}
-          </span>
-          <p className="text-gray-800 font-medium flex-1">{question.question}</p>
-        </div>
-        
-        <div className="space-y-2 mb-4">
-          {question.options.map((option, idx) => (
+ const renderQuestion = (question) => {
+  const multiple = isMultipleAnswer(question);
+  const selected = selectedAnswers[question.id] ?? (multiple ? [] : undefined);
+  const answered = multiple ? selected.length > 0 : selected !== undefined;
+  const correct = multiple
+    ? arraysEqual(selected, question.correct)
+    : selected === question.correct;
+
+  return (
+    <div key={question.id} className="bg-white rounded-lg shadow-md p-6 mb-4">
+      <div className="flex items-start gap-3 mb-4">
+        <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+          {question.domain}
+        </span>
+        <p className="text-gray-800 font-medium flex-1">{question.question}</p>
+        {multiple && (
+          <span className="text-xs bg-purple-100 text-purple-700 rounded px-2 py-0.5 ml-2 font-semibold">Select all that apply</span>
+        )}
+      </div>
+      <div className="space-y-2 mb-4">
+        {question.options.map((option, idx) => {
+          const checked = multiple ? selected.includes(idx) : selected === idx;
+          let optionStyle = "border-gray-300 hover:bg-gray-50";
+          if (answered && showAnswers[question.id]) {
+            if (multiple && question.correct.includes(idx)) {
+              optionStyle = "border-green-500 bg-green-50";
+            } else if (!multiple && idx === question.correct) {
+              optionStyle = "border-green-500 bg-green-50";
+            } else if (checked && !correct) {
+              optionStyle = "border-red-500 bg-red-50";
+            }
+          } else if (checked) {
+            optionStyle = "border-blue-500 bg-blue-50";
+          }
+          return (
             <label
               key={idx}
-              className={`block p-3 rounded-lg border cursor-pointer transition-colors ${
-                selectedAnswers[question.id] === idx
-                  ? isAnswered && showAnswers[question.id]
-                    ? idx === question.correct
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-red-500 bg-red-50'
-                    : 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300 hover:bg-gray-50'
-              }`}
+              className={`block p-3 rounded-lg border cursor-pointer transition-colors ${optionStyle}`}
             >
               <input
-                type="radio"
-                name={`question-${question.id}`}
+                type={multiple ? "checkbox" : "radio"}
+                name={`question-${question.id}${multiple ? `-${idx}` : ""}`}
                 value={idx}
-                checked={selectedAnswers[question.id] === idx}
-                onChange={() => setSelectedAnswers(prev => ({ ...prev, [question.id]: idx }))}
+                checked={checked}
+                onChange={() => {
+                  if (multiple) {
+                    setSelectedAnswers(prev => {
+                      const arr = prev[question.id] ?? [];
+                      return {
+                        ...prev,
+                        [question.id]: checked
+                          ? arr.filter(i => i !== idx)
+                          : [...arr, idx]
+                      };
+                    });
+                  } else {
+                    setSelectedAnswers(prev => ({ ...prev, [question.id]: idx }));
+                  }
+                }}
                 className="mr-3"
               />
               <span className="text-gray-700">{option}</span>
-              {showAnswers[question.id] && idx === question.correct && (
-                <CheckCircle className="w-5 h-5 text-green-600 inline-block ml-2" />
+              {showAnswers[question.id] && (
+                multiple
+                  ? question.correct.includes(idx) && (
+                      <CheckCircle className="w-5 h-5 text-green-600 inline-block ml-2" />
+                    )
+                  : idx === question.correct && (
+                      <CheckCircle className="w-5 h-5 text-green-600 inline-block ml-2" />
+                    )
               )}
             </label>
-          ))}
-        </div>
-        
-        <button
-          onClick={() => setShowAnswers(prev => ({ ...prev, [question.id]: true }))}
-          disabled={selectedAnswers[question.id] === undefined}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            selectedAnswers[question.id] === undefined
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-        >
-          Check Answer
-        </button>
-        
-        {showAnswers[question.id] && (
-          <div className={`mt-4 p-4 rounded-lg ${
-            isCorrect ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'
-          }`}>
-            <div className="flex items-start gap-2">
-              {isCorrect ? (
-                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-              ) : (
-                <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-              )}
-              <p className="text-gray-700 text-sm">{question.explanation}</p>
-            </div>
-          </div>
-        )}
+          );
+        })}
       </div>
-    );
-  };
+      <button
+        onClick={() => setShowAnswers(prev => ({ ...prev, [question.id]: true }))}
+        disabled={!answered}
+        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          !answered
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`}
+      >
+        Check Answer
+      </button>
+      {showAnswers[question.id] && (
+        <div className={`mt-4 p-4 rounded-lg ${
+          correct ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'
+        }`}>
+          <div className="flex items-start gap-2">
+            {correct ? (
+              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+            ) : (
+              <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+            )}
+            <p className="text-gray-700 text-sm">{question.explanation}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100">
