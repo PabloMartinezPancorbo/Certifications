@@ -196,6 +196,10 @@ const AWSSysOpsExamApp = () => {
                 'Warm Standby: Scaled-down version running',
                 'Multi-Site: Full production in multiple regions'
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-workloads-on-aws/images/disaster-recovery-strategies.png',
+                alt: 'AWS Disaster Recovery Strategies'
+              },
               resources: [
                 { name: 'DR Whitepaper', url: 'https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html' }
               ]
