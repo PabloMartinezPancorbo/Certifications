@@ -998,111 +998,140 @@ const arraysEqual = (a, b) => {
     ).filter(part => part !== '');
   };
   
-  const renderCheatsheetSection = (sectionData) => {
-    return (
-      <div className="space-y-6">
-        {sectionData.sections.map((section, idx) => (
-          <div key={idx} className="bg-white rounded-lg shadow-md overflow-hidden">
-            <button
-              onClick={() => toggleSection(`${sectionData.title}-${idx}`)}
-              className="w-full px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between"
-            >
-              <h3 className="text-lg font-semibold text-gray-800">{section.title}</h3>
-              {expandedSections[`${sectionData.title}-${idx}`] ? 
-                <ChevronDown className="w-5 h-5 text-gray-600" /> : 
-                <ChevronRight className="w-5 h-5 text-gray-600" />
-              }
-            </button>
-            
-            {expandedSections[`${sectionData.title}-${idx}`] && (
-              <div className="px-6 py-4 space-y-4">
-                {section.content.map((item, itemIdx) => (
-                  <div key={itemIdx} className="border-l-4 border-blue-500 pl-4">
-                    <h4 className="font-semibold text-gray-800 mb-2">{item.topic}</h4>
-                    <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
-                      {item.details.map((detail, detailIdx) => (
-                        <li key={detailIdx}>
-                          {typeof detail === 'string' ? detail : (
-                            <>
-                              <strong>
-                                {detail.url ? (
-                                  <a href={detail.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-                                    {detail.name}
-                                  </a>
-                                ) : detail.name}:
-                              </strong>                              <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
-                                {splitSentences(detail.text).map((sentence, sIdx) => (
-                                  <li key={sIdx}>{parseBoldText(sentence)}</li>
-                                ))}
-                              </ul>
-                            </>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                    {item.image && (
-                      <div className="mt-4 flex justify-center">
-                        <img src={item.image.url} alt={item.image.alt || 'Diagram'} className="max-w-full md:max-w-2xl h-auto rounded-lg border border-gray-300" />
-                      </div>
-                    )}
-                    {item.table && (
-                      <div className="mt-4 overflow-x-auto">
-                        <p className="text-sm font-semibold text-gray-700 mb-2">{item.table.title}</p>
-                        <table className="min-w-full border border-gray-300 text-sm">
-                          <thead className="bg-gray-100">
-                            <tr>
-                              {item.table.headers.map((header, hIdx) => (
-                                <th key={hIdx} className="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">{header}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {item.table.rows.map((row, rIdx) => (
-                              <tr key={rIdx} className="hover:bg-gray-50">
-                                {row.map((cell, cIdx) => (
-                                  <td key={cIdx} className="border border-gray-300 px-3 py-2 text-gray-600">{cell}</td>
-                                ))}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                    {item.strategies && (
-                      <div className="mt-3">
-                        <p className="text-sm font-semibold text-gray-700 mb-1">DR Strategies:</p>
-                        <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
-                          {item.strategies.map((strategy, sIdx) => (
-                            <li key={sIdx}>{strategy}</li>
+ const renderCheatsheetSection = (sectionData) => {
+  return (
+    <div className="space-y-6">
+      {sectionData.sections.map((section, idx) => (
+        <div key={idx} className="bg-white rounded-lg shadow-md overflow-hidden">
+          <button
+            onClick={() => toggleSection(`${sectionData.title}-${idx}`)}
+            className="w-full px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between"
+          >
+            <h3 className="text-lg font-semibold text-gray-800">{section.title}</h3>
+            {expandedSections[`${sectionData.title}-${idx}`] ? 
+              <ChevronDown className="w-5 h-5 text-gray-600" /> : 
+              <ChevronRight className="w-5 h-5 text-gray-600" />
+            }
+          </button>
+          
+          {expandedSections[`${sectionData.title}-${idx}`] && (
+            <div className="px-6 py-4 space-y-4">
+              {section.content.map((item, itemIdx) => (
+                <div key={itemIdx} className="border-l-4 border-blue-500 pl-4">
+                  {Object.entries(item).map(([key, value], idx) => {
+                    // Topic as header
+                    if (key === "topic") {
+                      return <h4 key={idx} className="font-semibold text-gray-800 mb-2">{value}</h4>;
+                    }
+                    // Details as a list
+                    if (key === "details") {
+                      return (
+                        <ul key={idx} className="list-disc list-inside space-y-1 text-gray-600 text-sm">
+                          {value.map((detail, detailIdx) => (
+                            <li key={detailIdx}>
+                              {typeof detail === 'string' ? detail : (
+                                <>
+                                  <strong>
+                                    {detail.url ? (
+                                      <a href={detail.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                                        {detail.name}
+                                      </a>
+                                    ) : detail.name}:
+                                  </strong>
+                                  <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
+                                    {(detail.text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()) || [detail.text]).map((sentence, sIdx) => (
+                                      <li key={sIdx}>{sentence}</li>
+                                    ))}
+                                  </ul>
+                                </>
+                              )}
+                            </li>
                           ))}
                         </ul>
-                      </div>
-                    )}
-                    {item.resources && (
-                      <div className="mt-3 space-y-1">
-                        {item.resources.map((resource, resIdx) => (
-                          <a
-                            key={resIdx}
-                            href={resource.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                            {resource.name}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
+                      );
+                    }
+                    // Table rendering
+                    if (key === "table" && value) {
+                      return (
+                        <div key={idx} className="mt-4 overflow-x-auto">
+                          <p className="text-sm font-semibold text-gray-700 mb-2">{value.title}</p>
+                          <table className="min-w-full border border-gray-300 text-sm">
+                            <thead className="bg-gray-100">
+                              <tr>
+                                {value.headers.map((header, hIdx) => (
+                                  <th key={hIdx} className="border border-gray-300 px-3 py-2 text-left font-semibold text-gray-700">{header}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {value.rows.map((row, rIdx) => (
+                                <tr key={rIdx} className="hover:bg-gray-50">
+                                  {row.map((cell, cIdx) => (
+                                    <td key={cIdx} className="border border-gray-300 px-3 py-2 text-gray-600">{cell}</td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      );
+                    }
+                    // Images: image, image2, imageDiagram, etc.
+                    if (key.startsWith("image") && value) {
+                      return (
+                        <div key={idx} className="mt-4 flex justify-center">
+                          <img
+                            src={value.url}
+                            alt={value.alt || 'Diagram'}
+                            className="max-w-full md:max-w-2xl h-auto rounded-lg border border-gray-300"
+                          />
+                        </div>
+                      );
+                    }
+                    // Strategies rendering
+                    if (key === "strategies") {
+                      return (
+                        <div key={idx} className="mt-3">
+                          <p className="text-sm font-semibold text-gray-700 mb-1">DR Strategies:</p>
+                          <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
+                            {value.map((strategy, sIdx) => (
+                              <li key={sIdx}>{strategy}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    }
+                    // Resources rendering
+                    if (key === "resources") {
+                      return (
+                        <div key={idx} className="mt-3 space-y-1">
+                          {value.map((resource, resIdx) => (
+                            <a
+                              key={resIdx}
+                              href={resource.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              {resource.name}
+                            </a>
+                          ))}
+                        </div>
+                      );
+                    }
+                    // Add other property renderers as needed
+                    return null;
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const renderQuestion = (question) => {
   const multiple = isMultipleAnswer(question);
