@@ -954,6 +954,20 @@ Where should you place the NAT Gateway?`,
   ],
   correct: [0, 1],
   explanation: 'Amazon RDS provides high availability and failover support for DB instances using Multi-AZ deployments, which maintain a synchronous standby replica in a different Availability Zone. This provides data redundancy and minimizes downtime during maintenance or failures.\n\nFor caching, Amazon ElastiCache for Redis is the best choice as it supports high availability, automatic failover, and multi-AZ replication, providing sub-millisecond latency and offloading the backend database. Memcached does not support Multi-AZ failover, and Auto Discovery applies only to Memcached clusters. Multi-threading enhances CPU performance but does not address availability or caching.\n\nHence, the correct answers are:\n– Utilize Amazon ElastiCache for Redis data store to support the demands of the database.\n– Activate Multi-AZ deployment for the data store.'
+},
+{
+  id: 26,
+  domain: 'Networking and Content Delivery',
+  question: 'A leading national bank migrated its on-premises infrastructure to AWS. The SysOps Administrator noticed that the cache hit ratio of the CloudFront web distribution is less than 15%.\n\nWhich combination of actions should he do to increase the cache hit ratio for the distribution? (Select TWO.)',
+  options: [
+    'Set the Viewer Protocol Policy of your web distribution to only use HTTPS to serve media content.',
+    'In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.',
+    'Use Signed URLs to your CloudFront web distribution.',
+    'Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.',
+    'Always add the Accept-Encoding header to compress all the content for each and every request.'
+  ],
+  correct: [1, 3],
+  explanation: 'The cache hit ratio indicates how often CloudFront serves requests from edge caches instead of fetching from the origin. To increase this ratio, configure CloudFront to forward only the query string parameters, cookies, or request headers that make content unique, and ensure your origin sets a long Cache-Control max-age directive to extend object TTL in edge caches.\n\nUsing HTTPS for serving media content does not improve caching efficiency, Signed URLs are for access control, and the Accept-Encoding header should be removed when compression is unnecessary.\n\nHence, the correct answers are:\n– In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.\n– Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.\n\n![CloudFront Cache Behavior Screenshot](https://media.tutorialsdojo.com/public/cf_dist_edit_behavior_1.png)'
 }
   ];
 
