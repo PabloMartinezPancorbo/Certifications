@@ -1253,7 +1253,7 @@ const renderQuestion = (question) => {
     <div className="min-h-screen bg-gray-100">
       <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">AWS SysOps Administrator Exam Reference</h1>
+          <h1 className="text-3xl font-bold mb-2">AWS CloudOps Engineer Exam Reference</h1>
           <p className="text-orange-100">Complete guide to ace the SOA-C02 exam with a perfect score</p>
         </div>
       </div>
