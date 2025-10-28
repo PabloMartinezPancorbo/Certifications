@@ -745,6 +745,20 @@ An instance in your public subnet can connect to the Internet through the Intern
 
 IPv6 addresses are globally unique, and are therefore public by default. If you want your instance to be able to access the Internet but want to prevent resources on the Internet from initiating communication with your instance, you can use an egress-only Internet gateway. To do this, create an egress-only Internet gateway in your VPC, and then add a route to your route table that points all IPv6 traffic (::/0) or a specific range of IPv6 address to the egress-only Internet gateway. IPv6 traffic in the subnet that’s associated with the route table is routed to the egress-only Internet gateway.`
     }
+    {
+      id: 10,
+      domain: 'Networking',
+      question: You are designing a VPC with both public and private subnets. EC2 instances in the private subnets must download security updates from the internet.
+Where should you place the NAT Gateway?`,
+      options: [
+        'In a private subnet',
+        'In a public subnet with a route to an Internet Gateway',
+        'In a private subnet with a route to a Virtual Private Gateway',
+        'In any subnet as long as it has a route to an Elastic IP'
+      ],
+      correct: 1,
+      explanation: 'NAT Gateways must be in a public subnet with a route to an Internet Gateway (IGW) and an Elastic IP so private instances can access the internet.'
+    }
   ];
 
   
