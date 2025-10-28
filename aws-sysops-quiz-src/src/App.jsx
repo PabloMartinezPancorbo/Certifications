@@ -15,17 +15,16 @@ const AWSSysOpsExamApp = () => {
   };
 
   const examDomains = [
-    { name: 'Monitoring, Logging, and Remediation', weight: '20%' },
-    { name: 'Reliability and Business Continuity', weight: '16%' },
-    { name: 'Deployment, Provisioning, and Automation', weight: '18%' },
+    { name: 'Monitoring, Logging, Analysis, Remediation, and Performance Optimization', weight: '22%' },
+    { name: 'Reliability and Business Continuity', weight: '22%' },
+    { name: 'Deployment, Provisioning, and Automation', weight: '22%' },
     { name: 'Security and Compliance', weight: '16%' },
-    { name: 'Networking and Content Delivery', weight: '18%' },
-    { name: 'Cost and Performance Optimization', weight: '12%' }
-  ];
+    { name: 'Networking and Content Delivery', weight: '18%' }
+]
 
   const cheatsheet = {
     'monitoring': {
-      title: 'Domain 1: Monitoring, Logging, and Remediation (20%)',
+      title: 'Domain 1: Monitoring, Logging, Analysis, Remediation, and Performance Optimization (22%)',
       sections: [
         {
           title: 'CloudWatch',
@@ -134,11 +133,77 @@ const AWSSysOpsExamApp = () => {
               ]
             }
           ]
+        },
+       {
+          title: 'Cost Management',
+          content: [
+            {
+              topic: 'EC2 Purchasing Options',
+              details: [
+                'On-Demand: Pay per second/hour',
+                'Reserved: 1-3 years, up to 72% discount',
+                'Spot: Up to 90% discount, can be terminated',
+                'Savings Plans: Flexible, hourly commitment',
+                'Dedicated Hosts: Physical server',
+                'Dedicated Instances: Hardware isolation'
+              ],
+              resources: [
+                { name: 'EC2 Pricing', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html' }
+              ]
+            },
+            {
+              topic: 'Cost Monitoring',
+              details: [
+                'Cost Explorer: Visualize spending',
+                'Budgets: Alerts for thresholds',
+                'Cost Allocation Tags: Track by project',
+                'Reserved Instance recommendations',
+                'Trusted Advisor: Cost optimization',
+                'S3 Storage Classes: Lifecycle policies'
+              ],
+              resources: [
+                { name: 'Cost Explorer', url: 'https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Performance Optimization',
+          content: [
+            {
+              topic: 'Compute Optimization',
+              details: [
+                'Right-sizing: Match instance to workload',
+                'Compute Optimizer recommendations',
+                'Burstable instances (T3/T4g)',
+                'Instance store for temporary data',
+                'Placement groups for network performance',
+                'Enhanced networking (SR-IOV)'
+              ],
+              resources: [
+                { name: 'Compute Optimizer', url: 'https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is.html' }
+              ]
+            },
+            {
+              topic: 'Storage Optimization',
+              details: [
+                'EBS: GP3 for cost/performance',
+                'EBS-optimized instances',
+                'S3 Transfer Acceleration',
+                'S3 Intelligent-Tiering',
+                'EFS: Performance modes',
+                'CloudFront for static content'
+              ],
+              resources: [
+                { name: 'EBS Optimization', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html' }
+              ]
+            }
+          ]
         }
       ]
     },
     'reliability': {
-      title: 'Domain 2: Reliability and Business Continuity (16%)',
+      title: 'Domain 2: Reliability and Business Continuity (22%)',
       sections: [
         {
           title: 'High Availability & Fault Tolerance',
@@ -241,7 +306,7 @@ const AWSSysOpsExamApp = () => {
       ]
     },
     'deployment': {
-      title: 'Domain 3: Deployment, Provisioning, and Automation (18%)',
+      title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
       sections: [
         {
           title: 'CloudFormation',
@@ -552,77 +617,6 @@ const AWSSysOpsExamApp = () => {
         }
       ]
     },
-    'optimization': {
-      title: 'Domain 6: Cost and Performance Optimization (12%)',
-      sections: [
-        {
-          title: 'Cost Management',
-          content: [
-            {
-              topic: 'EC2 Purchasing Options',
-              details: [
-                'On-Demand: Pay per second/hour',
-                'Reserved: 1-3 years, up to 72% discount',
-                'Spot: Up to 90% discount, can be terminated',
-                'Savings Plans: Flexible, hourly commitment',
-                'Dedicated Hosts: Physical server',
-                'Dedicated Instances: Hardware isolation'
-              ],
-              resources: [
-                { name: 'EC2 Pricing', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html' }
-              ]
-            },
-            {
-              topic: 'Cost Monitoring',
-              details: [
-                'Cost Explorer: Visualize spending',
-                'Budgets: Alerts for thresholds',
-                'Cost Allocation Tags: Track by project',
-                'Reserved Instance recommendations',
-                'Trusted Advisor: Cost optimization',
-                'S3 Storage Classes: Lifecycle policies'
-              ],
-              resources: [
-                { name: 'Cost Explorer', url: 'https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Performance Optimization',
-          content: [
-            {
-              topic: 'Compute Optimization',
-              details: [
-                'Right-sizing: Match instance to workload',
-                'Compute Optimizer recommendations',
-                'Burstable instances (T3/T4g)',
-                'Instance store for temporary data',
-                'Placement groups for network performance',
-                'Enhanced networking (SR-IOV)'
-              ],
-              resources: [
-                { name: 'Compute Optimizer', url: 'https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is.html' }
-              ]
-            },
-            {
-              topic: 'Storage Optimization',
-              details: [
-                'EBS: GP3 for cost/performance',
-                'EBS-optimized instances',
-                'S3 Transfer Acceleration',
-                'S3 Intelligent-Tiering',
-                'EFS: Performance modes',
-                'CloudFront for static content'
-              ],
-              resources: [
-                { name: 'EBS Optimization', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html' }
-              ]
-            }
-          ]
-        }
-      ]
-    }
   };
 
   const practiceQuestions = [
