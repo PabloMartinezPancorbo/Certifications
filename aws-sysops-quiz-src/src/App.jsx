@@ -940,6 +940,20 @@ Where should you place the NAT Gateway?`,
   ],
   correct: 2,
   explanation: 'Associate the CreationPolicy attribute with a resource to prevent its status from reaching CREATE_COMPLETE until AWS CloudFormation receives a specified number of success signals or the timeout period is exceeded. The CreationPolicy is invoked only when AWS CloudFormation creates the associated resource (e.g., EC2, Auto Scaling Group, WaitCondition). Use the ResourceSignal parameter within CreationPolicy to specify Count and Timeout, and send success using cfn-signal once setup completes. Hence, the correct answer is: In the ResourceSignal parameter of the CreationPolicy resource attribute, add a Timeout property with a value of 2 hours.'
+},
+{
+  id: 25,
+  domain: 'Reliability and Business Continuity',
+  question: 'A company’s marketing website utilizes an RDS database instance to store transactional data. As the user visits grow, the IT department decides to implement a caching service for faster database performance and to maintain high availability for the RDS instance.\n\nWhich combination of steps should the SysOps admin perform to accomplish the requirement? (SELECT TWO.)',
+  options: [
+    'Utilize Amazon ElastiCache for Redis data store to support the demands of the database.',
+    'Activate Multi-AZ deployment for the data store.',
+    'Use an in-memory cache service like Amazon ElastiCache for Memcached data store.',
+    'Manage cache node connections using Auto Discovery.',
+    'Use Multi-threading for the RDS database instance.'
+  ],
+  correct: [0, 1],
+  explanation: 'Amazon RDS provides high availability and failover support for DB instances using Multi-AZ deployments, which maintain a synchronous standby replica in a different Availability Zone. This provides data redundancy and minimizes downtime during maintenance or failures.\n\nFor caching, Amazon ElastiCache for Redis is the best choice as it supports high availability, automatic failover, and multi-AZ replication, providing sub-millisecond latency and offloading the backend database. Memcached does not support Multi-AZ failover, and Auto Discovery applies only to Memcached clusters. Multi-threading enhances CPU performance but does not address availability or caching.\n\nHence, the correct answers are:\n– Utilize Amazon ElastiCache for Redis data store to support the demands of the database.\n– Activate Multi-AZ deployment for the data store.'
 }
   ];
 
