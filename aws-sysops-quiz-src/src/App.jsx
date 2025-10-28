@@ -1316,7 +1316,7 @@ const renderQuestion = (question) => {
                 <div>
                   <h3 className="font-semibold mb-2">Exam Details</h3>
                   <ul className="space-y-2 text-gray-600">
-                    <li>• Exam Code: SOA-C02</li>
+                    <li>• Exam Code: SOA-C03</li>
                     <li>• Duration: 180 minutes</li>
                     <li>• Questions: 65 (scenario-based and multiple choice)</li>
                     <li>• Passing Score: 720/1000</li>
