@@ -967,7 +967,11 @@ Where should you place the NAT Gateway?`,
     'Always add the Accept-Encoding header to compress all the content for each and every request.'
   ],
   correct: [1, 3],
-  explanation: 'The cache hit ratio indicates how often CloudFront serves requests from edge caches instead of fetching from the origin. To increase this ratio, configure CloudFront to forward only the query string parameters, cookies, or request headers that make content unique, and ensure your origin sets a long Cache-Control max-age directive to extend object TTL in edge caches.\n\nUsing HTTPS for serving media content does not improve caching efficiency, Signed URLs are for access control, and the Accept-Encoding header should be removed when compression is unnecessary.\n\nHence, the correct answers are:\n– In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.\n– Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.\n\n![CloudFront Cache Behavior Screenshot](https://media.tutorialsdojo.com/public/cf_dist_edit_behavior_1.png)'
+  explanation: 'The cache hit ratio indicates how often CloudFront serves requests from edge caches instead of fetching from the origin. To increase this ratio, configure CloudFront to forward only the query string parameters, cookies, or request headers that make content unique, and ensure your origin sets a long Cache-Control max-age directive to extend object TTL in edge caches.\n\nUsing HTTPS for serving media content does not improve caching efficiency, Signed URLs are for access control, and the Accept-Encoding header should be removed when compression is unnecessary.\n\nHence, the correct answers are:\n– In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.\n– Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.\n\n![CloudFront Cache Behavior Screenshot](https://media.tutorialsdojo.com/public/cf_dist_edit_behavior_1.png)',
+  image: {
+    url: 'https://media.tutorialsdojo.com/public/cf_dist_edit_behavior_1.png',
+    alt: 'Cache behaviour settings'
+  }
 }
   ];
 
@@ -1098,7 +1102,7 @@ const arraysEqual = (a, b) => {
     );
   };
 
- const renderQuestion = (question) => {
+const renderQuestion = (question) => {
   const multiple = isMultipleAnswer(question);
   const selected = selectedAnswers[question.id] ?? (multiple ? [] : undefined);
   const answered = multiple ? selected.length > 0 : selected !== undefined;
@@ -1194,7 +1198,18 @@ const arraysEqual = (a, b) => {
             ) : (
               <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
             )}
-            <p className="text-gray-700 text-sm">{question.explanation}</p>
+            <div>
+              <p className="text-gray-700 text-sm">{question.explanation}</p>
+              {question.image && (
+                <div className="mt-3 flex justify-center">
+                  <img
+                    src={question.image.url}
+                    alt={question.image.alt || 'Explanation image'}
+                    className="max-w-full md:max-w-lg h-auto rounded border border-gray-300"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
