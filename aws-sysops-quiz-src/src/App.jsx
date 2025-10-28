@@ -738,7 +738,7 @@ Which of the following options would you do to properly migrate the application 
         'Migrate the Oracle database to RDS. Launch the application on a separate EC2 instance and then set up a NAT Instance.',
         'Migrate the Oracle database to an EC2 instance. Launch the application on a separate EC2 instance and then set up an egress-only Internet gateway.'
       ],
-      correct: 4,
+      correct: 3,
       explanation: 'An egress-only Internet gateway is a horizontally scaled, redundant, and highly available VPC component that allows outbound communication over IPv6 from instances in your VPC to the Internet, and prevents the Internet from initiating an IPv6 connection with your instances.
 
 An instance in your public subnet can connect to the Internet through the Internet gateway if it has a public IPv4 address or an IPv6 address. Similarly, resources on the Internet can initiate a connection to your instance using its public IPv4 address or its IPv6 address; for example, when you connect to your instance using your local computer.
