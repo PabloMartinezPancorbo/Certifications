@@ -758,7 +758,163 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 1,
       explanation: 'NAT Gateways must be in a public subnet with a route to an Internet Gateway (IGW) and an Elastic IP so private instances can access the internet.'
-    }
+    },
+    {
+      id: 11,
+      domain: 'Networking',
+      question: 'Where must a NAT Gateway be placed to provide internet access for instances in private subnets?',
+  options: [
+    'In any subnet with a route to a VGW',
+    'In a private subnet with a route to an IGW',
+    'In a public subnet with a route to an IGW and an Elastic IP',
+    'In a transit subnet attached to a TGW'
+  ],
+  correct: 2,
+  explanation: 'A public NAT Gateway must reside in a public subnet, have a route to an Internet Gateway, and be associated with an Elastic IP to allow private subnets outbound internet access.'
+},
+{
+  id: 12,
+  domain: 'Networking',
+  question: 'Private EC2 instances must access Amazon S3 without traversing the internet and without paying NAT data processing costs. What is the BEST solution?',
+  options: [
+    'Use a NAT Gateway in a public subnet',
+    'Create a VPC Gateway Endpoint for S3',
+    'Use an Interface Endpoint for S3',
+    'Attach a Virtual Private Gateway'
+  ],
+  correct: 1,
+  explanation: 'A VPC Gateway Endpoint for S3 keeps traffic on the AWS network, removes the need for a NAT Gateway for S3 access, and reduces cost.'
+},
+{
+  id: 13,
+  domain: 'Networking',
+  question: 'Which statement about Private NAT Gateways is TRUE?',
+  options: [
+    'They provide outbound internet access for private subnets',
+    'They require an Elastic IP',
+    'They perform NAT between private networks (no IGW path)',
+    'They are created automatically with every VPC'
+  ],
+  correct: 2,
+  explanation: 'Private NAT Gateways are used for private-to-private translation (e.g., across VPCs/VPN/TGW) and do not use Elastic IPs or the Internet Gateway.'
+},
+{
+  id: 14,
+  domain: 'Networking',
+  question: 'Private instances must reach AWS public service endpoints (e.g., sts.amazonaws.com) and third-party SaaS APIs. No VPC Endpoints are in use. What enables this?',
+  options: [
+    'Transit Gateway',
+    'Public NAT Gateway',
+    'VPC Peering',
+    'Virtual Private Gateway'
+  ],
+  correct: 1,
+  explanation: 'Without VPC Endpoints, private subnets use a public NAT Gateway to reach public AWS service endpoints and external SaaS over the internet path.'
+},
+{
+  id: 15,
+  domain: 'Security',
+  question: 'Which AWS service is designed to block application-layer injection attacks such as SQLi and XSS?',
+  options: [
+    'AWS Shield Advanced',
+    'AWS WAF',
+    'Amazon GuardDuty',
+    'AWS Firewall Manager (standalone)'
+  ],
+  correct: 1,
+  explanation: 'AWS WAF filters HTTP(S) traffic and includes managed rule groups for SQLi/XSS. Shield focuses on DDoS availability protection.'
+},
+{
+  id: 16,
+  domain: 'Security',
+  question: 'Where can you attach AWS WAF to protect your application?',
+  options: [
+    'EC2 security groups and NACLs',
+    'Application Load Balancer, Amazon CloudFront, API Gateway, and AppSync',
+    'Internet Gateway and NAT Gateway',
+    'VPC Endpoint and Transit Gateway'
+  ],
+  correct: 1,
+  explanation: 'WAF integrates with ALB, CloudFront, API Gateway, and AppSync to inspect and control Layer-7 requests before they reach your app.'
+},
+{
+  id: 17,
+  domain: 'Reliability',
+  question: 'Which statement best defines RTO (Recovery Time Objective)?',
+  options: [
+    'The maximum acceptable data loss measured in time',
+    'The average request latency under peak load',
+    'The maximum time to restore service after a disruption',
+    'The minimum backup frequency required by policy'
+  ],
+  correct: 2,
+  explanation: 'RTO is the target maximum time to recover service to an acceptable level after an outage.'
+},
+{
+  id: 18,
+  domain: 'Reliability',
+  question: 'Which statement best defines RPO (Recovery Point Objective)?',
+  options: [
+    'The maximum acceptable data loss measured in time',
+    'The time it takes to fail over to a standby region',
+    'The longest acceptable maintenance window',
+    'The number of replicas required for quorum'
+  ],
+  correct: 0,
+  explanation: 'RPO is the target limit for how much data (in time) you can afford to lose after an incident.'
+},
+{
+  id: 19,
+  domain: 'Databases',
+  question: 'You need your RDS MySQL database state from exactly 7 days ago. What should you use?',
+  options: [
+    'Restore from a manual snapshot only',
+    'Point-in-Time Restore using automated backups',
+    'Aurora Backtrack (rewind)',
+    'Export snapshot to S3 and re-import'
+  ],
+  correct: 1,
+  explanation: 'Standard RDS MySQL supports Point-in-Time Restore within the automated backup retention window and creates a new DB instance at that time.'
+},
+{
+  id: 20,
+  domain: 'Databases',
+  question: 'You dropped a table 3 hours ago in Amazon Aurora MySQL and need the fastest recovery without creating a new instance. What feature helps?',
+  options: [
+    'RDS Point-in-Time Restore',
+    'Aurora Backtrack',
+    'Multi-AZ failover',
+    'Read replica promotion'
+  ],
+  correct: 1,
+  explanation: 'Aurora Backtrack lets you rewind the cluster to a prior time (up to the configured window, max 72 hours) without creating a new instance.'
+},
+{
+  id: 21,
+  domain: 'Networking',
+  question: 'Instances in a private subnet cannot reach the internet despite a NAT Gateway existing. What is the MOST likely cause?',
+  options: [
+    'The private subnet route table sends 0.0.0.0/0 to the Internet Gateway',
+    'The NAT Gateway was created in a private subnet',
+    'The NAT Gateway has an Elastic IP associated',
+    'The public subnet route table has a route to the IGW'
+  ],
+  correct: 1,
+  explanation: 'A NAT Gateway placed in a private subnet cannot reach the IGW. It must be in a public subnet with a route to the IGW.'
+},
+{
+  id: 22,
+  domain: 'Networking',
+  question: 'Your IPv6-enabled private subnet should reach the internet but must block inbound IPv6 connections from the internet. What should you use?',
+  options: [
+    'NAT Gateway',
+    'Egress-only Internet Gateway',
+    'Private NAT Gateway',
+    'VPC Endpoint'
+  ],
+  correct: 1,
+  explanation: 'For IPv6, use an egress-only Internet Gateway to allow outbound traffic while preventing unsolicited inbound connections.'
+}
   ];
 
   
