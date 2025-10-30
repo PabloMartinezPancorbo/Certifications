@@ -917,172 +917,167 @@ Where should you place the NAT Gateway?`,
   correct: 1,
   explanation: 'For IPv6, use an egress-only Internet Gateway to allow outbound traffic while preventing unsolicited inbound connections.'
 },
-{
-  id: 23,
-  domain: 'Networking',
-  question: 'A financial start-up has recently adopted a hybrid cloud infrastructure with AWS Cloud. They are planning to migrate their online payments system that supports an IPv6 address and uses an Oracle database in a RAC configuration. As the AWS Consultant, you have to make sure that the application can initiate outgoing traffic to the Internet but blocks any incoming connection from the Internet.\n\nWhich of the following options would you do to properly migrate the application to AWS?',
-  options: [
-    'Migrate the Oracle database to an EC2 instance. Launch an EC2 instance to host the application and then set up a NAT Instance.',
-    'Migrate the Oracle database to RDS. Launch the application on a separate EC2 instance and then set up a NAT Instance.',
-    'Migrate the Oracle database to an EC2 instance. Launch the application on a separate EC2 instance and then set up an egress-only Internet gateway.',
-    'Migrate the Oracle database to RDS. Launch an EC2 instance to host the application and then set up a NAT gateway instead of a NAT instance for better availability and higher bandwidth.'
-  ],
-  correct: 2,
-  explanation: 'An egress-only Internet gateway is a horizontally scaled, redundant, and highly available VPC component that allows outbound communication over IPv6 from instances in your VPC to the Internet, and prevents the Internet from initiating an IPv6 connection with your instances.\n\nIPv6 addresses are globally unique and therefore public by default. To enable outbound-only IPv6 communication, create an egress-only Internet gateway in your VPC and add a route (::/0) to it. NAT devices do not support IPv6 traffic. Since the Oracle database uses RAC, which is unsupported in RDS, it must be migrated to EC2. Hence, the correct answer is: Migrate the Oracle database to an EC2 instance. Launch the application on a separate EC2 instance and then set up an egress-only Internet gateway.'
-},
-{
-  id: 24,
-  domain: 'Deployment, Provisioning, and Automation',
-  question: 'A SysOps Administrator needs to create a CloudFormation template that should automatically rollback in the event that the entire stack failed to launch. The application stack requires the pre-requisite packages to be installed first in order for it to run properly, which could take about an hour or so to complete.\n\nWhat should the Administrator add in the template to accomplish this requirement?',
-  options: [
-    'In the ResourceSignal parameter of the Conditions resource attribute, add a Timeout property with a value of 2 hours.',
-    'In the ResourceSignal parameter of the UpdatePolicy resource attribute, add a Timeout property with a value of 2 hours.',
-    'In the ResourceSignal parameter of the CreationPolicy resource attribute, add a Timeout property with a value of 2 hours.',
-    'In the ResourceSignal parameter of the DependsOn resource attribute, add a Timeout property with a value of 2 hours.'
-  ],
-  correct: 2,
-  explanation: 'Associate the CreationPolicy attribute with a resource to prevent its status from reaching CREATE_COMPLETE until AWS CloudFormation receives a specified number of success signals or the timeout period is exceeded. The CreationPolicy is invoked only when AWS CloudFormation creates the associated resource (e.g., EC2, Auto Scaling Group, WaitCondition). Use the ResourceSignal parameter within CreationPolicy to specify Count and Timeout, and send success using cfn-signal once setup completes. Hence, the correct answer is: In the ResourceSignal parameter of the CreationPolicy resource attribute, add a Timeout property with a value of 2 hours.'
-},
-{
-  id: 25,
-  domain: 'Reliability and Business Continuity',
-  question: 'A company’s marketing website utilizes an RDS database instance to store transactional data. As the user visits grow, the IT department decides to implement a caching service for faster database performance and to maintain high availability for the RDS instance.\n\nWhich combination of steps should the SysOps admin perform to accomplish the requirement? (SELECT TWO.)',
-  options: [
-    'Utilize Amazon ElastiCache for Redis data store to support the demands of the database.',
-    'Activate Multi-AZ deployment for the data store.',
-    'Use an in-memory cache service like Amazon ElastiCache for Memcached data store.',
-    'Manage cache node connections using Auto Discovery.',
-    'Use Multi-threading for the RDS database instance.'
-  ],
-  correct: [0, 1],
-  explanation: 'Amazon RDS provides high availability and failover support for DB instances using Multi-AZ deployments, which maintain a synchronous standby replica in a different Availability Zone. This provides data redundancy and minimizes downtime during maintenance or failures.\n\nFor caching, Amazon ElastiCache for Redis is the best choice as it supports high availability, automatic failover, and multi-AZ replication, providing sub-millisecond latency and offloading the backend database. Memcached does not support Multi-AZ failover, and Auto Discovery applies only to Memcached clusters. Multi-threading enhances CPU performance but does not address availability or caching.\n\nHence, the correct answers are:\n– Utilize Amazon ElastiCache for Redis data store to support the demands of the database.\n– Activate Multi-AZ deployment for the data store.'
-},
-{
-  id: 26,
-  domain: 'Networking and Content Delivery',
-  question: 'A leading national bank migrated its on-premises infrastructure to AWS. The SysOps Administrator noticed that the cache hit ratio of the CloudFront web distribution is less than 15%.\n\nWhich combination of actions should he do to increase the cache hit ratio for the distribution? (Select TWO.)',
-  options: [
-    'Set the Viewer Protocol Policy of your web distribution to only use HTTPS to serve media content.',
-    'In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.',
-    'Use Signed URLs to your CloudFront web distribution.',
-    'Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.',
-    'Always add the Accept-Encoding header to compress all the content for each and every request.'
-  ],
-  correct: [1, 3],
-  explanation: 'The cache hit ratio indicates how often CloudFront serves requests from edge caches instead of fetching from the origin. To increase this ratio, configure CloudFront to forward only the query string parameters, cookies, or request headers that make content unique, and ensure your origin sets a long Cache-Control max-age directive to extend object TTL in edge caches.\n\nUsing HTTPS for serving media content does not improve caching efficiency, Signed URLs are for access control, and the Accept-Encoding header should be removed when compression is unnecessary.\n\nHence, the correct answers are:\n– In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.\n– Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.\n\n![CloudFront Cache Behavior Screenshot](https://media.tutorialsdojo.com/public/cf_dist_edit_behavior_1.png)',
-  image: {
-    url: 'https://media.tutorialsdojo.com/public/cf_dist_edit_behavior_1.png',
-    alt: 'Cache behaviour settings'
+  {
+    id: 23,
+    domain: 'Networking',
+    question: 'A financial start-up has recently adopted a hybrid cloud infrastructure with AWS Cloud. They are planning to migrate their online payments system that supports an IPv6 address and uses an Oracle database. Which of the following options would you do to properly migrate the application to AWS?',
+    options: [
+      'Migrate the Oracle database to an EC2 instance. Launch an EC2 instance to host the application and then set up a NAT Instance.',
+      'Migrate the Oracle database to RDS. Launch the application on a separate EC2 instance and then set up a NAT Instance.',
+      'Migrate the Oracle database to an EC2 instance. Launch the application on a separate EC2 instance and then set up an egress-only Internet gateway.',
+      'Migrate the Oracle database to RDS. Launch an EC2 instance to host the application and then set up a NAT gateway instead of a NAT instance for better availability and higher bandwidth.'
+    ],
+    correct: 2,
+    explanation: 'An egress-only Internet gateway is a horizontally scaled, redundant, and highly available VPC component that allows outbound communication over IPv6 from instances in your VPC to the Internet. This is recommended for IPv6 workloads that want to block inbound connections.'
+  },
+  {
+    id: 24,
+    domain: 'Deployment, Provisioning, and Automation',
+    question: 'A SysOps Administrator needs to create a CloudFormation template that should automatically rollback in the event that the entire stack failed to launch. The application stack requires the signal of successful creation from the resources. What should you configure?',
+    options: [
+      'In the ResourceSignal parameter of the Conditions resource attribute, add a Timeout property with a value of 2 hours.',
+      'In the ResourceSignal parameter of the UpdatePolicy resource attribute, add a Timeout property with a value of 2 hours.',
+      'In the ResourceSignal parameter of the CreationPolicy resource attribute, add a Timeout property with a value of 2 hours.',
+      'In the ResourceSignal parameter of the DependsOn resource attribute, add a Timeout property with a value of 2 hours.'
+    ],
+    correct: 2,
+    explanation: 'Associate the CreationPolicy attribute with a resource to prevent its status from reaching CREATE_COMPLETE until AWS CloudFormation receives a specified number of success signals or the timeout period is reached.'
+  },
+  {
+    id: 25,
+    domain: 'Reliability and Business Continuity',
+    question: 'A company’s marketing website utilizes an RDS database instance to store transactional data. As the user visits grow, the IT department decides to implement a caching service for faster response times and higher availability. Which combination of actions should you take? (Select TWO)',
+    options: [
+      'Utilize Amazon ElastiCache for Redis data store to support the demands of the database.',
+      'Activate Multi-AZ deployment for the data store.',
+      'Use an in-memory cache service like Amazon ElastiCache for Memcached data store.',
+      'Manage cache node connections using Auto Discovery.',
+      'Use Multi-threading for the RDS database instance.'
+    ],
+    correct: [0, 1],
+    explanation: 'Amazon RDS provides high availability and failover support for DB instances using Multi-AZ deployments, which maintain a synchronous standby replica in a different Availability Zone. To further improve performance, utilize Amazon ElastiCache for Redis as a caching layer.'
+  },
+  {
+    id: 26,
+    domain: 'Networking and Content Delivery',
+    question: 'A leading national bank migrated its on-premises infrastructure to AWS. The SysOps Administrator noticed that the cache hit ratio of the CloudFront web distribution is less than 15%. What should be done to increase the cache hit ratio?',
+    options: [
+      'Set the Viewer Protocol Policy of your web distribution to only use HTTPS to serve media content.',
+      'In the Cache Behavior settings of your distribution, configure to forward only the query string parameters for which your origin will return unique objects.',
+      'Use Signed URLs to your CloudFront web distribution.',
+      'Configure your origin to add a Cache-Control max-age directive to your objects, and specify the longest practical value for max-age to increase your TTL.',
+      'Always add the Accept-Encoding header to compress all the content for each and every request.'
+    ],
+    correct: [1, 3],
+    explanation: 'To increase the cache hit ratio, configure CloudFront to forward only the query string parameters for which your origin will return unique objects, and set the Cache-Control max-age directive to a high TTL value to keep objects cached longer.'
+  },
+  {
+    id: 27,
+    domain: 'Performance Optimization',
+    question: 'A company is deploying a web application on Amazon EC2 instances. To handle spikes in traffic, the web application needs application-level caching of database query results and frequently accessed data. What should you do?',
+    options: [
+      'Implement application-level caching by running Memcached on the EC2 instances.',
+      'Configure Amazon ElastiCache (Redis OSS) for the application.',
+      'Deploy Amazon API Gateway and configure caching at the API level.',
+      'Deploy an Amazon CloudFront distribution with a custom origin to cache application responses.'
+    ],
+    correct: 1,
+    explanation: 'ElastiCache caches frequently accessed data to improve the performance of web applications. ElastiCache also provides in-memory caching that is scalable and helps handle spikes in traffic efficiently.'
+  },
+  {
+    id: 28,
+    domain: 'Reliability and Business Continuity',
+    question: 'A company uses AWS Organizations with multiple AWS accounts across several organizational units (OUs). A CloudOps engineer must configure AWS Backup with centralized administration and a centralized backup vault. What should they do?',
+    options: [
+      'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Create individual backup plans and vaults in each member account.',
+      'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Deploy a centralized backup plan with an organization-wide backup vault by using AWS CloudFormation.',
+      'Enable cross-account backup in AWS Backup in each member account. Create a backup plan with a centralized backup vault in each member account. Apply the backup plan to the relevant resources.',
+      'Enable cross-account backup in AWS Backup in the management account. Create a backup plan with a centralized backup vault in the management account. Apply the backup plan to the relevant resources.'
+    ],
+    correct: 3,
+    explanation: 'You need to enable cross-account backups with centralized administration and a centralized vault in the management account of AWS Backup. Then, you can create the backup plan and vault in the management account and apply it to all resources.'
+  },
+  {
+    id: 29,
+    domain: 'Deployment and Automation',
+    question: 'A software company is running a containerized application on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The application must use a new feature that is available in the latest Kubernetes version. What is the recommended way to upgrade the cluster?',
+    options: [
+      'Create an Amazon CloudWatch dashboard that shows all relevant metrics for the cluster. Identify the current usage of CPU and memory. Use the Kubernetes release update to identify if the available resources are enough.',
+      'Use the AWS CloudFormation infrastructure as code (IaC) generator to extract the current cluster configuration in a template. Update the template to provision a new cluster that uses the latest Kubernetes version.',
+      'Use the AWS CLI command update-cluster-version with the required version as an input. Use the --generate-cli-skeleton flag. Review the JSON output, and check for warnings.',
+      'Use Amazon EKS cluster insights to identify issues on the running cluster. Use the tool recommendations to resolve pending issues. Refresh Amazon EKS cluster insights to verify that all issues have been resolved.'
+    ],
+    correct: 3,
+    explanation: 'Amazon EKS cluster insights is a feature that provides recommendations on Amazon EKS and Kubernetes best practices. You can use cluster insights to evaluate cluster readiness against a new version and to resolve any issues before upgrading.'
+  },
+  {
+    id: 30,
+    domain: 'Networking and Content Delivery',
+    question: 'A company has two Amazon EC2 instances. Instance A is in VPC A. Instance B is in VPC B. A CloudOps engineer correctly configured VPC peering between both VPCs. Instance A can ping instance B, but instance B cannot ping instance A. What is the most likely cause?',
+    options: [
+      'Attach an internet gateway to VPC B.',
+      'Attach a NAT gateway to VPC A.',
+      'Update the instance B security group to allow inbound Internet Control Message Protocol (ICMP) traffic.',
+      'Update the instance A security group to allow inbound Internet Control Message Protocol (ICMP) traffic.'
+    ],
+    correct: 3,
+    explanation: 'EC2 security groups are stateful. Instance A initiated the first ping. Therefore, the response is permitted. The second ping is blocked by instance A security group. To troubleshoot this, update the instance A security group to allow inbound ICMP traffic.'
+  },
+  {
+    id: 31,
+    domain: 'Reliability and Business Continuity',
+    question: 'A financial company runs a transaction processing system. The system uses an Amazon RDS for MySQL database with a Multi-AZ deployment. The company expects a seasonal spike in traffic and wants to automatically adjust database capacity based on demand. What should you do?',
+    options: [
+      'Migrate the database to Amazon Aurora Serverless v2.',
+      'Configure Amazon RDS for MySQL read replicas in different AWS Regions.',
+      'Enable Amazon RDS storage auto scaling to adjust capacity based on demand.',
+      'Increase the Amazon RDS instance size to a larger provisioned capacity and enable auto scaling.'
+    ],
+    correct: 0,
+    explanation: 'Aurora Serverless v2 is a relational database that is compatible with MySQL. Aurora Serverless v2 can automate the process of monitoring a workload and adjusting capacity based on traffic spikes and demand.'
+  },
+  {
+    id: 32,
+    domain: 'Deployment and Automation',
+    question: 'A company uses AWS Organizations. The company wants to simplify the management of resource deployments. A CloudOps engineer must deploy an AWS CloudFormation stack set. The stack set must automatically create the required IAM roles in target accounts. What is the best way to achieve this?',
+    options: [
+      'Use the self-managed permissions model for role creation and management across the organization.',
+      'Use the service-managed permissions model for role creation and management across the organization.',
+      'Use AWS Config to propagate roles and permissions across accounts before deploying the stack set.',
+      'Use Amazon EventBridge to invoke AWS Lambda functions that create IAM roles in each account before deploying the stack set.'
+    ],
+    correct: 1,
+    explanation: 'The service-managed permissions model for CloudFormation StackSets automatically creates the required IAM roles in target accounts when you use Organizations. This avoids manual steps and simplifies permissions management.'
+  },
+  {
+    id: 33,
+    domain: 'Deployment and Automation',
+    question: 'A CloudOps engineer must automate the creation of custom Amazon Machine Images (AMIs). The CloudOps engineer notices timeout errors on the EC2 Image Builder pipeline. What is the cause of the issue?',
+    options: [
+      'There are insufficient permissions granted to the Image Builder role that is configured in the pipeline.',
+      'The base AMI that is specified in the configuration is no longer available.',
+      'The AWS Systems Manager Agent (SSM Agent) on the build instance is not running or reachable.',
+      'The Image Builder pipeline was tagged with the key value executable set to false.'
+    ],
+    correct: 2,
+    explanation: 'Image Builder uses the SSM Agent to manage the build instance and to run build components. If the SSM Agent is not running, is unresponsive, or cannot be reached, the pipeline will time out.'
+  },
+  {
+    id: 34,
+    domain: 'Networking and Content Delivery',
+    question: 'A company sends metrics and logs to a third-party vendor for long-term storage. Both the company and the third-party vendor use the AWS Cloud. Currently, the data is transmitted over the public internet. What should they do to securely transmit this data over the AWS network?',
+    options: [
+      "Create an interface VPC endpoint in the company's VPC. Associate the endpoint with the AWS PrivateLink service.",
+      "Create a gateway VPC endpoint in the company's VPC. Associate the endpoint with the AWS PrivateLink service.",
+      "Create an AWS PrivateLink service in the third-party vendor's VPC.",
+      "Create an AWS PrivateLink service in the company's VPC.",
+      "Create VPC peering with the third-party vendor's VPC."
+    ],
+    correct: [0, 2],
+    explanation: 'An interface VPC endpoint is a network interface with a private IP address that serves as an entry point for traffic going to a supported service. As the service consumer, the company should create the interface endpoint, and the third-party vendor should create the PrivateLink service.'
   }
-}
-},
-{
-  id: 27,
-  domain: 'Performance Optimization',
-  question: 'A company is deploying a web application on Amazon EC2 instances. To handle spikes in traffic, the web application needs application-level caching of database query results and frequently accessed application data. Which solution will meet this requirement with the LEAST operational overhead?',
-  options: [
-    'Implement application-level caching by running Memcached on the EC2 instances.',
-    'Configure Amazon ElastiCache (Redis OSS) for the application.',
-    'Deploy Amazon API Gateway and configure caching at the API level.',
-    'Deploy an Amazon CloudFront distribution with a custom origin to cache application responses.'
-  ],
-  correct: 1,
-  explanation: 'ElastiCache caches frequently accessed data to improve the performance of web applications. ElastiCache also provides in-memory caching that is scalable and helps handle spikes in traffic. ElastiCache handles the setup, management, monitoring, and scaling of the cache infrastructure. Therefore, this solution meets the requirements with the least operational overhead. Running Memcached directly on EC2 instances requires additional operational overhead. API Gateway does not provide in-memory caching of applications. CloudFront is not optimized to cache database queries and application data at the application level.'
-},
-{
-  id: 28,
-  domain: 'Reliability and Business Continuity',
-  question: 'A company uses AWS Organizations with multiple AWS accounts across several organizational units (OUs). A CloudOps engineer must configure AWS Backup with centralized administration and a centralized vault for backups across all accounts. Which configuration will meet these requirements?',
-  options: [
-    'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Create individual backup plans and vaults in each member account.',
-    'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Deploy a centralized backup plan with an organization-wide backup vault by using AWS CloudFormation StackSets.',
-    'Enable cross-account backup in AWS Backup in each member account. Create a backup plan with a centralized backup vault in each member account. Apply the backup plan to the relevant resources.',
-    'Enable cross-account backup in AWS Backup in the management account. Create a backup plan with a centralized backup vault in the management account. Apply the backup plan to the relevant resources across all accounts.'
-  ],
-  correct: 3,
-  explanation: 'You need to enable cross-account backups with centralized administration and a centralized vault in the management account of AWS Backup. Then, you can create the backup plan and vault in the management account and apply relevant resources across all accounts. SCPs do not enable the creation of a centralized backup plan and vault across all accounts. Creating individual backup plans and vaults in each member account does not meet the requirement of centralized administration.'
-},
-{
-  id: 29,
-  domain: 'Deployment and Automation',
-  question: 'A software company is running a containerized application on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The application must use a new feature that is available in the latest Kubernetes version. The cluster currently runs the previous Kubernetes version. A CloudOps engineer must prepare the upgrade of the cluster. Which solution will meet these requirements with the LEAST operational overhead?',
-  options: [
-    'Create an Amazon CloudWatch dashboard that shows all relevant metrics for the cluster. Identify the current usage of CPU and memory. Use the Kubernetes release update to identify if the available free resources meet the requirements of the new version.',
-    'Use the AWS CloudFormation infrastructure as code (IaC) generator to extract the current cluster configuration in a template. Update the template to provision a new cluster that uses the latest Kubernetes version. Migrate the application to the new cluster.',
-    'Use the AWS CLI command update-cluster-version with the required version as an input. Use the --generate-cli-skeleton flag. Review the JSON output, and check for warnings.',
-    'Use Amazon EKS cluster insights to identify issues on the running cluster. Use the tool recommendations to resolve pending issues. Refresh Amazon EKS cluster insights to verify that all issues have been resolved.'
-  ],
-  correct: 3,
-  explanation: 'Amazon EKS cluster insights is a feature that provides recommendations on Amazon EKS and Kubernetes best practices. You can use cluster insights to evaluate cluster readiness against a version upgrade. CloudWatch dashboards will not provide enough information to evaluate whether an EKS cluster is ready to be upgraded. Provisioning a new cluster requires more operational overhead than upgrading the existing cluster. The --generate-cli-skeleton option does not perform a test run of the upgrade.'
-},
-{
-  id: 30,
-  domain: 'Networking and Content Delivery',
-  question: 'A company has two Amazon EC2 instances. Instance A is in VPC A. Instance B is in VPC B. A CloudOps engineer correctly configured VPC peering between both VPCs. Instance A can ping instance B. However, instance B cannot ping instance A. Which step should the CloudOps engineer take to troubleshoot this issue?',
-  options: [
-    'Attach an internet gateway to VPC B.',
-    'Attach a NAT gateway to VPC A.',
-    'Update the instance B security group to allow inbound Internet Control Message Protocol (ICMP) traffic.',
-    'Update the instance A security group to allow inbound Internet Control Message Protocol (ICMP) traffic.'
-  ],
-  correct: 3,
-  explanation: 'EC2 security groups are stateful. Instance A initiated the first ping. Therefore, the response is permitted. The second ping is blocked by instance A security group. To troubleshoot this issue, you need to update the security group of instance A to allow inbound ICMP traffic. Internet gateways and NAT gateways are not relevant for VPC peering connections. Instance B security group already allows ICMP traffic since instance A was able to ping instance B.'
-},
-{
-  id: 31,
-  domain: 'Reliability and Business Continuity',
-  question: 'A financial company runs a transaction processing system. The system uses an Amazon RDS for MySQL database with a Multi-AZ deployment. The company expects a seasonal spike in traffic and wants to ensure the scalability of the database. The system must remain highly available and support unpredictable spikes in traffic. Which solution will meet these requirements?',
-  options: [
-    'Migrate the database to Amazon Aurora Serverless v2.',
-    'Configure Amazon RDS for MySQL read replicas in different AWS Regions.',
-    'Enable Amazon RDS storage auto scaling to adjust capacity based on demand.',
-    'Increase the Amazon RDS instance size to a larger provisioned capacity and enable auto scaling.'
-  ],
-  correct: 0,
-  explanation: 'Aurora Serverless v2 is a relational database that is compatible with MySQL. Aurora Serverless v2 can automate the process of monitoring a workload and adjusting capacity based on traffic and demand. Aurora Serverless v2 provides automatic scaling for both read and write workloads. This solution is suitable for workloads with seasonal or unpredictable traffic because Aurora Serverless v2 can automatically scale capacity. Read replicas do not help with write scaling. Amazon RDS storage auto scaling does not scale for compute or read/write operations. Amazon RDS does not have built-in auto scaling for instance sizes.'
-},
-{
-  id: 32,
-  domain: 'Deployment and Automation',
-  question: 'A company uses AWS Organizations. The company wants to simplify the management of resource deployments. A CloudOps engineer must deploy an AWS CloudFormation stack set. The stack set must provision IAM roles and Amazon CloudWatch alarms across multiple AWS accounts and AWS Regions. The CloudOps engineer wants to avoid manually setting up IAM roles in each target account for the stack set operations. Which solution will meet these requirements with the LEAST operational overhead?',
-  options: [
-    'Use the self-managed permissions model for role creation and management across the organization.',
-    'Use the service-managed permissions model for role creation and management across the organization.',
-    'Use AWS Config to propagate roles and permissions across accounts before deploying the stack set.',
-    'Use Amazon EventBridge to invoke AWS Lambda functions that create IAM roles in each account before deploying the stack set.'
-  ],
-  correct: 1,
-  explanation: 'The service-managed permissions model for CloudFormation StackSets automatically creates the required IAM roles in target accounts when you use Organizations. This solution avoids manual role setup. This solution is an operationally efficient way to deploy resources across multiple accounts and Regions. Self-managed permissions require manual creation of IAM roles in each account. AWS Config cannot create or manage IAM roles across accounts. Using EventBridge with Lambda would require custom code and adds unnecessary operational overhead.'
-},
-{
-  id: 33,
-  domain: 'Deployment and Automation',
-  question: 'A CloudOps engineer must automate the creation of custom Amazon Machine Images (AMIs). The CloudOps engineer notices timeout errors on the EC2 Image Builder pipeline. What is the cause of the timeout errors?',
-  options: [
-    'There are insufficient permissions granted to the Image Builder role that is configured in the pipeline.',
-    'The base AMI that is specified in the configuration is no longer available.',
-    'The AWS Systems Manager Agent (SSM Agent) on the build instance is not running or reachable.',
-    'The Image Builder pipeline was tagged with the key value executable set to false.'
-  ],
-  correct: 2,
-  explanation: 'Image Builder uses the SSM Agent to manage the build instance and to run build components. Additionally, the SSM Agent can collect logs. If the SSM Agent is not running, is unresponsive because of network issues, or is misconfigured, then the pipeline will hang during a build step. This issue will eventually lead to a timeout error as Image Builder waits for a response. Insufficient permissions typically appear as access denied errors rather than timeouts. An unavailable base AMI would cause an error during initialization. Tags do not affect pipeline execution.'
-},
-{
-  id: 34,
-  domain: 'Networking and Content Delivery',
-  question: 'A company sends metrics and logs to a third-party vendor for long-term storage. Both the company and the third-party vendor use the AWS Cloud. Currently, the data is transmitted over the public internet. A CloudOps engineer must improve the security posture of sending the data to the third-party vendor. Which combination of steps will meet this requirement? (Select TWO.)',
-  options: [
-    'Create an interface VPC endpoint in the company\'s VPC. Associate the endpoint with the AWS PrivateLink service.',
-    'Create a gateway VPC endpoint in the company\'s VPC. Associate the endpoint with the AWS PrivateLink service.',
-    'Create an AWS PrivateLink service in the third-party vendor\'s VPC.',
-    'Create an AWS PrivateLink service in the company\'s VPC.',
-    'Create VPC peering with the third-party vendor\'s VPC.'
-  ],
-  correct: [0, 2],
-  explanation: 'An interface VPC endpoint is a network interface with a private IP address that serves as an entry point for traffic going to a supported service. As the service consumer, the company needs an interface endpoint to connect to the third-party vendor\'s PrivateLink service. The third-party vendor must create a PrivateLink service to allow the company to establish a private connection. Gateway endpoints support only Amazon S3 and DynamoDB. VPC peering would expose the entire network and requires non-overlapping CIDR blocks.'
-}
-  ];}
-
+];
+  
   // Helper to check if a question is multiple answer
 const isMultipleAnswer = (question) => Array.isArray(question.correct);
 
