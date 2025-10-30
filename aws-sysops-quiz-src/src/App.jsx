@@ -1081,7 +1081,7 @@ Where should you place the NAT Gateway?`,
   correct: [0, 2],
   explanation: 'An interface VPC endpoint is a network interface with a private IP address that serves as an entry point for traffic going to a supported service. As the service consumer, the company needs an interface endpoint to connect to the third-party vendor\'s PrivateLink service. The third-party vendor must create a PrivateLink service to allow the company to establish a private connection. Gateway endpoints support only Amazon S3 and DynamoDB. VPC peering would expose the entire network and requires non-overlapping CIDR blocks.'
 }
-  ];
+  ];}
 
   // Helper to check if a question is multiple answer
 const isMultipleAnswer = (question) => Array.isArray(question.correct);
