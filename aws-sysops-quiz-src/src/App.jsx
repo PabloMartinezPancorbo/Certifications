@@ -975,6 +975,112 @@ Where should you place the NAT Gateway?`,
     alt: 'Cache behaviour settings'
   }
 }
+},
+{
+  id: 27,
+  domain: 'Performance Optimization',
+  question: 'A company is deploying a web application on Amazon EC2 instances. To handle spikes in traffic, the web application needs application-level caching of database query results and frequently accessed application data. Which solution will meet this requirement with the LEAST operational overhead?',
+  options: [
+    'Implement application-level caching by running Memcached on the EC2 instances.',
+    'Configure Amazon ElastiCache (Redis OSS) for the application.',
+    'Deploy Amazon API Gateway and configure caching at the API level.',
+    'Deploy an Amazon CloudFront distribution with a custom origin to cache application responses.'
+  ],
+  correct: 1,
+  explanation: 'ElastiCache caches frequently accessed data to improve the performance of web applications. ElastiCache also provides in-memory caching that is scalable and helps handle spikes in traffic. ElastiCache handles the setup, management, monitoring, and scaling of the cache infrastructure. Therefore, this solution meets the requirements with the least operational overhead. Running Memcached directly on EC2 instances requires additional operational overhead. API Gateway does not provide in-memory caching of applications. CloudFront is not optimized to cache database queries and application data at the application level.'
+},
+{
+  id: 28,
+  domain: 'Reliability and Business Continuity',
+  question: 'A company uses AWS Organizations with multiple AWS accounts across several organizational units (OUs). A CloudOps engineer must configure AWS Backup with centralized administration and a centralized vault for backups across all accounts. Which configuration will meet these requirements?',
+  options: [
+    'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Create individual backup plans and vaults in each member account.',
+    'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Deploy a centralized backup plan with an organization-wide backup vault by using AWS CloudFormation StackSets.',
+    'Enable cross-account backup in AWS Backup in each member account. Create a backup plan with a centralized backup vault in each member account. Apply the backup plan to the relevant resources.',
+    'Enable cross-account backup in AWS Backup in the management account. Create a backup plan with a centralized backup vault in the management account. Apply the backup plan to the relevant resources across all accounts.'
+  ],
+  correct: 3,
+  explanation: 'You need to enable cross-account backups with centralized administration and a centralized vault in the management account of AWS Backup. Then, you can create the backup plan and vault in the management account and apply relevant resources across all accounts. SCPs do not enable the creation of a centralized backup plan and vault across all accounts. Creating individual backup plans and vaults in each member account does not meet the requirement of centralized administration.'
+},
+{
+  id: 29,
+  domain: 'Deployment and Automation',
+  question: 'A software company is running a containerized application on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The application must use a new feature that is available in the latest Kubernetes version. The cluster currently runs the previous Kubernetes version. A CloudOps engineer must prepare the upgrade of the cluster. Which solution will meet these requirements with the LEAST operational overhead?',
+  options: [
+    'Create an Amazon CloudWatch dashboard that shows all relevant metrics for the cluster. Identify the current usage of CPU and memory. Use the Kubernetes release update to identify if the available free resources meet the requirements of the new version.',
+    'Use the AWS CloudFormation infrastructure as code (IaC) generator to extract the current cluster configuration in a template. Update the template to provision a new cluster that uses the latest Kubernetes version. Migrate the application to the new cluster.',
+    'Use the AWS CLI command update-cluster-version with the required version as an input. Use the --generate-cli-skeleton flag. Review the JSON output, and check for warnings.',
+    'Use Amazon EKS cluster insights to identify issues on the running cluster. Use the tool recommendations to resolve pending issues. Refresh Amazon EKS cluster insights to verify that all issues have been resolved.'
+  ],
+  correct: 3,
+  explanation: 'Amazon EKS cluster insights is a feature that provides recommendations on Amazon EKS and Kubernetes best practices. You can use cluster insights to evaluate cluster readiness against a version upgrade. CloudWatch dashboards will not provide enough information to evaluate whether an EKS cluster is ready to be upgraded. Provisioning a new cluster requires more operational overhead than upgrading the existing cluster. The --generate-cli-skeleton option does not perform a test run of the upgrade.'
+},
+{
+  id: 30,
+  domain: 'Networking and Content Delivery',
+  question: 'A company has two Amazon EC2 instances. Instance A is in VPC A. Instance B is in VPC B. A CloudOps engineer correctly configured VPC peering between both VPCs. Instance A can ping instance B. However, instance B cannot ping instance A. Which step should the CloudOps engineer take to troubleshoot this issue?',
+  options: [
+    'Attach an internet gateway to VPC B.',
+    'Attach a NAT gateway to VPC A.',
+    'Update the instance B security group to allow inbound Internet Control Message Protocol (ICMP) traffic.',
+    'Update the instance A security group to allow inbound Internet Control Message Protocol (ICMP) traffic.'
+  ],
+  correct: 3,
+  explanation: 'EC2 security groups are stateful. Instance A initiated the first ping. Therefore, the response is permitted. The second ping is blocked by instance A security group. To troubleshoot this issue, you need to update the security group of instance A to allow inbound ICMP traffic. Internet gateways and NAT gateways are not relevant for VPC peering connections. Instance B security group already allows ICMP traffic since instance A was able to ping instance B.'
+},
+{
+  id: 31,
+  domain: 'Reliability and Business Continuity',
+  question: 'A financial company runs a transaction processing system. The system uses an Amazon RDS for MySQL database with a Multi-AZ deployment. The company expects a seasonal spike in traffic and wants to ensure the scalability of the database. The system must remain highly available and support unpredictable spikes in traffic. Which solution will meet these requirements?',
+  options: [
+    'Migrate the database to Amazon Aurora Serverless v2.',
+    'Configure Amazon RDS for MySQL read replicas in different AWS Regions.',
+    'Enable Amazon RDS storage auto scaling to adjust capacity based on demand.',
+    'Increase the Amazon RDS instance size to a larger provisioned capacity and enable auto scaling.'
+  ],
+  correct: 0,
+  explanation: 'Aurora Serverless v2 is a relational database that is compatible with MySQL. Aurora Serverless v2 can automate the process of monitoring a workload and adjusting capacity based on traffic and demand. Aurora Serverless v2 provides automatic scaling for both read and write workloads. This solution is suitable for workloads with seasonal or unpredictable traffic because Aurora Serverless v2 can automatically scale capacity. Read replicas do not help with write scaling. Amazon RDS storage auto scaling does not scale for compute or read/write operations. Amazon RDS does not have built-in auto scaling for instance sizes.'
+},
+{
+  id: 32,
+  domain: 'Deployment and Automation',
+  question: 'A company uses AWS Organizations. The company wants to simplify the management of resource deployments. A CloudOps engineer must deploy an AWS CloudFormation stack set. The stack set must provision IAM roles and Amazon CloudWatch alarms across multiple AWS accounts and AWS Regions. The CloudOps engineer wants to avoid manually setting up IAM roles in each target account for the stack set operations. Which solution will meet these requirements with the LEAST operational overhead?',
+  options: [
+    'Use the self-managed permissions model for role creation and management across the organization.',
+    'Use the service-managed permissions model for role creation and management across the organization.',
+    'Use AWS Config to propagate roles and permissions across accounts before deploying the stack set.',
+    'Use Amazon EventBridge to invoke AWS Lambda functions that create IAM roles in each account before deploying the stack set.'
+  ],
+  correct: 1,
+  explanation: 'The service-managed permissions model for CloudFormation StackSets automatically creates the required IAM roles in target accounts when you use Organizations. This solution avoids manual role setup. This solution is an operationally efficient way to deploy resources across multiple accounts and Regions. Self-managed permissions require manual creation of IAM roles in each account. AWS Config cannot create or manage IAM roles across accounts. Using EventBridge with Lambda would require custom code and adds unnecessary operational overhead.'
+},
+{
+  id: 33,
+  domain: 'Deployment and Automation',
+  question: 'A CloudOps engineer must automate the creation of custom Amazon Machine Images (AMIs). The CloudOps engineer notices timeout errors on the EC2 Image Builder pipeline. What is the cause of the timeout errors?',
+  options: [
+    'There are insufficient permissions granted to the Image Builder role that is configured in the pipeline.',
+    'The base AMI that is specified in the configuration is no longer available.',
+    'The AWS Systems Manager Agent (SSM Agent) on the build instance is not running or reachable.',
+    'The Image Builder pipeline was tagged with the key value executable set to false.'
+  ],
+  correct: 2,
+  explanation: 'Image Builder uses the SSM Agent to manage the build instance and to run build components. Additionally, the SSM Agent can collect logs. If the SSM Agent is not running, is unresponsive because of network issues, or is misconfigured, then the pipeline will hang during a build step. This issue will eventually lead to a timeout error as Image Builder waits for a response. Insufficient permissions typically appear as access denied errors rather than timeouts. An unavailable base AMI would cause an error during initialization. Tags do not affect pipeline execution.'
+},
+{
+  id: 34,
+  domain: 'Networking and Content Delivery',
+  question: 'A company sends metrics and logs to a third-party vendor for long-term storage. Both the company and the third-party vendor use the AWS Cloud. Currently, the data is transmitted over the public internet. A CloudOps engineer must improve the security posture of sending the data to the third-party vendor. Which combination of steps will meet this requirement? (Select TWO.)',
+  options: [
+    'Create an interface VPC endpoint in the company\'s VPC. Associate the endpoint with the AWS PrivateLink service.',
+    'Create a gateway VPC endpoint in the company\'s VPC. Associate the endpoint with the AWS PrivateLink service.',
+    'Create an AWS PrivateLink service in the third-party vendor\'s VPC.',
+    'Create an AWS PrivateLink service in the company\'s VPC.',
+    'Create VPC peering with the third-party vendor\'s VPC.'
+  ],
+  correct: [0, 2],
+  explanation: 'An interface VPC endpoint is a network interface with a private IP address that serves as an entry point for traffic going to a supported service. As the service consumer, the company needs an interface endpoint to connect to the third-party vendor\'s PrivateLink service. The third-party vendor must create a PrivateLink service to allow the company to establish a private connection. Gateway endpoints support only Amazon S3 and DynamoDB. VPC peering would expose the entire network and requires non-overlapping CIDR blocks.'
+}
   ];
 
   // Helper to check if a question is multiple answer
