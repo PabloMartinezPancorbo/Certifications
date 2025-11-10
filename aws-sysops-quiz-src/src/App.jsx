@@ -523,6 +523,10 @@ const AWSSysOpsExamApp = () => {
                 'Local route: Cannot be deleted',
                 'VPC Peering: No transitive routing'
               ],
+              image: {
+                url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
+                alt: 'AWS VPCs and Subnets'
+              },
               resources: [
                 { name: 'VPC Guide', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html' }
               ]
