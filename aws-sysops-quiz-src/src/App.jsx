@@ -607,6 +607,8 @@ const AWSSysOpsExamApp = () => {
             {
               topic: 'Distribution Settings',
               details: [
+                'Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users.',
+                "CloudFront works as a content delivery network (CDN) by storing cached copies of your content in its global network of data centers called edge locations. When a user requests content, it is delivered from the edge location geographically closest to them, which reduces latency and speeds up delivery. If the content isn't in that cache, CloudFront fetches it from the origin server, delivers it to the user, and then caches it at the edge location for future requests.",
                 'Origins: S3, ALB, HTTP server',
                 'Behaviors: Path patterns, caching',
                 'Edge locations: Global caching',
