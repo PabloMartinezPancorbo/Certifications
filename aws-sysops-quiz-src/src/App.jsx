@@ -521,7 +521,8 @@ const AWSSysOpsExamApp = () => {
                 'Private subnet: Route to NAT',
                 'Route table priority: Most specific',
                 'Local route: Cannot be deleted',
-                'VPC Peering: No transitive routing'
+                'VPC Peering: No transitive routing',
+                'Each subnet in a VPC is confined to a single AZ, while the VPC spans the entire region (but no more than one).'
               ],
               image: {
                 url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
