@@ -480,12 +480,18 @@ const AWSSysOpsExamApp = () => {
             {
               topic: 'AWS Config',
               details: [
+                "AWS Config: a service that provides a detailed view of your AWS resources, including their configurations, relationships, and how they have changed over time. It's used for compliance auditing, security analysis, and tracking resource changes to help you manage governance and troubleshoot issues.",
+                'AWS Config is used to enforce policies by continuously monitoring resource configurations, evaluating them against a set of rules, and then automating remediation actions for non-compliant resources. This process involves defining configuration rules (either using AWS-provided managed rules or custom ones) to check for deviations from desired settings, such as security or tagging policies.',
                 'Configuration history tracking',
                 'Compliance rules evaluation',
                 'Auto-remediation with SSM',
                 'Configuration snapshots',
                 'Aggregators for multi-account'
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/config/latest/developerguide/images/how-AWSconfig-works-2.png',
+                alt: 'AWS Config'
+              },
               resources: [
                 { name: 'AWS Config', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
               ]
