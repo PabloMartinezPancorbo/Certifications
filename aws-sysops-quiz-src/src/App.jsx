@@ -542,6 +542,14 @@ const AWSSysOpsExamApp = () => {
                 'NACL evaluation: Lowest number first',
                 'Default NACL: Allows all'
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/security-group-overview.png',
+                alt: 'Security Groups'
+              },
+              image2: {
+                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/network-acl.png',
+                alt: 'NACLs'
+              },
               resources: [
                 { name: 'Security Groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html' }
               ]
