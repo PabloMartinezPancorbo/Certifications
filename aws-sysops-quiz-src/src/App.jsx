@@ -493,12 +493,20 @@ const AWSSysOpsExamApp = () => {
             {
               topic: 'CloudTrail',
               details: [
+                'CloudTrail: a service that records user activity and API calls for an AWS account, enabling governance, compliance, and auditing. It logs who made a request, what action was taken, and when, helping with security monitoring, operational troubleshooting, and identifying potential issues.',
+                'Records events: It logs events, such as a user creating an Amazon S3 bucket, and delivers log files to an Amazon S3 bucket.',
                 'Management events: Control plane',
                 'Data events: S3/Lambda operations',
                 'Insights: Unusual activity detection',
                 'Event history: 90 days free',
-                'S3 logging with integrity validation'
+                'S3 logging with integrity validation',
+                'Provides visibility: It provides visibility into user activity by recording who made the request, the services used, the actions performed, and the parameters and responses for those actions.',
+                'Answers "who, what, where, and when": It helps answer fundamental questions about your AWS environment by tracking actions taken through the AWS Management Console, Command Line Interface (CLI), and SDKs.'
               ],
+              image: {
+                url: 'https://media.amazonwebservices.com/blog/2013/cloudtrail_flow_4.png',
+                alt: 'AWS CloudTrail'
+              },
               resources: [
                 { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
               ]
