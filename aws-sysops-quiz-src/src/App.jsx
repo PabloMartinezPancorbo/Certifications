@@ -609,13 +609,19 @@ const AWSSysOpsExamApp = () => {
               details: [
                 'Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users.',
                 "CloudFront works as a content delivery network (CDN) by storing cached copies of your content in its global network of data centers called edge locations. When a user requests content, it is delivered from the edge location geographically closest to them, which reduces latency and speeds up delivery. If the content isn't in that cache, CloudFront fetches it from the origin server, delivers it to the user, and then caches it at the edge location for future requests.",
-                'Origins: S3, ALB, HTTP server',
-                'Behaviors: Path patterns, caching',
-                'Edge locations: Global caching',
-                'TTL: Min, max, default',
-                'Invalidations: Remove cached content',
-                'Origin Access Identity for S3'
+                'Origins: S3, ALB, or HTTP server; with support for origin failover and custom origin headers',
+                "Behaviors: Path patterns for URL-specific rules, cache settings per pattern, origin routing, viewer protocols, TTL settings",
+                "Security features: SSL/TLS encryption, field-level encryption, integration with AWS Shield and WAF, geographic restrictions, and signed URLs/cookies for private content access",
+                "Performance: Regional edge caches, origin shield protection, compression options, custom error responses",
+                "TTL: Minimum/maximum/default cache durations, override origin headers, custom cache control",
+                "Invalidations: Remove specific content from edge caches, wildcard patterns, batch processing",
+                'Origin access identity for S3, SSL/TLS certificates, field-level encryption, WAF integration',
+                "Protocol handling with options for HTTP/HTTPS, HTTPS-only, or Match Viewer settings, along with support for custom SSL certificates and SNI"
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png',
+                alt: 'AWS CloudFront'
+              },
               resources: [
                 { name: 'CloudFront', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' }
               ]
