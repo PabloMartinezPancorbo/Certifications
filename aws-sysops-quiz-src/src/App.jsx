@@ -516,13 +516,18 @@ const AWSSysOpsExamApp = () => {
             {
               topic: 'Subnets & Routing',
               details: [
+                'VPC: a secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets.',
+                'Each VPC is confined to a single region.',
+                'Subnet: a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.',
+                'Each subnet in a VPC is confined to a single AZ.',
+                'Default limit: The default limit is five VPCs per region',
+                'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
                 'CIDR blocks: /16 to /28',
                 'Public subnet: Route to IGW',
                 'Private subnet: Route to NAT',
                 'Route table priority: Most specific',
                 'Local route: Cannot be deleted',
-                'VPC Peering: No transitive routing',
-                'Each subnet in a VPC is confined to a single AZ, while the VPC spans the entire region (but no more than one).'
+                'VPC Peering: No transitive routing'
               ],
               image: {
                 url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
