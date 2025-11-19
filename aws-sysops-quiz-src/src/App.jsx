@@ -806,108 +806,319 @@ const cheatsheet = {
       ]
     },
 
-    'deployment': {
-      title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
-      sections: [
+'deployment': {
+  title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
+  sections: [
+    {
+      title: 'CloudFormation & AWS CDK (IaC Core)',
+      content: [
         {
-          title: 'CloudFormation',
-          content: [
+          topic: 'Stack Operations',
+          details: [
+            'Create/Update/Delete stacks to manage related resources as a single unit.',
+            'Change sets let you preview what will change before executing an update (safe updates in production).',
+            'Stack policies protect critical resources from accidental updates (for example, prevent DB deletion).',
+            'Drift detection identifies resources that have been changed outside CloudFormation.',
+            'Nested stacks improve reusability and modular design (shared VPC, networking, logging templates).',
+            'StackSets deploy stacks across multiple accounts and Regions from a central administrator account.',
             {
-              topic: 'Stack Operations',
-              details: [
-                'Create/Update/Delete stacks',
-                'Change sets for preview',
-                'Stack policies to prevent updates',
-                'Drift detection for changes',
-                'Nested stacks for reusability',
-                'StackSets for multi-account/region'
-              ],
-              resources: [
-                { name: 'CloudFormation Guide', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html' }
-              ]
+              name: 'Troubleshooting Patterns',
+              text: 'Common issues: missing IAM permissions for CloudFormation service role, circular dependencies between resources, invalid references (!Ref to non-existent logical ID), or quota limits (for example, VPC CIDR exhaustion, EIP limits).'
             },
             {
-              topic: 'Template Components',
-              details: [
-                'Parameters: Input values',
-                'Resources: AWS resources to create',
-                'Mappings: Static variables',
-                'Conditions: Resource creation logic',
-                'Outputs: Return values',
-                'Metadata: Additional information'
-              ],
-              resources: [
-                { name: 'Template Anatomy', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html' }
-              ]
+              name: 'Exam Mapping',
+              text: 'Directly maps to Skills 3.1.2 and 3.1.3: create/manage CloudFormation stacks and identify/remediate deployment issues such as subnet sizing, IAM/permission errors, and template syntax problems.'
+            }
+          ],
+          resources: [
+            { name: 'CloudFormation Guide', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html' }
+          ]
+        },
+        {
+          topic: 'Template Components',
+          details: [
+            'Parameters: Input values for stacks (for example, environment, instance type, CIDR).',
+            'Resources: AWS resources to create (must have unique logical IDs).',
+            'Mappings: Static lookup tables (for example, Region → AMI ID).',
+            'Conditions: Control whether resources/properties are created (for example, create NAT only in prod).',
+            'Outputs: Values exported for use by other stacks or humans (for example, VPC ID, ALB DNS name).',
+            'Metadata: Additional information for tools, such as CloudFormation Designer or helper scripts.',
+            {
+              name: 'Example',
+              text: 'Typical exam pattern: parameterized VPC CIDR and instance types; mappings for Region-specific AMIs; conditions for enabling features only in production.'
+            }
+          ],
+          resources: [
+            { name: 'Template Anatomy', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html' }
+          ]
+        },
+        {
+          topic: 'Intrinsic Functions & Pseudo Parameters',
+          details: [
+            '!Ref: Reference parameters and resources (for example, `!Ref MySubnet`).',
+            '!GetAtt: Get resource attributes (for example, `!GetAtt MyALB.DNSName`).',
+            '!Sub: String substitution and embedding parameter/attribute values within strings.',
+            '!Join: Concatenate values into a single string (for example, building ARNs or names).',
+            '!Select and !Split: Choose elements from lists or split strings (useful with `Fn::GetAZs`).',
+            '!If: Conditional values based on Conditions section.',
+            '!FindInMap: Look up values from Mappings (for example, Region → AMI).',
+            '!ImportValue: Import Outputs exported from other stacks (cross-stack references).',
+            {
+              name: 'Pseudo Parameters',
+              text: 'Common ones: `AWS::Region`, `AWS::AccountId`, `AWS::StackName`, used to build ARNs or names without hardcoding environment-specific values.'
+            }
+          ],
+          resources: [
+            { name: 'Intrinsic Functions', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html' }
+          ]
+        },
+        {
+          topic: 'AWS CDK Basics (with CloudFormation under the hood)',
+          details: [
+            'AWS CDK: Define infrastructure in familiar programming languages (TypeScript, Python, Java, C#, etc.).',
+            'CDK apps synthesize to CloudFormation templates (`cdk synth`), which are then deployed by CloudFormation.',
+            'Constructs: L1 (CFN resources), L2 (opinionated high-level APIs), and L3 (patterns/solutions).',
+            'Use context and environment variables to manage differences between stages (dev/test/prod).',
+            {
+              name: 'Exam Pattern',
+              text: 'If the question mentions “infrastructure as code using TypeScript/Python” and CloudFormation templates produced automatically, the correct service is AWS CDK, but CloudFormation still performs the deployment.'
+            }
+          ],
+          resources: [
+            { name: 'AWS CDK', url: 'https://docs.aws.amazon.com/cdk/latest/guide/home.html' }
+          ]
+        }
+      ]
+    },
+
+    {
+      title: 'Images, AMIs, and Containers',
+      content: [
+        {
+          topic: 'AMIs & EC2 Image Builder',
+          details: [
+            'An Amazon Machine Image (AMI) is a template that contains the software configuration (OS, application, dependencies) required to launch EC2 instances.',
+            'Golden AMIs provide standardized, hardened images for consistent deployments across environments.',
+            'EC2 Image Builder automates building, testing, and distributing AMIs on a schedule or triggered basis.',
+            'Pipelines can include hardening, security scanning, and updating base OS and agents (for example, CloudWatch/SSM).',
+            {
+              name: 'Example',
+              text: 'Use EC2 Image Builder to create a monthly patched web-server AMI and reference it in Auto Scaling launch templates so new instances always use the latest hardened image.'
             },
             {
-              topic: 'Intrinsic Functions',
-              details: [
-                '!Ref: Reference parameters/resources',
-                '!GetAtt: Get resource attributes',
-                '!Sub: String substitution',
-                '!Join: Concatenate values',
-                '!Select: Choose from list',
-                '!If: Conditional values'
-              ],
-              resources: [
-                { name: 'Intrinsic Functions', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html' }
-              ]
+              name: 'Exam Mapping',
+              text: 'Maps to Skill 3.1.1: create and manage AMIs and automate image pipelines instead of manual instance baking.'
+            }
+          ],
+          resources: [
+            { name: 'EC2 Image Builder', url: 'https://docs.aws.amazon.com/imagebuilder/latest/userguide/what-is-image-builder.html' }
+          ]
+        },
+        {
+          topic: 'Container Images & Amazon ECR',
+          details: [
+            'Amazon ECR is a fully managed container registry for storing Docker/OCI images.',
+            'Supports private repositories with IAM-based access control and public repositories for public images.',
+            'Lifecycle policies automatically expire old image versions to control storage cost.',
+            'Image scanning (basic or enhanced) detects vulnerabilities in container images.',
+            'Integrates directly with ECS, EKS, and Fargate for pulling images at deploy time.',
+            {
+              name: 'Exam Pattern',
+              text: 'If the scenario mentions “store and version container images for ECS/EKS” with IAM-controlled access and vulnerability scanning, the correct answer is Amazon ECR.'
+            }
+          ],
+          resources: [
+            { name: 'Amazon ECR', url: 'https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html' }
+          ]
+        }
+      ]
+    },
+
+    {
+      title: 'Multi-Account & Multi-Region Provisioning',
+      content: [
+        {
+          topic: 'CloudFormation StackSets',
+          details: [
+            'Deploy CloudFormation stacks to multiple accounts and Regions from a central administrator account.',
+            'Targets can be AWS accounts or entire AWS Organizations OUs (automatic inclusion of new accounts).',
+            'Supports automatic deployment to new accounts in an OU, and automatic rollback on failure.',
+            'Used for baseline infrastructure: IAM roles, Config rules, CloudTrail, logging buckets, guardrails.',
+            {
+              name: 'Exam Pattern',
+              text: 'If you see “deploy the same stack to hundreds of accounts and Regions with centralized control”, the solution is CloudFormation StackSets (Skill 3.1.4).'
+            }
+          ],
+          resources: [
+            { name: 'CloudFormation StackSets', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html' }
+          ]
+        },
+        {
+          topic: 'AWS Resource Access Manager (AWS RAM)',
+          details: [
+            'Share AWS resources across accounts and within AWS Organizations (for example, subnets, Route 53 Resolver rules, Transit Gateways, License Manager configs).',
+            'Avoids duplicating shared infrastructure resources in every account (centralized networking design).',
+            'Works with both individual account invitations and Organizations-based sharing.',
+            {
+              name: 'Example',
+              text: 'Share a central VPC subnet or Transit Gateway with multiple workload accounts, so they can attach their VPCs without each account owning its own TGW.'
+            },
+            {
+              name: 'Exam Mapping',
+              text: 'Maps to Skill 3.1.4: provision and share resources across multiple Regions and accounts using AWS RAM instead of manual peering in every account.'
+            }
+          ],
+          resources: [
+            { name: 'AWS RAM', url: 'https://docs.aws.amazon.com/ram/latest/userguide/what-is.html' }
+          ]
+        }
+      ]
+    },
+
+    {
+      title: 'Deployment Strategies & Services',
+      content: [
+        {
+          topic: 'Elastic Beanstalk Deployment Options',
+          details: [
+            'All at once: Deploy all instances at the same time – fastest but causes downtime, not recommended for production.',
+            'Rolling: Update instances in batches – some capacity remains available, but reduced capacity during deploy.',
+            'Rolling with additional batch: Temporarily adds capacity to maintain full capacity while deploying.',
+            'Immutable: Deploys new instances in a new Auto Scaling group, then swaps traffic – safest for production.',
+            'Blue/Green: Separate environments (blue=current, green=new) with URL or Route 53 cutover.',
+            'Traffic splitting: Gradual/canary traffic shifting between versions for safer releases.',
+            {
+              name: 'Exam Mapping',
+              text: 'Maps to Skill 3.1.5: choose the appropriate deployment strategy for zero-downtime, rollback safety, or speed requirements.'
+            }
+          ],
+          resources: [
+            { name: 'Beanstalk Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
+          ]
+        },
+        {
+          topic: 'CodeDeploy & Application Deployment Strategies',
+          details: [
+            'Supports in-place and blue/green deployments for EC2/On-Prem and ECS services.',
+            'Deployment groups define which instances or services receive updates.',
+            'Hooks/lifecycle events (for example, `BeforeInstall`, `AfterInstall`, `BeforeAllowTraffic`) run scripts for validation, migration, or rollback.',
+            'Traffic shifting options (for example, linear, canary, all-at-once) for blue/green deployments via ALB or Route 53.',
+            {
+              name: 'Exam Pattern',
+              text: 'If the question mentions “automated rollback when health checks fail during deployment” for EC2/ECS, CodeDeploy with blue/green and health checks is the expected answer.'
+            }
+          ],
+          resources: [
+            { name: 'CodeDeploy', url: 'https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html' }
+          ]
+        },
+        {
+          topic: 'Lambda & Weighted Routing for Deployments',
+          details: [
+            'Lambda aliases (for example, `prod`, `beta`) can point to different versions of a function.',
+            'Traffic shifting between versions/aliases supports canary or linear rollout (for example, 10% → 50% → 100%).',
+            'Route 53 and ALB can use weighted routing to gradually shift traffic between two environments (blue/green pattern).',
+            {
+              name: 'Exam Pattern',
+              text: 'Look for phrases like “shift 5% of traffic to the new version and automatically roll back if errors spike” – solved with Lambda aliases or weighted routing in Route 53/ALB.'
             }
           ]
         },
         {
-          title: 'Elastic Beanstalk',
-          content: [
+          topic: 'Third-Party IaC Tools (Terraform, Git, etc.)',
+          details: [
+            'Terraform: popular third-party IaC tool that manages resources by calling AWS APIs; state stored remotely (for example, S3 + DynamoDB).',
+            'Git-based workflows: store infrastructure code (CloudFormation, CDK, Terraform) in Git and trigger CI/CD pipelines on commits.',
             {
-              topic: 'Deployment Options',
-              details: [
-                'All at once: Fast but downtime',
-                'Rolling: Partial capacity',
-                'Rolling with batch: Maintains capacity',
-                'Immutable: New ASG, zero downtime',
-                'Blue/Green: URL swap via Route 53',
-                'Traffic splitting: Canary testing'
-              ],
-              resources: [
-                { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Systems Manager Automation',
-          content: [
-            {
-              topic: 'Run Command',
-              details: [
-                'Execute commands on EC2/on-premises',
-                'No SSH/RDP required',
-                'Rate controls for large fleets',
-                'Output to S3/CloudWatch',
-                'Integration with IAM for access'
-              ],
-              resources: [
-                { name: 'Run Command', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/execute-remote-commands.html' }
-              ]
-            },
-            {
-              topic: 'Automation Documents',
-              details: [
-                'Predefined runbooks',
-                'Custom automation workflows',
-                'Approval actions for manual steps',
-                'Integration with Lambda',
-                'Cross-account automation'
-              ],
-              resources: [
-                { name: 'Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
-              ]
+              name: 'Exam Mapping',
+              text: 'Skill 3.1.6: recognize that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
             }
           ]
         }
       ]
     },
+
+    {
+      title: 'Systems Manager & Operational Automation',
+      content: [
+        {
+          topic: 'Systems Manager Run Command',
+          details: [
+            'Execute commands on EC2 and on-premises instances without SSH/RDP.',
+            'Ideal for ad-hoc operations (for example, restart services, apply config changes, collect logs).',
+            'Supports rate controls, concurrency limits, and error thresholds when targeting large fleets.',
+            'Can send command output to S3 and CloudWatch Logs for auditing and troubleshooting.',
+            'Access controlled with IAM, enabling fine-grained control over which users can run which commands.',
+            {
+              name: 'Exam Mapping',
+              text: 'Maps to Skill 3.2.1: use AWS Systems Manager to automate operational processes on existing resources without opening inbound ports.'
+            }
+          ],
+          resources: [
+            { name: 'Run Command', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/execute-remote-commands.html' }
+          ]
+        },
+        {
+          topic: 'Automation Documents (SSM Runbooks)',
+          details: [
+            'Automation documents (runbooks) define multi-step workflows (for example, stop instance, snapshot EBS, start instance).',
+            'AWS provides many predefined runbooks, and you can create custom ones in JSON/YAML.',
+            'Support approvals, rate control, and integrations with Lambda, SNS, and EventBridge.',
+            'Can run across accounts and Regions when properly configured.',
+            {
+              name: 'Pattern',
+              text: 'EventBridge rule -> SSM Automation runbook to remediate drift or perform routine tasks (for example, restart unhealthy instance, attach IAM role, rotate logs).'
+            },
+            {
+              name: 'Exam Mapping',
+              text: 'Maps to Skills 3.2.1 and 3.2.2: automate management of existing resources and trigger automation based on events.'
+            }
+          ],
+          resources: [
+            { name: 'Systems Manager Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
+          ]
+        }
+      ]
+    },
+
+    {
+      title: 'Event-Driven Automation (Lambda, S3, EventBridge)',
+      content: [
+        {
+          topic: 'Lambda & S3 Event Notifications',
+          details: [
+            'S3 can emit events (for example, `s3:ObjectCreated:*`, `s3:ObjectRemoved:*`) to Lambda, SNS, or SQS.',
+            'Common pattern: S3 upload → Lambda function to process/transform files or update metadata.',
+            'Use dead-letter queues (DLQs) or on-failure destinations for failed Lambda invocations.',
+            {
+              name: 'Exam Pattern',
+              text: 'Maps to Skill 3.2.2: “When an object is uploaded to an S3 bucket, automatically process it” – configure S3 event notification to trigger a Lambda function or send to SQS/SNS.'
+            }
+          ],
+          resources: [
+            { name: 'S3 Event Notifications', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/NotificationHowTo.html' }
+          ]
+        },
+        {
+          topic: 'EventBridge for Operational Automation',
+          details: [
+            'EventBridge rules match events from AWS services, custom apps, and SaaS partners and route them to targets (Lambda, SQS, SNS, Step Functions, SSM Automation, and more).',
+            'Supports scheduled events (cron/rate) for time-based automation (for example, nightly cleanup jobs).',
+            'Enables centralized event-driven automation across multiple accounts using event buses and cross-account rules.',
+            {
+              name: 'Exam Mapping',
+              text: 'Skill 3.2.2: implement event-driven automation, for example “trigger SSM Automation when an EC2 instance becomes unhealthy” using EventBridge + SSM runbook.'
+            }
+          ],
+          resources: [
+            { name: 'EventBridge', url: 'https://docs.aws.amazon.com/eventbridge/latest/userguide/what-is-amazon-eventbridge.html' }
+          ]
+        }
+      ]
+    }
+  ]
+},
+
     'security': {
       title: 'Domain 4: Security and Compliance (16%)',
       sections: [
