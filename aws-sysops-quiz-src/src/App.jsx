@@ -1423,6 +1423,12 @@ const arraysEqual = (a, b) => {
     return text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()) || [text];
   };
   
+  const splitSafe = (text) =>
+  text
+    .split(/(?<!\b(?:e\.g|i\.e))\.\s+/i)  // split only on ". " NOT preceded by "e.g" or "i.e"
+    .map(s => s.trim())
+    .filter(Boolean);
+
   const parseBoldText = (text) => {
     const parts = text.split(/\*\*(.*?)\*\*/g);
     return parts.map((part, i) => 
@@ -1520,10 +1526,8 @@ const arraysEqual = (a, b) => {
                                 {/* Sub-examples inside, each with → and inline code */}
                                 {typeof detail.text === "string" && (
                                   <div className="ml-6 mt-1 space-y-0.5">
-                                    {(
-                                      detail.text.match(/[^.!?]+[.!?]+/g)?.map((s) => s.trim()) ||
-                                      [detail.text]
-                                    ).map((sentence, sIdx) => (
+                                
+                                    {splitSafe(detail.text).map((sentence, sIdx) => (
                                       <div
                                         key={sIdx}
                                         className="flex items-start gap-2"
