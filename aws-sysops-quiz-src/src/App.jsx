@@ -805,6 +805,7 @@ const cheatsheet = {
           }        // closes last object in reliability.sections array
         ]          // closes reliability.sections array
       },           // closes reliability object **with comma**, as next property follows
+  
     deployment: { // begins next top-level object at same level as monitoring/reliability
       title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
       sections: [
@@ -1230,7 +1231,8 @@ const cheatsheet = {
             ]
           }
         ]
-      },
+      }
+    },
 
     security: {
       title: 'Domain 4: Security and Compliance (16%)',
