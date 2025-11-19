@@ -493,7 +493,7 @@ const cheatsheet = {
       }
     ]
   },
-    'reliability': {
+    reliability: {
       title: 'Domain 2: Reliability and Business Continuity (22%)',
       sections: [
         {
@@ -806,7 +806,7 @@ const cheatsheet = {
       ]
     },
 
-'deployment': {
+deployment: {
   title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
   sections: [
     {
@@ -1226,12 +1226,15 @@ const cheatsheet = {
               name: 'Example',
               text: 'A deployment pipeline fails to create an S3 bucket because the CodePipeline service role lacks `s3:CreateBucket` permission; fixing the IAM policy resolves the issue.'
             }
-          ]
-        }
-      ]
-    },
+            ]
+            ]
+          }
+        ]
+      }
+    ]
+  },
 
-'security': {
+security: {
   title: 'Domain 4: Security and Compliance (16%)',
   sections: [
     {
@@ -1339,12 +1342,14 @@ const cheatsheet = {
           },
           resources: [
             { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
-          ]
-        }
-      ]
-    },
-
-  'networking': {
+            ]
+          }
+        ]
+      }
+    ]
+  },
+    
+  networking: {
     title: 'Domain 5: Networking and Content Delivery (18%)',
     sections: [
       {
@@ -1479,7 +1484,7 @@ const cheatsheet = {
         ]
       }
     ]
-  },
+  }
 };
 
   const practiceQuestions = [
