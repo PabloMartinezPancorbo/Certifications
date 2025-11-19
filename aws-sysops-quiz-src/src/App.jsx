@@ -756,6 +756,10 @@ const cheatsheet = {
                   text: 'Maps to Skill 2.3.2 and Skill 2.3.4: select the disaster recovery approach that meets stated RTO, RPO, and cost constraints.'
                 }
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-of-on-premises-applications-to-aws/images/recoveryobjectives.png',
+                alt: 'AWS Recovery Time and Recovery Point Objectives'
+              },
               table: {
                 title: 'Typical RTO/RPO Targets',
                 headers: ['System Type', 'RTO', 'RPO'],
@@ -771,7 +775,7 @@ const cheatsheet = {
                 'Warm Standby: scaled-down but fully functional environment in DR Region.',
                 'Multi-Site Active/Active: full production in multiple Regions with traffic distribution via Route 53.'
               ],
-              image: {
+              image2: {
                 url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-workloads-on-aws/images/disaster-recovery-strategies.png',
                 alt: 'AWS Disaster Recovery Strategies'
               },
