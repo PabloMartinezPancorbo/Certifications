@@ -801,11 +801,10 @@ const cheatsheet = {
                 { name: 'SSM Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
               ]
             }
-            ]
-          ]    // closes inner array(s) of reliability.sections
-        }        // closes last object in reliability.sections array
-      ]          // closes reliability.sections array
-    },           // closes reliability object **with comma**, as next property follows
+            ]    // closes inner array(s) of reliability.sections
+          }        // closes last object in reliability.sections array
+        ]          // closes reliability.sections array
+      },           // closes reliability object **with comma**, as next property follows
     deployment: { // begins next top-level object at same level as monitoring/reliability
       title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
       sections: [
