@@ -1230,8 +1230,6 @@ const cheatsheet = {
         }
       ]
     }
-  ]
-},
 
     'security': {
       title: 'Domain 4: Security and Compliance (16%)',
@@ -1347,6 +1345,7 @@ const cheatsheet = {
         }
       ]
     },
+
     'networking': {
       title: 'Domain 5: Networking and Content Delivery (18%)',
       sections: [
