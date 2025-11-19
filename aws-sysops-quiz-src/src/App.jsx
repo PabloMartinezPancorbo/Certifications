@@ -1226,7 +1226,6 @@ const cheatsheet = {
                   text: 'A deployment pipeline fails to create an S3 bucket because the CodePipeline service role lacks `s3:CreateBucket` permission; fixing the IAM policy resolves the issue.'
                 }
                 ]
-                ]
               }
             ]
           }
