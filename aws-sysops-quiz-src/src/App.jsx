@@ -1232,7 +1232,8 @@ const cheatsheet = {
           }
         ]
       }
-    },
+    ]
+  },
 
     security: {
       title: 'Domain 4: Security and Compliance (16%)',
