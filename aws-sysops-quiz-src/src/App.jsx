@@ -201,7 +201,6 @@ const AWSSysOpsExamApp = () => {
           ]
         },
         {
-        {
           title: 'EventBridge (CloudWatch Events) – Event Routing & Remediation',
           content: [
             {
