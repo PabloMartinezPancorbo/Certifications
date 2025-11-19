@@ -1491,7 +1491,7 @@ const arraysEqual = (a, b) => {
                                   </strong>
                                   <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
                                     {(detail.text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()) || [detail.text]).map((sentence, sIdx) => (
-                                      <li key={sIdx}>{sentence}</li>
+                                      <li key={sIdx}>{renderInlineCode(sentence)}</li>
                                     ))}
                                   </ul>
                                 </>
