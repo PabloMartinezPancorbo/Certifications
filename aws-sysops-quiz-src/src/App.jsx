@@ -1027,78 +1027,73 @@ const cheatsheet = {
           title: 'Deployment Strategies & Services',
           content: [
             {
-              title: 'Deployment Strategies & Elastic Beanstalk',
-              content: [
+              topic: 'Deployment Strategies & Elastic Beanstalk — Generic Deployment Strategies',
+              details: [
+                'All-at-once: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk.',
+                'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
+                'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
+                'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
+                'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target-group switch.',
                 {
-                  topic: 'Generic Deployment Strategies',
-                  details: [
-                    'All-at-once: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk.',
-                    'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
-                    'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
-                    'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
-                    'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target-group switch.',
-                    {
-                      name: 'Exam Pattern',
-                      text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
-                    }
-                  ]
-                },
+                  name: 'Exam Pattern',
+                  text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
+                }
+              ]
+            },
+            {
+              topic: 'Elastic Beanstalk Deployment Options',
+              details: [
+                'All at once: fast, downtime during deployment; suitable for dev/test.',
+                'Rolling: updates in batches, maintains some capacity but may temporarily reduce total capacity.',
+                'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
+                'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
+                'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over.',
+                'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
                 {
-                  topic: 'Elastic Beanstalk Deployment Options',
-                  details: [
-                    'All at once: fast, downtime during deployment; suitable for dev/test.',
-                    'Rolling: updates in batches, maintains some capacity but may temporarily reduce total capacity.',
-                    'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
-                    'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
-                    'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over.',
-                    'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
-                    {
-                      name: 'Exam Mapping',
-                      text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
-                    }
-                  ],
-                  resources: [
-                    { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
-                  ]
-                },
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
+                }
+              ],
+              resources: [
+                { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
+              ]
+            },
+            {
+              topic: 'CodeDeploy & Application Deployment Strategies',
+              details: [
+                'Supports in-place and blue/green deployments for EC2/On-Prem and ECS services.',
+                'Deployment groups define which instances or services receive updates.',
+                'Hooks/lifecycle events (for example, `BeforeInstall`, `AfterInstall`, `BeforeAllowTraffic`) run scripts for validation, migration, or rollback.',
+                'Traffic shifting options (for example, linear, canary, all-at-once) for blue/green deployments via ALB or Route 53.',
                 {
-                  topic: 'CodeDeploy & Application Deployment Strategies',
-                  details: [
-                    'Supports in-place and blue/green deployments for EC2/On-Prem and ECS services.',
-                    'Deployment groups define which instances or services receive updates.',
-                    'Hooks/lifecycle events (for example, `BeforeInstall`, `AfterInstall`, `BeforeAllowTraffic`) run scripts for validation, migration, or rollback.',
-                    'Traffic shifting options (for example, linear, canary, all-at-once) for blue/green deployments via ALB or Route 53.',
-                    {
-                      name: 'Exam Pattern',
-                      text: 'If the question mentions “automated rollback when health checks fail during deployment” for EC2/ECS, CodeDeploy with blue/green and health checks is the expected answer.'
-                    }
-                  ],
-                  resources: [
-                    { name: 'CodeDeploy', url: 'https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html' }
-                  ]
-                },
+                  name: 'Exam Pattern',
+                  text: 'If the question mentions “automated rollback when health checks fail during deployment” for EC2/ECS, CodeDeploy with blue/green and health checks is the expected answer.'
+                }
+              ],
+              resources: [
+                { name: 'CodeDeploy', url: 'https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html' }
+              ]
+            },
+            {
+              topic: 'Lambda & Weighted Routing for Deployments',
+              details: [
+                'Lambda aliases (for example, `prod`, `beta`) can point to different versions of a function.',
+                'Traffic shifting between versions/aliases supports canary or linear rollout (for example, 10% → 50% → 100%).',
+                'Route 53 and ALB can use weighted routing to gradually shift traffic between two environments (blue/green pattern).',
                 {
-                  topic: 'Lambda & Weighted Routing for Deployments',
-                  details: [
-                    'Lambda aliases (for example, `prod`, `beta`) can point to different versions of a function.',
-                    'Traffic shifting between versions/aliases supports canary or linear rollout (for example, 10% → 50% → 100%).',
-                    'Route 53 and ALB can use weighted routing to gradually shift traffic between two environments (blue/green pattern).',
-                    {
-                      name: 'Exam Pattern',
-                      text: 'Look for phrases like “shift 5% of traffic to the new version and automatically roll back if errors spike” – solved with Lambda aliases or weighted routing in Route 53/ALB.'
-                    }
-                  ]
-                },
+                  name: 'Exam Pattern',
+                  text: 'Look for phrases like “shift 5% of traffic to the new version and automatically roll back if errors spike” – solved with Lambda aliases or weighted routing in Route 53/ALB.'
+                }
+              ]
+            },
+            {
+              topic: 'Third-Party IaC Tools (Terraform, Git, etc.)',
+              details: [
+                'Terraform: popular third-party IaC tool that manages resources by calling AWS APIs; state stored remotely (for example, S3 + DynamoDB).',
+                'Git-based workflows: store infrastructure code (CloudFormation, CDK, Terraform) in Git and trigger CI/CD pipelines on commits.',
                 {
-                  topic: 'Third-Party IaC Tools (Terraform, Git, etc.)',
-                  details: [
-                    'Terraform: popular third-party IaC tool that manages resources by calling AWS APIs; state stored remotely (for example, S3 + DynamoDB).',
-                    'Git-based workflows: store infrastructure code (CloudFormation, CDK, Terraform) in Git and trigger CI/CD pipelines on commits.',
-                    {
-                      name: 'Exam Mapping',
-                      text: 'Skill 3.1.6: recognise that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
-                    }
-                  ]
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.1.6: recognise that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
                 }
               ]
             }
