@@ -1227,121 +1227,187 @@ const cheatsheet = {
           }
         ]
       },
-
     security: {
       title: 'Domain 4: Security and Compliance (16%)',
       sections: [
         {
-          title: 'IAM',
+          title: 'IAM & Access Management',
           content: [
             {
               topic: 'Policies',
               details: [
                 'Identity-based: Attached to users/groups/roles',
-                'Resource-based: Attached to resources',
+                'Resource-based: Attached to resources (e.g., S3 bucket policy, SNS topic policy)',
                 'AWS managed vs Customer managed',
                 'Policy evaluation: Explicit Deny > Allow',
-                'Permission boundaries for maximum permissions',
-                'Service Control Policies (SCPs) in Organizations'
+                'Permission boundaries to cap maximum permissions for an identity',
+                'Service Control Policies (SCPs) in AWS Organizations enforce guardrails across accounts',
+                {
+                  name: 'Best Practice',
+                  text: 'Grant least-privilege by default; start broad, then refine. ([docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html))'
+                }
               ],
               resources: [
-                { name: 'IAM Policies', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html' }
+                { name: 'IAM Policies Guide', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html' }
               ]
             },
             {
-              topic: 'Roles',
+              topic: 'Roles & Federation',
               details: [
-                'EC2 instance profiles',
-                'Cross-account access',
-                'Service roles for AWS services',
-                'AssumeRole with STS',
-                'External ID for third parties',
-                'Session policies for temporary restrictions'
+                'Use roles (rather than long-lived user credentials) for applications, services, and cross-account access. ([docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html))',
+                'EC2 instance profiles – attach a role to EC2 so the instance gets temporary credentials',
+                'Cross-account role trust: external accounts assume role via sts:AssumeRole',
+                'Federated identity (SAML / OIDC) for corporate IdP access without separate IAM users',
+                'External ID for third-party cross-account role access',
+                'Session policies can further limit role permissions at session time',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the question mentions “no long-term access keys, must use federation or assume role”, the correct answer is IAM roles/federation.'
+                }
               ],
               resources: [
-                { name: 'IAM Roles', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html' }
+                { name: 'IAM Roles Guide', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html' }
+              ]
+            },
+            {
+              topic: 'Access Troubleshooting & Audit',
+              details: [
+                'Use IAM Access Analyzer to detect unused roles, public crosses-account access, and generate least-privilege policies. ([docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html))',
+                'Use policy simulator to test policy effect before deploying.',
+                'Use AWS CloudTrail to log API calls: who, what, when, where.',
+                'Typical failure causes: missing sts:AssumeRole trust, missing iam:PassRole permission, incorrect resource ARN in policy.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'If “access denied despite policy looks correct” → check role trust, resource/conditions, policy chaining.'
+                }
+              ],
+              resources: [
+                { name: 'CloudTrail User Guide', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
+              ]
+            },
+            {
+              topic: 'Multi-Account Strategy & Governance',
+              details: [
+                'Define account structure: Management (billing/security), Shared Services (logging/networking), Workload (dev/test/prod).',
+                'Use AWS Organizations OUs + SCPs to enforce region/service restrictions and permissions across accounts. ([aws.amazon.com/blogs/mt/best-practices-to-respond-to-security-risks-across-your-aws-organizations](https://aws.amazon.com/blogs/mt/best-practices-to-respond-to-security-risks-across-your-aws-organizations/))',
+                'Use a central Security account for aggregated logs (CloudTrail, Config, GuardDuty) and remediation.',
+                'Enable CloudTrail org-trail and centralized logging for all accounts.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'Question: “Which account should hold root keys or manage security tooling?” → The Management/Security tooling account, not workload/prod.'
+                }
+              ],
+              resources: [
+                { name: 'AWS Organizations Overview', url: 'https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html' }
               ]
             }
           ]
         },
         {
-          title: 'Data Protection',
+          title: 'Data & Infrastructure Protection',
           content: [
             {
               topic: 'Encryption at Rest',
               details: [
-                'S3: SSE-S3, SSE-KMS, SSE-C',
-                'EBS: Encryption by default setting',
-                'RDS: Encryption at creation only',
-                'EFS: Encryption at creation',
-                'Snapshot encryption inherits from volume'
+                'Use AWS Key Management Service (KMS) to create/manage CMKs, enable automatic key rotation, monitor usage via CloudTrail. ([docs.aws.amazon.com/kms/latest/developerguide/overview.html](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html))',
+                'S3: SSE-S3, SSE-KMS, SSE-C (customer-provided key)',
+                'EBS: enable “Encryption by default” or use custom CMK; snapshots inherit encryption. ([docs.aws.amazon.com/kms/latest/developerguide/concepts.html](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html))',
+                'RDS: Encryption at DB creation time only (most engines)',
+                'EFS: Encryption at creation time; use KMS key for encryption-at-rest.',
+                {
+                  name: 'Best Practice',
+                  text: 'Design key policies to limit kms:CreateKey, specify resource ARNs instead of wildcard “*”. ([docs.aws.amazon.com/kms/latest/developerguide/iam-policies-best-practices.html](https://docs.aws.amazon.com/kms/latest/developerguide/iam-policies-best-practices.html))'
+                }
               ],
               resources: [
-                { name: 'S3 Encryption', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html' }
+                { name: 'KMS Developer Guide', url: 'https://docs.aws.amazon.com/kms/latest/developerguide/overview.html' }
               ]
             },
             {
-              topic: 'Encryption in Transit',
+              topic: 'Encryption in Transit & Secure Connectivity',
               details: [
-                'TLS/SSL for HTTPS endpoints',
-                'VPN for site-to-site connections',
-                'ACM for certificate management',
-                'CloudFront for HTTPS distribution',
-                'S3 Transfer Acceleration with encryption'
+                'Use AWS Certificate Manager (ACM) to provision/rotate public and private TLS/SSL certificates automatically.',
+                'HTTPS on API endpoints, ALB/ELB, CloudFront; enforce TLS 1.2+.',
+                'Use Site-to-Site VPN or AWS Direct Connect with encryption for on-premises connectivity.',
+                'Use VPC Endpoints/PrivateLink to avoid internet path and keep traffic in AWS backbone.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If question mentions “secure object upload across accounts without public internet” → use VPC endpoint + encryption + ACM certificate.'
+                }
               ],
               resources: [
-                { name: 'ACM Guide', url: 'https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html' }
+                { name: 'ACM User Guide', url: 'https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html' }
+              ]
+            },
+            {
+              topic: 'Secrets Management',
+              details: [
+                'Use AWS Secrets Manager to securely store, rotate, and manage secrets (DB credentials, API keys) rather than embedding in code/config.',
+                'Use SSM Parameter Store (SecureString) as lightweight alternative, encrypted with KMS.',
+                'Avoid hard-coding credentials; implement automated rotation where supported.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Question: “Which service supports automatic rotation of DB credentials with RDS?” → Secrets Manager.'
+                }
+              ],
+              resources: [
+                { name: 'AWS Secrets Manager', url: 'https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html' }
               ]
             }
           ]
         },
         {
-          title: 'Compliance & Auditing',
+          title: 'Compliance, Audit & Remediation',
           content: [
             {
-              topic: 'AWS Config',
+              topic: 'Configuration & Monitoring',
               details: [
-                "AWS Config: a service that provides a detailed view of your AWS resources, including their configurations, relationships, and how they have changed over time. It's used for compliance auditing, security analysis, and tracking resource changes to help you manage governance and troubleshoot issues.",
-                'AWS Config is used to enforce policies by continuously monitoring resource configurations, evaluating them against a set of rules, and then automating remediation actions for non-compliant resources. This process involves defining configuration rules (either using AWS-provided managed rules or custom ones) to check for deviations from desired settings, such as security or tagging policies.',
-                'Configuration history tracking',
-                'Compliance rules evaluation',
-                'Auto-remediation with SSM',
-                'Configuration snapshots',
-                'Aggregators for multi-account'
+                'Use AWS Config to record resource configuration, evaluate compliance rules, and trigger remediation actions. ([docs.aws.amazon.com/config/latest/developerguide/security-best-practices.html](https://docs.aws.amazon.com/config/latest/developerguide/security-best-practices.html))',
+                'Enable Config Aggregator to monitor multiple accounts/regions.',
+                'Use AWS Security Hub to aggregate findings from GuardDuty, Inspector, Config, etc, and enable automated remediation. ([aws.amazon.com/blogs/security/optimize-aws-config-for-aws-security-hub-to-effectively-manage-your-cloud-security-posture/](https://aws.amazon.com/blogs/security/optimize-aws-config-for-aws-security-hub-to-effectively-manage-your-cloud-security-posture/))',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If you see “automated remediation when non-compliant resource found” → Config rule + EventBridge + SSM Automation runbook is typical.'
+                }
               ],
-              image: {
-                url: 'https://docs.aws.amazon.com/images/config/latest/developerguide/images/how-AWSconfig-works-2.png',
-                alt: 'AWS Config'
-              },
               resources: [
-                { name: 'AWS Config', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
+                { name: 'AWS Config Guide', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
               ]
             },
             {
-              topic: 'CloudTrail',
+              topic: 'Logging & Forensics',
               details: [
-                'CloudTrail: a service that records user activity and API calls for an AWS account, enabling governance, compliance, and auditing. It logs who made a request, what action was taken, and when, helping with security monitoring, operational troubleshooting, and identifying potential issues.',
-                'Records events: It logs events, such as a user creating an Amazon S3 bucket, and delivers log files to an Amazon S3 bucket.',
-                'Management events: Control plane',
-                'Data events: S3/Lambda operations',
-                'Insights: Unusual activity detection',
-                'Event history: 90 days free',
-                'S3 logging with integrity validation',
-                'Provides visibility: It provides visibility into user activity by recording who made the request, the services used, the actions performed, and the parameters and responses for those actions.',
-                'Answers "who, what, where, and when": It helps answer fundamental questions about your AWS environment by tracking actions taken through the AWS Management Console, Command Line Interface (CLI), and SDKs.'
+                'Enable CloudTrail trails in all accounts/regions; send logs to central S3 bucket; enable log-file integrity validation.',
+                'Enable data-events (S3 object level, Lambda function invocation) for deeper visibility.',
+                'Use S3 Lifecycle to archive logs (e.g., 7 years) to meet compliance/regulatory needs.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If question: “Which user deleted resource X at 3am?” → query CloudTrail or use Athena over S3 logs.'
+                }
               ],
-              image: {
-                url: 'https://media.amazonwebservices.com/blog/2013/cloudtrail_flow_4.png',
-                alt: 'AWS CloudTrail'
-              },
               resources: [
-                { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
-                ]
-              }
-            ]
-          }
-        ]
-      },
+                { name: 'CloudTrail User Guide', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
+              ]
+            },
+            {
+              topic: 'Remediation & Governance',
+              details: [
+                'Use AWS Trusted Advisor Security checks (e.g., root account access keys, MFA disabled) and automate remediation via SSM Automation or Lambda triggered from EventBridge.',
+                'Tag-based governance: e.g., `DataSensitivity=PII` triggers stricter IAM policies, encryption-at-rest, and separate logging account.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'If requirement: “Enforce region/ service restriction across org” → AWS Organizations + SCPs + Config rule.'
+                }
+              ],
+              resources: [
+                { name: 'AWS Security Hub Best Practices', url: 'https://aws.github.io/aws-security-services-best-practices/guides/security-hub/' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
     
     networking: {
       title: 'Domain 5: Networking and Content Delivery (18%)',
