@@ -1023,7 +1023,6 @@ const cheatsheet = {
             }
           ]
         },
-    
         {
           title: 'Deployment Strategies & Services',
           content: [
@@ -1037,7 +1036,7 @@ const cheatsheet = {
                     'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
                     'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
                     'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
-                    'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target group switch.',
+                    'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target-group switch.',
                     {
                       name: 'Exam Pattern',
                       text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
@@ -1097,12 +1096,12 @@ const cheatsheet = {
                     'Git-based workflows: store infrastructure code (CloudFormation, CDK, Terraform) in Git and trigger CI/CD pipelines on commits.',
                     {
                       name: 'Exam Mapping',
-                      text: 'Skill 3.1.6: recognize that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
+                      text: 'Skill 3.1.6: recognise that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
                     }
                   ]
                 }
               ]
-            },
+            }
           ]
         },
         {
