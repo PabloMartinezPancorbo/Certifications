@@ -819,7 +819,7 @@ const cheatsheet = {
             'Change sets let you preview what will change before executing an update (safe updates in production).',
             'Stack policies protect critical resources from accidental updates (for example, prevent DB deletion).',
             'Drift detection identifies resources that have been changed outside CloudFormation.',
-            'Nested stacks improve reusability and modular design (shared VPC, networking, logging templates).',
+            'Nested stacks improve reusability and modular design (shared VPC, IAM, networking, logging templates).',
             'StackSets deploy stacks across multiple accounts and Regions from a central administrator account.',
             {
               name: 'Troubleshooting Patterns',
@@ -828,6 +828,10 @@ const cheatsheet = {
             {
               name: 'Exam Mapping',
               text: 'Directly maps to Skills 3.1.2 and 3.1.3: create/manage CloudFormation stacks and identify/remediate deployment issues such as subnet sizing, IAM/permission errors, and template syntax problems.'
+            },
+            {
+              name: 'Exam Pattern',
+              text: 'If the question says “roll out the same networking stack to multiple accounts and Regions with centralized control,” the answer is usually CloudFormation StackSets, not manual deployment or scripts.'
             }
           ],
           resources: [
@@ -866,6 +870,10 @@ const cheatsheet = {
             {
               name: 'Pseudo Parameters',
               text: 'Common ones: `AWS::Region`, `AWS::AccountId`, `AWS::StackName`, used to build ARNs or names without hardcoding environment-specific values.'
+            },
+            {
+              name: 'Exam Pattern',
+              text: 'Questions mentioning “reuse template across environments with different parameters (e.g., dev/prod) and environment-specific values” typically involve Parameters + Mappings + Conditions with intrinsic functions like `!Ref`, `!FindInMap`, `!If`, and `!Sub`.'
             }
           ],
           resources: [
@@ -879,6 +887,19 @@ const cheatsheet = {
             'CDK apps synthesize to CloudFormation templates (`cdk synth`), which are then deployed by CloudFormation.',
             'Constructs: L1 (CFN resources), L2 (opinionated high-level APIs), and L3 (patterns/solutions).',
             'Use context and environment variables to manage differences between stages (dev/test/prod).',
+            {
+              name: 'CDK Example',
+              text: 'You define constructs (L2/L3) in code, run `cdk synth` to generate CloudFormation, then `cdk deploy` to create/update stacks. Exam keyword: “define infra in TypeScript/Python instead of YAML/JSON templates.”'
+            },
+            'Terraform is a popular third-party IaC tool that also manages AWS resources, using state files to track resource mappings.',
+            {
+              name: 'Git & CI/CD',
+              text: 'Infrastructure repos typically live in Git (CodeCommit/GitHub/GitLab). You integrate with CodePipeline / CodeBuild / GitHub Actions to automatically validate and deploy CloudFormation/CDK/Terraform changes on commit.'
+            },
+            {
+              name: 'Exam Pattern',
+              text: 'If the question mentions “existing Terraform/IaC tooling” or “company standardizes on Terraform,” the answer is usually to integrate Terraform with IAM roles and use remote state (e.g., S3 + DynamoDB) instead of forcing migration to CloudFormation.'
+            },
             {
               name: 'Exam Pattern',
               text: 'If the question mentions “infrastructure as code using TypeScript/Python” and CloudFormation templates produced automatically, the correct service is AWS CDK, but CloudFormation still performs the deployment.'
@@ -908,6 +929,15 @@ const cheatsheet = {
             {
               name: 'Exam Mapping',
               text: 'Maps to Skill 3.1.1: create and manage AMIs and automate image pipelines instead of manual instance baking.'
+            },
+            {
+              name: 'Pipeline Pattern',
+              text: 'Source image (e.g., Amazon Linux 2) -> Build component (install agents, app dependencies) -> Test component (run tests) -> Output AMI -> Distribute to multiple Regions/accounts.'
+            },
+            'You can share AMIs across accounts by modifying launch permissions or via AWS RAM in some scenarios.',
+            {
+              name: 'Exam Pattern',
+              text: 'If you see “keep EC2 images patched and compliant across many accounts/Regions, reduce manual AMI creation”, the likely answer is EC2 Image Builder + distribution settings, not manual AMI creation from instances.'
             }
           ],
           resources: [
@@ -922,9 +952,18 @@ const cheatsheet = {
             'Lifecycle policies automatically expire old image versions to control storage cost.',
             'Image scanning (basic or enhanced) detects vulnerabilities in container images.',
             'Integrates directly with ECS, EKS, and Fargate for pulling images at deploy time.',
+            'You can build images with CodeBuild, GitHub Actions, or local Docker and push to ECR for ECS/EKS/Fargate use.',
             {
               name: 'Exam Pattern',
               text: 'If the scenario mentions “store and version container images for ECS/EKS” with IAM-controlled access and vulnerability scanning, the correct answer is Amazon ECR.'
+            },
+            {
+              name: 'Example',
+              text: 'Use CodeBuild buildspec to run `docker build`, `docker tag`, and `docker push` to ECR on each commit; ECS service uses the latest tagged image in a rolling deployment.'
+            },
+            {
+              name: 'Exam Mapping',
+              text: 'Skill 3.1.1: “Create and manage AMIs and container images (for example, EC2 Image Builder)”—look for patterns around immutable infrastructure, golden images, and container registries like ECR.'
             }
           ],
           resources: [
@@ -941,12 +980,17 @@ const cheatsheet = {
           topic: 'CloudFormation StackSets',
           details: [
             'Deploy CloudFormation stacks to multiple accounts and Regions from a central administrator account.',
+            'CloudFormation StackSets deploy stacks automatically across multiple AWS accounts and Regions using delegated admin.',
             'Targets can be AWS accounts or entire AWS Organizations OUs (automatic inclusion of new accounts).',
             'Supports automatic deployment to new accounts in an OU, and automatic rollback on failure.',
             'Used for baseline infrastructure: IAM roles, Config rules, CloudTrail, logging buckets, guardrails.',
             {
               name: 'Exam Pattern',
               text: 'If you see “deploy the same stack to hundreds of accounts and Regions with centralized control”, the solution is CloudFormation StackSets (Skill 3.1.4).'
+            },
+            {
+              name: 'Example',
+              text: 'Use a StackSet to roll out a standardized VPC, Config rules, or CloudTrail trail to every account in an AWS Organization with one operation.'
             }
           ],
           resources: [
@@ -956,6 +1000,11 @@ const cheatsheet = {
         {
           topic: 'AWS Resource Access Manager (AWS RAM)',
           details: [
+            'AWS Resource Access Manager (AWS RAM) shares resources (e.g., subnets, Transit Gateways, Route 53 Resolver rules, License Manager) across accounts without duplication.',
+            {
+              name: 'Exam Pattern',
+              text: 'If the requirement says “central network account, application accounts consume shared subnets/Transit Gateway,” the answer is usually AWS RAM + shared VPC resources, not peering every account pair.'
+            },
             'Share AWS resources across accounts and within AWS Organizations (for example, subnets, Route 53 Resolver rules, Transit Gateways, License Manager configs).',
             'Avoids duplicating shared infrastructure resources in every account (centralized networking design).',
             'Works with both individual account invitations and Organizations-based sharing.',
@@ -978,22 +1027,39 @@ const cheatsheet = {
     {
       title: 'Deployment Strategies & Services',
       content: [
+    {
+      title: 'Deployment Strategies & Elastic Beanstalk',
+      content: [
+        {
+          topic: 'Generic Deployment Strategies',
+          details: [
+            'All-at-once: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk.',
+            'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
+            'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
+            'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
+            'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target group switch.',
+            {
+              name: 'Exam Pattern',
+              text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
+            }
+          ]
+        },
         {
           topic: 'Elastic Beanstalk Deployment Options',
           details: [
-            'All at once: Deploy all instances at the same time – fastest but causes downtime, not recommended for production.',
-            'Rolling: Update instances in batches – some capacity remains available, but reduced capacity during deploy.',
-            'Rolling with additional batch: Temporarily adds capacity to maintain full capacity while deploying.',
-            'Immutable: Deploys new instances in a new Auto Scaling group, then swaps traffic – safest for production.',
-            'Blue/Green: Separate environments (blue=current, green=new) with URL or Route 53 cutover.',
-            'Traffic splitting: Gradual/canary traffic shifting between versions for safer releases.',
+            'All at once: fast, downtime during deployment; suitable for dev/test.',
+            'Rolling: updates in batches, maintains some capacity but may temporarily reduce total capacity.',
+            'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
+            'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
+            'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over.',
+            'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
             {
               name: 'Exam Mapping',
-              text: 'Maps to Skill 3.1.5: choose the appropriate deployment strategy for zero-downtime, rollback safety, or speed requirements.'
+              text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
             }
           ],
           resources: [
-            { name: 'Beanstalk Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
+            { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
           ]
         },
         {
@@ -1044,7 +1110,7 @@ const cheatsheet = {
         {
           topic: 'Systems Manager Run Command',
           details: [
-            'Execute commands on EC2 and on-premises instances without SSH/RDP.',
+            'Run Command executes shell/PowerShell commands on EC2/on-premises instances without SSH/RDP or open inbound ports.',
             'Ideal for ad-hoc operations (for example, restart services, apply config changes, collect logs).',
             'Supports rate controls, concurrency limits, and error thresholds when targeting large fleets.',
             'Can send command output to S3 and CloudWatch Logs for auditing and troubleshooting.',
@@ -1052,6 +1118,10 @@ const cheatsheet = {
             {
               name: 'Exam Mapping',
               text: 'Maps to Skill 3.2.1: use AWS Systems Manager to automate operational processes on existing resources without opening inbound ports.'
+            },
+            {
+              name: 'Exam Pattern',
+              text: 'If you see “run a script on hundreds of instances in multiple Regions, without opening SSH and with audit logs,” the correct answer is Systems Manager Run Command.'
             }
           ],
           resources: [
@@ -1065,6 +1135,11 @@ const cheatsheet = {
             'AWS provides many predefined runbooks, and you can create custom ones in JSON/YAML.',
             'Support approvals, rate control, and integrations with Lambda, SNS, and EventBridge.',
             'Can run across accounts and Regions when properly configured.',
+            'Can be triggered manually, on a schedule (Maintenance Windows), or programmatically (EventBridge, Lambda, SDK).',
+            {
+              name: 'Exam Mapping',
+              text: 'Skill 3.2.1: “Use AWS services to automate operational processes.” Automation runbooks are a common answer when you need standardized remediation/maintenance across fleets (snapshot, patch, restart, collect logs).'
+            },
             {
               name: 'Pattern',
               text: 'EventBridge rule -> SSM Automation runbook to remediate drift or perform routine tasks (for example, restart unhealthy instance, attach IAM role, rotate logs).'
@@ -1080,19 +1155,24 @@ const cheatsheet = {
         }
       ]
     },
-
     {
       title: 'Event-Driven Automation (Lambda, S3, EventBridge)',
       content: [
         {
-          topic: 'Lambda & S3 Event Notifications',
+          topic: 'Event-Driven Automation (Lambda, S3 Events, EventBridge)',
           details: [
+            'Lambda + S3 Event Notifications: trigger functions on object creation/deletion (e.g., resize images, process logs, move files).',
+            'Lambda + CloudWatch Logs subscriptions: near real-time log processing and alerting based on patterns.',
             'S3 can emit events (for example, `s3:ObjectCreated:*`, `s3:ObjectRemoved:*`) to Lambda, SNS, or SQS.',
             'Common pattern: S3 upload → Lambda function to process/transform files or update metadata.',
             'Use dead-letter queues (DLQs) or on-failure destinations for failed Lambda invocations.',
             {
               name: 'Exam Pattern',
               text: 'Maps to Skill 3.2.2: “When an object is uploaded to an S3 bucket, automatically process it” – configure S3 event notification to trigger a Lambda function or send to SQS/SNS.'
+            },
+            {
+              name: 'Exam Mapping',
+              text: 'Skill 3.2.2: “Implement event-driven automation by using AWS services and features (for example, Lambda, S3 Event Notifications).” Look for keywords like “trigger automatically when X happens” or “serverless event-driven processing.”'
             }
           ],
           resources: [
@@ -1106,12 +1186,46 @@ const cheatsheet = {
             'Supports scheduled events (cron/rate) for time-based automation (for example, nightly cleanup jobs).',
             'Enables centralized event-driven automation across multiple accounts using event buses and cross-account rules.',
             {
+              name: 'Pattern',
+              text: '“When a new object is uploaded to S3, automatically process and store metadata in DynamoDB” → S3 Event Notification → Lambda → DynamoDB (or EventBridge → Lambda).'
+            },
+            {
               name: 'Exam Mapping',
               text: 'Skill 3.2.2: implement event-driven automation, for example “trigger SSM Automation when an EC2 instance becomes unhealthy” using EventBridge + SSM runbook.'
             }
           ],
           resources: [
             { name: 'EventBridge', url: 'https://docs.aws.amazon.com/eventbridge/latest/userguide/what-is-amazon-eventbridge.html' }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Troubleshooting Provisioning & Deployment',
+      content: [
+        {
+          topic: 'Common CloudFormation & Networking Issues',
+          details: [
+            'Subnet sizing issues: too-small CIDR blocks cause IP exhaustion and failed instance launches.',
+            'Incorrect subnet type: launching public resources (e.g., ALB) in private subnets without an Internet Gateway leads to unreachable endpoints.',
+            'Dependency/order issues: resources failing because required IAM roles, security groups, or subnets are not defined correctly in the template.',
+            'Rollbacks on failure: CloudFormation automatically rolls back the stack if a resource creation/update fails, unless disabled.',
+            {
+              name: 'Exam Pattern',
+              text: 'Questions about “stack stuck in ROLLBACK_COMPLETE” or failures referencing missing IAM permissions often test your ability to identify misconfigured IAM roles/policies or missing capabilities like `CAPABILITY_NAMED_IAM` for IAM changes.'
+            }
+          ]
+        },
+        {
+          topic: 'Permissions & IAM Issues in Deployments',
+          details: [
+            'CloudFormation needs IAM permissions to create/update/delete resources; insufficient permissions cause stack failures.',
+            'IAM roles for service principals (e.g., CodeBuild, CodePipeline, EC2, Lambda) must allow required actions on target resources.',
+            'Cross-account deployments require trust relationships and appropriate role assumptions (e.g., StackSets with delegated admin).',
+            {
+              name: 'Example',
+              text: 'A deployment pipeline fails to create an S3 bucket because the CodePipeline service role lacks `s3:CreateBucket` permission; fixing the IAM policy resolves the issue.'
+            }
           ]
         }
       ]
