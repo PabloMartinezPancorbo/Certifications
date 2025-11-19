@@ -497,105 +497,311 @@ const cheatsheet = {
       title: 'Domain 2: Reliability and Business Continuity (22%)',
       sections: [
         {
-          title: 'High Availability & Fault Tolerance',
+          title: 'Scalability & Elasticity (Auto Scaling & Caching)',
           content: [
             {
-              topic: 'Multi-AZ Deployments',
+              topic: 'EC2 Auto Scaling',
               details: [
-                'RDS Multi-AZ: Synchronous replication, automatic failover',
-                'Aurora: Up to 15 read replicas, automatic failover <30s',
-                'EFS: Automatically stores across multiple AZs',
-                'S3: Designed for 99.999999999% durability',
-                'ALB: Automatically distributes across AZs'
+                'Key policies: target tracking, step scaling, scheduled scaling, and predictive scaling.',
+                'Target tracking keeps a metric (for example, `ASGAverageCPUUtilization` at 50%) similar to a thermostat.',
+                {
+                  name: 'Example',
+                  text: 'Target tracking policy maintaining `ASGAverageCPUUtilization` at 50% with a scale-out cooldown of 300 seconds to avoid flapping.'
+                },
+                'Step scaling adds or removes different numbers of instances based on how far a metric breaches the threshold.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the question mentions different actions for different CPU thresholds (for example, 60%, 75%, 90%), the correct answer is step scaling, not target tracking.'
+                },
+                'Scheduled scaling preloads or reduces capacity for predictable traffic (for example, business hours or planned marketing events).',
+                'Predictive scaling uses machine learning to forecast demand and scale EC2 capacity ahead of time based on historical patterns.',
+                'Cooldown and warm-up settings are used to prevent rapid scale-in and scale-out cycles.',
+                'Lifecycle hooks allow custom actions when instances enter `Pending` or `Terminating` (for example, configuration scripts, deregistration, draining connections).',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.1.1: configure and manage scaling mechanisms in compute environments (Auto Scaling groups).'
+                }
               ],
               resources: [
-                { name: 'RDS Multi-AZ', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html' }
+                { name: 'EC2 Auto Scaling', url: 'https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html' }
               ]
             },
             {
-              topic: 'Backup Strategies',
+              topic: 'Application Auto Scaling',
               details: [
-                'AWS Backup: Centralized backup across services',
-                'RDS automated backups: 1-35 days retention',
-                'EBS snapshots: Incremental, stored in S3',
-                'AMI creation for EC2 backup',
-                'S3 cross-region replication',
-                'Point-in-time recovery for DynamoDB'
+                'Application Auto Scaling is used for scalable AWS services other than EC2 Auto Scaling groups.',
+                'Common scalable targets include DynamoDB read and write capacity, ECS service desired count, Aurora replica count, EMR clusters, AppStream fleets, and custom resources via API.',
+                {
+                  name: 'Example',
+                  text: 'A DynamoDB table scales between 5 and 1000 `WriteCapacityUnits` based on the `ConsumedWriteCapacityUnits` metric, targeting 70% utilization.'
+                },
+                'Scaling policies are similar to EC2 Auto Scaling: target tracking and step scaling are supported for many services.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skills 2.1.1 and 2.1.3: configure scaling for compute-like services (for example, ECS) and managed databases (for example, DynamoDB, Aurora read replicas).'
+                }
+              ],
+              resources: [
+                { name: 'Application Auto Scaling', url: 'https://docs.aws.amazon.com/autoscaling/application/userguide/what-is-application-auto-scaling.html' }
+              ]
+            },
+            {
+              topic: 'Caching for Dynamic Scalability (CloudFront & ElastiCache)',
+              details: [
+                'CloudFront caches static and dynamic content at edge locations to offload origin services (for example, ALB, EC2, S3) and reduce latency.',
+                {
+                  name: 'Example',
+                  text: 'Cache dynamic API responses for 60 seconds at CloudFront edge locations to reduce load on an ALB and EC2 fleet during a flash sale.'
+                },
+                'ElastiCache (Redis and Memcached) stores frequently accessed data in memory to offload read traffic from databases and APIs.',
+                {
+                  name: 'Pattern',
+                  text: 'Use Redis as a read-through cache for hot items with a time to live (TTL); on cache miss, read from the database, then store in the cache, protecting the database during traffic spikes.'
+                },
+                'Caching improves scalability by reducing the number of backend calls and can improve resilience during short bursts of high demand.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.1.2: implement caching by using CloudFront and Amazon ElastiCache to enhance dynamic scalability.'
+                }
+              ],
+              resources: [
+                { name: 'CloudFront Overview', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' },
+                { name: 'Amazon ElastiCache', url: 'https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html' }
+              ]
+            },
+            {
+              topic: 'Scaling Managed Databases',
+              details: [
+                'RDS: vertical scaling by changing instance class and horizontal read scaling through read replicas (for supported engines), plus Multi-AZ for high availability.',
+                {
+                  name: 'Example',
+                  text: 'Scale an RDS instance from `db.m6g.large` to `db.m6g.2xlarge` for CPU constraints, and add two read replicas to handle read-heavy workloads.'
+                },
+                'Aurora separates compute and storage, with storage automatically scaling and up to 15 read replicas in a cluster.',
+                'Aurora Global Database supports cross-Region read replicas with low replication lag and fast failover for DR.',
+                'DynamoDB supports provisioned capacity with auto scaling and on-demand capacity mode for unpredictable workloads.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If a question mentions unpredictable traffic and a requirement to avoid managing capacity, the correct answer is DynamoDB on-demand rather than provisioned capacity with auto scaling.'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.1.3: configure and manage scaling in managed databases such as RDS, Aurora, and DynamoDB.'
+                }
+              ],
+              resources: [
+                { name: 'RDS Scaling', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.html' },
+                { name: 'DynamoDB Scaling', url: 'https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'High Availability & Fault Tolerance (ELB, Route 53, Multi-AZ)',
+          content: [
+            {
+              topic: 'Elastic Load Balancing & Health Checks',
+              details: [
+                'ALB and NLB distribute traffic across healthy targets in one or more Availability Zones.',
+                'Health checks define which targets receive traffic based on path, port, protocol, success codes, thresholds, and intervals.',
+                {
+                  name: 'Example',
+                  text: 'An ALB health check on `/health` with five second intervals, two healthy and five unhealthy thresholds to fail fast and recover quickly.'
+                },
+                'Cross-zone load balancing distributes traffic evenly across all registered targets in all enabled AZs.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If one AZ has more instances than another and cross-zone load balancing is disabled, NLB sends more traffic to the AZ with more instances. To balance traffic, enable cross-zone load balancing or even out instance counts.'
+                },
+                'Connection draining or deregistration delay allows in-flight requests to complete before removing a target from service.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.2.1: configure and troubleshoot ELB health checks and their impact on high availability.'
+                }
+              ],
+              resources: [
+                { name: 'Elastic Load Balancing', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html' }
+              ]
+            },
+            {
+              topic: 'Route 53 Health Checks & Routing Policies',
+              details: [
+                'Route 53 health checks monitor endpoints (HTTP, HTTPS, TCP) or CloudWatch alarms and can be associated with DNS records for failover.',
+                'Routing policies include simple, weighted, latency-based, failover, geolocation, geoproximity, and multivalue answer.',
+                {
+                  name: 'Pattern',
+                  text: 'Use failover routing with primary and secondary records. When the primary health check fails, Route 53 returns the secondary record, such as a DR Region.'
+                },
+                'Health checks can monitor CloudWatch alarms to base DNS decisions on higher-level metrics (for example, ALB 5xx rate).',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.2.1 and 2.2.2: combine Route 53 health checks and routing policies with Multi-AZ or multi-Region architectures for resilient endpoints.'
+                }
+              ],
+              resources: [
+                { name: 'Route 53 Health Checks', url: 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html' }
+              ]
+            },
+            {
+              topic: 'Multi-AZ and Multi-Region Architectures',
+              details: [
+                'RDS Multi-AZ uses synchronous replication to a standby instance in another AZ and performs automatic failover on primary failure.',
+                {
+                  name: 'Example',
+                  text: 'RDS Multi-AZ failover from `us-east-1a` to `us-east-1b` creates a new primary; applications must reconnect using the same endpoint.'
+                },
+                'Aurora replicates six copies of data across three AZs; a reader endpoint load-balances read replicas while a writer endpoint handles writes.',
+                'EFS and S3 are designed for high availability and durability within a Region by storing data across multiple AZs.',
+                'Multi-Region architectures often use Route 53 global DNS with health checks, data replication (for example, Aurora Global Database, DynamoDB global tables, S3 cross-Region replication), and runbooks for failover.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.2.2: configure fault-tolerant systems using Multi-AZ and multi-Region patterns when RTO and RPO requirements are strict.'
+                }
+              ],
+              resources: [
+                { name: 'RDS Multi-AZ', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html' },
+                { name: 'Aurora High Availability', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Backup, Restore, and Versioning',
+          content: [
+            {
+              topic: 'AWS Backup and Snapshots',
+              details: [
+                'AWS Backup centralizes backup policies and backup vaults for services such as EC2, EBS, RDS, DynamoDB, EFS, and FSx.',
+                {
+                  name: 'Example',
+                  text: 'Create a backup plan with daily backups retained for 35 days and monthly backups retained for 12 months for all resources tagged `Environment=Prod`.'
+                },
+                'EBS snapshots are incremental and stored in S3. They can be copied across Regions and accounts for DR and compliance.',
+                'AMI creation for EC2 instances uses EBS snapshots under the hood to capture root and data volumes.',
+                'RDS automated backups retain from 1 to 35 days and support point-in-time restore to any second within the retention window.',
+                'DynamoDB point-in-time recovery (PITR) restores a table to any second in the last 35 days without affecting the existing table.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.3.1: automate snapshots and backups for EC2, RDS, EBS, S3, and DynamoDB by using AWS Backup and native service features.'
+                }
               ],
               resources: [
                 { name: 'AWS Backup', url: 'https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html' }
               ]
             },
             {
-              topic: 'Disaster Recovery',
+              topic: 'Database Restore Methods and RTO/RPO',
               details: [
-                { name: 'RTO (Recovery Time Objective)', text: 'How long you can be down before business impact becomes unacceptable. Example: "Service must be back online within 1 hour." Applies to systems, apps, databases, infrastructure.' },
-                { name: 'RPO (Recovery Point Objective)', text: 'How much data loss (in time) you can tolerate after a failure. Example: "Can lose max 15 minutes of data." Applies to databases, storage, backups.' },
-                { name: 'Rewind/Backtrack (Aurora)', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html', text: 'Instantly rewind DB to a specific time without full restore (up to 72 hours). Example: "Undo to state from 3 hours ago." **Aurora MySQL only**.' }
+                'RDS restores create a new DB instance from an automated backup or a snapshot; the original instance remains unchanged.',
+                'PITR for RDS and DynamoDB is commonly used to recover from logical corruption, such as bad deployments or accidental deletes.',
+                {
+                  name: 'Example',
+                  text: 'Recover a DynamoDB table to its state 10 minutes before a faulty batch job using PITR, then export or copy only the needed data.'
+                },
+                'Aurora supports fast cloning and Aurora MySQL supports backtrack to rewind data to a prior time without a full restore.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If a question mentions rolling back an Aurora MySQL database to a point a few hours ago without creating a new cluster, the correct answer is Aurora Backtrack, not snapshot restore.'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.3.2: choose a restore method (snapshot restore, PITR, backtrack, DR Region failover) that meets the stated RTO, RPO, and cost requirements.'
+                }
               ],
-              image: {
-                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-of-on-premises-applications-to-aws/images/recoveryobjectives.png',
-                alt: 'AWS Disaster Recovery Objectives'
-              },
-              table: {
-                title: 'Typical RTO/RPO Targets',
-                headers: ['System Type', 'RTO', 'RPO'],
-                rows: [
-                  ['Mission-critical (e.g., payments)', '≤ 5 min', '≤ 1 min'],
-                  ['Standard business apps', '≤ 1 hr', '≤ 15 min'],
-                  ['Non-critical (e.g., reports)', '≤ 24 hr', '≤ 24 hr']
-                ]
-              },
-              strategies: [
-                'Backup & Restore: High RPO/RTO, lowest cost',
-                'Pilot Light: Critical components always on',
-                'Warm Standby: Scaled-down version running',
-                'Multi-Site: Full production in multiple regions'
-              ],
-              image2: {
-                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-workloads-on-aws/images/disaster-recovery-strategies.png',
-                alt: 'AWS Disaster Recovery Strategies'
-              },
               resources: [
-                { name: 'DR Whitepaper', url: 'https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html' }
+                { name: 'Aurora Backtrack', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html' }
+              ]
+            },
+            {
+              topic: 'Versioning for Storage Services',
+              details: [
+                'S3 versioning retains multiple versions of an object to protect against accidental deletes and overwrites.',
+                {
+                  name: 'Example',
+                  text: 'Enable S3 versioning on a bucket used for application configuration files so that you can roll back to a previous version if a deployment introduces an invalid configuration.'
+                },
+                'Lifecycle rules can transition noncurrent versions to cheaper storage tiers (for example, S3 Glacier) and eventually expire them to control cost.',
+                'File systems such as Amazon FSx (for example, FSx for Windows) can integrate with snapshot or shadow copy mechanisms to provide file-level restore points.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.3.3: implement versioning for S3 and FSx as part of backup and restore strategies.'
+                }
+              ],
+              resources: [
+                { name: 'S3 Versioning', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html' }
               ]
             }
           ]
         },
         {
-          title: 'Auto Scaling',
+          title: 'Disaster Recovery (RTO/RPO and Procedures)',
           content: [
             {
-              topic: 'EC2 Auto Scaling',
+              topic: 'RTO, RPO, and DR Strategies',
               details: [
-                'Target tracking: Maintain metric at target',
-                'Step scaling: Add/remove based on thresholds',
-                'Scheduled scaling: Time-based adjustments',
-                'Predictive scaling: ML-based forecasting',
-                'Cooldown periods to prevent flapping',
-                'Lifecycle hooks for custom actions'
+                {
+                  name: 'RTO (Recovery Time Objective)',
+                  text: 'Maximum acceptable downtime for a system before business impact is unacceptable. Example: “Service must be back online within 1 hour.”'
+                },
+                {
+                  name: 'RPO (Recovery Point Objective)',
+                  text: 'Maximum acceptable data loss measured in time. Example: “Can lose at most 15 minutes of data.”'
+                },
+                {
+                  name: 'DR Strategies',
+                  text: 'Backup and restore (highest RTO and RPO, lowest cost), pilot light (keep critical core services always on), warm standby (scaled-down full stack running), and multi-site active/active (lowest RTO and RPO, highest cost).'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 2.3.2 and Skill 2.3.4: select the disaster recovery approach that meets stated RTO, RPO, and cost constraints.'
+                }
               ],
+              table: {
+                title: 'Typical RTO/RPO Targets',
+                headers: ['System Type', 'RTO', 'RPO'],
+                rows: [
+                  ['Mission-critical (for example, payments)', '≤ 5 minutes', '≤ 1 minute'],
+                  ['Standard business applications', '≤ 1 hour', '≤ 15 minutes'],
+                  ['Non-critical (for example, reports)', '≤ 24 hours', '≤ 24 hours']
+                ]
+              },
+              strategies: [
+                'Backup and Restore: highest RTO/RPO, lowest cost.',
+                'Pilot Light: minimal core infrastructure always running in DR Region.',
+                'Warm Standby: scaled-down but fully functional environment in DR Region.',
+                'Multi-Site Active/Active: full production in multiple Regions with traffic distribution via Route 53.'
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/disaster-recovery-workloads-on-aws/images/disaster-recovery-strategies.png',
+                alt: 'AWS Disaster Recovery Strategies'
+              },
               resources: [
-                { name: 'Auto Scaling Guide', url: 'https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html' }
+                { name: 'Disaster Recovery on AWS', url: 'https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html' }
               ]
             },
             {
-              topic: 'Application Auto Scaling',
+              topic: 'DR Procedures and Runbooks',
               details: [
-                'DynamoDB: Read/write capacity',
-                'ECS: Task count',
-                'Lambda: Concurrent executions',
-                'Aurora: Replica count',
-                'Custom resources via API'
+                'Disaster recovery plans should be documented as runbooks with clear, ordered steps for failover, data restore, and failback.',
+                {
+                  name: 'Pattern',
+                  text: 'Use Systems Manager Automation or Step Functions to orchestrate DR: stop writes, promote a replica in the DR Region, update Route 53 records, and run data validation checks.'
+                },
+                'Regular DR drills (game days) validate that people, processes, and automation can meet RTO and RPO objectives.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 2.3.4 focuses on following DR procedures. Preferred answers often mention documented runbooks, automation, and testing instead of ad hoc manual steps.'
+                }
               ],
               resources: [
-                { name: 'Application Auto Scaling', url: 'https://docs.aws.amazon.com/autoscaling/application/userguide/what-is-application-auto-scaling.html' }
+                { name: 'SSM Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
               ]
             }
           ]
         }
       ]
     },
+
     'deployment': {
       title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
       sections: [
