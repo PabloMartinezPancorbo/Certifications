@@ -35,7 +35,7 @@ const AWSSysOpsExamApp = () => {
                 'Default EC2 metrics: CPU, network in/out, disk I/O (no memory or disk space by default).',
                 'Custom metrics via PutMetricData API or CloudWatch agent (e.g., memory, disk usage, application metrics). Example CLI: `aws cloudwatch put-metric-data --namespace "MyApp" --metric-name "ProcessedOrders" --value 1.`',
                 'Metric math for aggregations and calculations across metrics (averages, percentages, ratios). Example 1: `(m1 + m2) / 2` to compute an average across two Auto Scaling groups. Example 2: metric math expression `SEARCH({AWS/EC2,CPUUtilization},"InstanceId","Average",300)` to select specific instances.',
-                'High-resolution metrics (up to 1-second granularity) for fine-grained alarms and analysis. Example 1: high-resolution alarm for `p99` latency on a critical API. Example 2: set period to `10` seconds with `Standard` statistics for spiky workloads.',', 
+                'High-resolution metrics (up to 1-second granularity) for fine-grained alarms and analysis. Example 1: high-resolution alarm for `p99` latency on a critical API. Example 2: set period to `10` seconds with `Standard` statistics for spiky workloads.',
                 'Retention: 15 months with automatic aggregation (1-minute, 5-minute, 1-hour periods).Important for questions about historical trend analysis.'
               ],
               resources: [
