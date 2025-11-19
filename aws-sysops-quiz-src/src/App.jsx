@@ -22,386 +22,477 @@ const AWSSysOpsExamApp = () => {
     { name: 'Networking and Content Delivery', weight: '18%' }
 ]
 
-  const cheatsheet = {
-    'monitoring': {
-      title: 'Domain 1: Monitoring, Logging, Analysis, Remediation, and Performance Optimization (22%)',
-      sections: [
-        {
-          title: 'CloudWatch Core (Metrics, Alarms, Dashboards, Agent, SNS)',
-          content: [
-            {
-              topic: 'CloudWatch Metrics',
-              details: [
-                'Default EC2 metrics: CPU, network in/out, disk I/O (no memory or disk space by default).',
-                'Custom metrics via PutMetricData API or CloudWatch agent (e.g., memory, disk usage, application metrics). Example CLI: `aws cloudwatch put-metric-data --namespace "MyApp" --metric-name "ProcessedOrders" --value 1.`',
-                'Metric math for aggregations and calculations across metrics (averages, percentages, ratios). Example 1: `(m1 + m2) / 2` to compute an average across two Auto Scaling groups. Example 2: metric math expression `SEARCH({AWS/EC2,CPUUtilization},"InstanceId","Average",300)` to select specific instances.',
-                'High-resolution metrics (up to 1-second granularity) for fine-grained alarms and analysis. Example 1: high-resolution alarm for `p99` latency on a critical API. Example 2: set period to `10` seconds with `Standard` statistics for spiky workloads.',
-                'Retention: 15 months with automatic aggregation (1-minute, 5-minute, 1-hour periods).Important for questions about historical trend analysis.'
-              ],
-              resources: [
-                { name: 'CloudWatch Metrics Guide', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html' }
-              ]
-            },
-            {
-              topic: 'CloudWatch Alarms',
-              details: [
-                'Alarm States: OK, ALARM, INSUFFICIENT_DATA',
-                'Actions can directly invoke AWS services: SNS notifications, Auto Scaling policies, EC2 stop/terminate/recover/reboot, Systems Manager actions. Example exam pattern: `CPU > 80%` for 5 minutes triggers an Auto Scaling step policy.',
-                'Composite alarms: combine multiple alarms with AND/OR logic to reduce alarm noise (useful for exam questions on “alarm storms”).',
-                'Anomaly detection: ML-based dynamic thresholds instead of static values. Example: detect abnormal surge in `5xx` errors without hard thresholds.',
-                'Can target EventBridge to fan out events to Lambda, SSM Automation, or other services for remediation. Pattern: CloudWatch alarm -> EventBridge rule -> Lambda or SSM runbook.',
-                'Billing alarms are created in us-east-1 only. Typical exam gotcha: you must create billing alarms in the N. Virginia Region.'
-              ],
-              resources: [
-                { name: 'CloudWatch Alarms', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html' }
-              ]
-            },
-            {
-              topic: 'CloudWatch Logs',
-              details: [
-                'Log groups and streams structure',
-                'Retention settings (1 day to 10 years)',
-                'Metric filters for custom metrics from logs',
-                'Insights for query and analysis',
-                'Export to S3 (up to 12 hours delay)',
-                'Real-time processing with Kinesis/Lambda'
-              ],
-              resources: [
-                { name: 'CloudWatch Logs', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html' }
-              ]
-            },
-            {
-              topic: 'CloudWatch Agent & Container Metrics',
-              details: [
-                'CloudWatch agent installs on EC2, on-premises servers, and container hosts (ECS/EKS nodes) to collect OS-level metrics and logs.',
-                'Used to collect memory, disk space, processes, swap usage, and application logs that are NOT available as default EC2 metrics.',
-                'Configuration via JSON/TOML file; can be stored in Systems Manager Parameter Store for central management.',
-                'Deployed and updated at scale using Systems Manager Distributor and Run Command.',
-                'For ECS/EKS, use CloudWatch agent or AWS Distro for OpenTelemetry (ADOT) to send container-level metrics to CloudWatch or Prometheus backends.'
-              ],
-              resources: [
-                { name: 'CloudWatch Agent', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html' }
-              ]
-            },
-            {
-              topic: 'CloudWatch Dashboards',
-              details: [
-                'Customizable and shareable dashboards to visualize metrics, alarms, and logs across AWS resources.',
-                'Dashboards can include widgets from multiple services, Regions, and even multiple accounts (via cross-account data).',
-                'Common widgets: time series graphs, single-value metrics, text widgets, and alarm status widgets.',
-                'Useful for exam scenarios about “single pane of glass” monitoring for operations teams.',
-                'Dashboards are global (not bound to a Region) and are charged per dashboard per month after the free tier.',
-                'Ideal to display KPIs for EC2, RDS, EKS, S3, and application-specific metrics in one view.'
-              ],
-              resources: [
-                { name: 'CloudWatch Dashboards', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Dashboards.html' }
-              ]
-            },
-            {
-              topic: 'Notifications & Amazon SNS Integration',
-              details: [
-                'CloudWatch alarms commonly publish to Amazon SNS topics to send email/SMS/HTTP notifications or trigger Lambda/other subscribers.',
-                'SNS provides fan-out so one alarm can notify multiple subscribers (e.g., email, chat, Lambda, incident management tools).',
-                'SNS + CloudWatch alarms can integrate with AWS User Notifications to surface alerts in the console and mobile app.',
-                'Typical exam pattern: “Configure SNS notification when CPU > 80% for 5 minutes” or “invoke Lambda via SNS for remediation.”'
-              ],
-              resources: [
-                { name: 'Amazon SNS', url: 'https://docs.aws.amazon.com/sns/latest/dg/welcome.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Logging, Audit, and CloudTrail',
-          content: [
-            {
-              topic: 'CloudWatch Logs',
-              details: [
-                'Organized as log groups (applications/components) and log streams (instance/container/process).',
-                'Configurable retention from 1 day to 10 years or “never expire”.',
-                'Metric filters convert log patterns (e.g., ERROR, 5xx) into CloudWatch metrics for alarms.',
-                'CloudWatch Logs Insights provides a query language to analyze logs at scale (filtering, aggregation, and visualization).',
-                'Logs can be exported to S3 for long-term storage and analytics (up to 12-hour delay).',
-                'Supports real-time subscription filters to Kinesis/Lambda/Firehose for streaming processing.'
-              ],
-              resources: [
-                { name: 'CloudWatch Logs', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html' }
-              ]
-            },
-            {
-              topic: 'AWS CloudTrail',
-              details: [
-                'Records API calls and console actions for governance, compliance, and forensic analysis.',
-                'Management events (control plane) and data events (S3 object-level, Lambda function-level) can be logged.',
-                'Trails deliver logs to S3; optional integration with CloudWatch Logs for real-time alerting.',
-                'CloudTrail Insights identifies unusual API patterns (e.g., spikes in failed logins or IAM changes).',
-                'Common exam use: “Who did X and when?” or “Detect unauthorized changes in production accounts.”'
-              ],
-              resources: [
-                { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'AWS Systems Manager & Automation (for Remediation)',
-          content: [
-            {
-              topic: 'SSM Agent & Session Manager',
-              details: [
-                'SSM Agent is pre-installed on many Amazon Linux and Windows AMIs; required for Systems Manager operations.',
-                'Session Manager gives browser/CLI-based shell access without SSH keys, bastion hosts, or opening inbound ports.',
-                'Session logs can be sent to S3 and CloudWatch Logs for audit/compliance.',
-                'Access controlled via IAM policies, enabling fine-grained least-privilege access to instances.',
-                'Useful for exam questions about “no SSH allowed” or “centralized controlled access” to EC2 instances.'
-              ],
-              resources: [
-                { name: 'Session Manager', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html' }
-              ]
-            },
-            {
-              topic: 'Parameter Store',
-              details: [
-                'Secure, hierarchical storage for configuration values and secrets (plaintext or encrypted with KMS).',
-                'Standard parameters (up to 4 KB) are free with no advanced features; advanced parameters (up to 8 KB) support policies and higher throughput (extra cost).',
-                'Versioned parameters with history; can roll back to previous versions if needed.',
-                'Integrates with CloudFormation, Lambda, EC2 User Data, and many AWS services for centralized configuration.',
-                'Often appears in exam scenarios for “securely store DB passwords / API keys” with encryption and IAM access control.'
-              ],
-              resources: [
-                { name: 'Parameter Store', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html' }
-              ]
-            },
-            {
-              topic: 'Patch Manager',
-              details: [
-                'Automates OS and application patching across EC2, on-premises servers, and hybrid environments.',
-                'Uses patch baselines (AWS managed or custom) to define which patches are approved.',
-                'Maintenance Windows schedule when patching can occur to reduce impact.',
-                'Patch groups (via tags) to target specific environments (e.g., dev, test, prod).',
-                'Provides compliance reports showing which instances are missing patches (important for audit/compliance questions).'
-              ],
-              resources: [
-                { name: 'Patch Manager', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html' }
-              ]
-            },
-            {
-              topic: 'Automation Runbooks & Incident Response',
-              details: [
-                'Systems Manager Automation runbooks define multi-step workflows (e.g., restart instance, collect logs, patch, rollback).',
-                'Supports AWS-provided and custom runbooks; can be triggered manually, on a schedule, or via EventBridge/Lambda/SDK.',
-                'Useful for automated remediation patterns: CloudWatch alarm → EventBridge rule → SSM Automation → fix (e.g., restart service, resize, collect diagnostics).',
-                'Supports approvals, rate control, and rollback steps for safer operations.',
-                'Maps directly to exam Skill 1.2.3: create/run custom and predefined automation runbooks to streamline processes.'
-              ],
-              resources: [
-                { name: 'Systems Manager Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'EventBridge (CloudWatch Events) – Event Routing & Remediation',
-          content: [
-            {
-              topic: 'Event Patterns & Rules',
-              details: [
-                'Event sources: AWS services, custom applications, and SaaS partners.',
-                'Event patterns match on detail-type, source, and fields in the event; schedules (rate/cron) create time-based events.',
-                'Targets: Lambda, SQS, SNS, Step Functions, Systems Manager Automation, Kinesis, ECS tasks, and more.',
-                'Event buses: default, custom, and partner buses support multi-account and SaaS integration.',
-                'Event replay and archive allow you to store and reprocess events for testing or recovery.',
-                'Troubleshooting rules: check rule matching (pattern vs. event), target permissions (IAM), and DLQs for failed invocations.',
-                'Directly maps to Skill 1.2.2: use EventBridge to route, enrich, and deliver events and troubleshoot event bus rules.'
-              ],
-              resources: [
-                { name: 'EventBridge', url: 'https://docs.aws.amazon.com/eventbridge/latest/userguide/what-is-amazon-eventbridge.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Performance & Cost Optimization (Compute, Storage, Database)',
-          content: [
-            {
-              topic: 'Compute Optimization',
-              details: [
-                'Right-size EC2 using CPU/memory/network metrics and Compute Optimizer recommendations.',
-                'Use Auto Scaling (target tracking, step, scheduled) to match capacity to demand and improve cost-efficiency.',
-                'Prefer modern instance families (e.g., M6g, C7g) and Savings Plans/Reserved Instances for steady workloads.',
-                'Tag resources by environment, application, and owner to drive cost and performance reporting.',
-                'Consider Spot Instances for interruptible workloads to reduce cost significantly.',
-                'Ties to Skill 1.3.1 and 1.3.6 for optimizing compute resources and EC2 performance.'
-              ],
-              resources: [
-                { name: 'Compute Optimizer', url: 'https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is.html' }
-              ]
-            },
-            {
-              topic: 'EBS Performance & Volume Types',
-              details: [
-                'General Purpose SSD (gp3/gp2) for balanced workloads; gp3 lets you provision IOPS and throughput independently of size.',
-                'Provisioned IOPS SSD (io1/io2) for latency-sensitive and high IOPS workloads (typically databases).',
-                'Monitor key metrics: VolumeReadOps, VolumeWriteOps, VolumeQueueLength, BurstBalance for burstable volumes.',
-                'Use EBS-optimized instances and appropriate block size to improve performance.',
-                'Resize volumes or switch types (e.g., gp2 → gp3, gp3 → io2) to fix bottlenecks and reduce cost.',
-                'Maps to Skill 1.3.2: analyze EBS metrics, troubleshoot performance issues, and optimize volume types.'
-              ],
-              resources: [
-                { name: 'EBS Performance', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimizing.html' }
-              ]
-            },
-            {
-              topic: 'S3 Performance & Data Transfer',
-              details: [
-                'Multipart uploads improve throughput for large objects and resilience to network issues.',
-                'S3 Transfer Acceleration uses optimized edge network paths to speed up uploads over long distances.',
-                'AWS DataSync accelerates data movement between on-premises, S3, EFS, and FSx with built-in encryption and verification.',
-                'Use S3 Lifecycle policies and Intelligent-Tiering to optimize storage costs while maintaining access patterns.',
-                'Request parallelization and prefix randomization are much less critical now due to modern S3 scaling, but concepts may appear historically in questions.',
-                'Maps to Skill 1.3.3: implement and optimize S3 performance strategies.'
-              ],
-              resources: [
-                { name: 'S3 Performance', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html' }
-              ]
-            },
-            {
-              topic: 'Shared Storage – EFS & FSx',
-              details: [
-                'Amazon EFS: managed NFS for Linux instances and containers, scales automatically with usage.',
-                'Performance modes: General Purpose (low latency) vs. Max I/O (higher throughput for many clients).',
-                'Throughput modes: Bursting and Provisioned Throughput for predictable performance.',
-                'Lifecycle policies move infrequently accessed files to lower-cost storage classes (e.g., EFS Infrequent Access).',
-                'Amazon FSx provides managed file systems for specific workloads (e.g., FSx for Windows, FSx for Lustre).',
-                'Maps to Skill 1.3.4: evaluate and optimize shared storage solutions for use cases.'
-              ],
-              resources: [
-                { name: 'EFS', url: 'https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html' }
-              ]
-            },
-            {
-              topic: 'RDS Performance Insights & RDS Proxy',
-              details: [
-                'Performance Insights provides database load visualization (DBLoad), top SQL, wait events, and helps find bottlenecks quickly.',
-                'You can create CloudWatch alarms on Performance Insights metrics for proactive detection.',
-                'RDS Proxy pools and reuses database connections for serverless and highly concurrent applications, reducing DB overhead.',
-                'Use CloudWatch metrics (CPUUtilization, FreeableMemory, ReadIOPS/WriteIOPS, DatabaseConnections) plus Performance Insights to decide when to scale or tune.',
-                'Maps to Skill 1.3.5: monitor RDS metrics and modify configuration for performance efficiency.'
-              ],
-              resources: [
-                { name: 'RDS Performance Insights', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html' }
-              ]
-            },
-            {
-              topic: 'EC2 Networking & Placement Groups',
-              details: [
-                'Placement groups: Cluster (low-latency, high throughput between instances), Spread (isolate instances across hardware), and Partition (for large, distributed workloads).',
-                'Use enhanced networking (ENA, SR-IOV) and appropriate instance families for network-intensive workloads.',
-                'Monitor NetworkIn/NetworkOut, NetworkPacketsIn/Out, and CPU credits (for T-family instances) to identify bottlenecks.',
-                'Fits into Skill 1.3.6: optimize EC2 instances and their associated storage and networking capabilities.'
-              ],
-              resources: [
-                { name: 'Placement Groups', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Container & Prometheus Monitoring',
-          content: [
-            {
-              topic: 'Amazon Managed Service for Prometheus (AMP)',
-              details: [
-                'Fully managed, Prometheus-compatible monitoring service for container workloads (EKS/ECS/self-managed Kubernetes).',
-                'Scrapes and stores Prometheus metrics; you query using PromQL (Prometheus Query Language).',
-                'Integrates with AWS Distro for OpenTelemetry (ADOT) agents/collectors running in your clusters.',
-                'Suitable for exam questions mentioning “Prometheus metrics” or “container-level monitoring at scale”.'
-              ],
-              resources: [
-                { name: 'Amazon Managed Service for Prometheus', url: 'https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html' }
-              ]
-            },
-            {
-              topic: 'Amazon Managed Grafana (Context for Dashboards)',
-              details: [
-                'Managed Grafana workspaces for building dashboards across CloudWatch, Prometheus, X-Ray, and more.',
-                'Often paired with AMP to visualize container metrics and application SLOs.',
-                'Useful to recognize in exam diagrams for “central dashboards for multi-account/multi-source metrics.”'
-              ],
-              resources: [
-                { name: 'Amazon Managed Grafana', url: 'https://docs.aws.amazon.com/grafana/latest/userguide/what-is-AMG.html' }
-              ]
-            }
-          ]
-        },
-       {
-          title: 'Cost Management',
-          content: [
-            {
-              topic: 'EC2 Purchasing Options',
-              details: [
-                'On-Demand: Pay per second/hour',
-                'Reserved: 1-3 years, up to 72% discount',
-                'Spot: Up to 90% discount, can be terminated',
-                'Savings Plans: Flexible, hourly commitment',
-                'Dedicated Hosts: Physical server',
-                'Dedicated Instances: Hardware isolation'
-              ],
-              resources: [
-                { name: 'EC2 Pricing', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html' }
-              ]
-            },
-            {
-              topic: 'Cost Monitoring',
-              details: [
-                'Cost Explorer: Visualize spending',
-                'Budgets: Alerts for thresholds',
-                'Cost Allocation Tags: Track by project',
-                'Reserved Instance recommendations',
-                'Trusted Advisor: Cost optimization',
-                'S3 Storage Classes: Lifecycle policies'
-              ],
-              resources: [
-                { name: 'Cost Explorer', url: 'https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Performance Optimization',
-          content: [
-            {
-              topic: 'Compute Optimization',
-              details: [
-                'Right-sizing: Match instance to workload',
-                'Compute Optimizer recommendations',
-                'Burstable instances (T3/T4g)',
-                'Instance store for temporary data',
-                'Placement groups for network performance',
-                'Enhanced networking (SR-IOV)'
-              ],
-              resources: [
-                { name: 'Compute Optimizer', url: 'https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is.html' }
-              ]
-            },
-            {
-              topic: 'Storage Optimization',
-              details: [
-                'EBS: GP3 for cost/performance',
-                'EBS-optimized instances',
-                'S3 Transfer Acceleration',
-                'S3 Intelligent-Tiering',
-                'EFS: Performance modes',
-                'CloudFront for static content'
-              ],
-              resources: [
-                { name: 'EBS Optimization', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html' }
-              ]
-            }
-          ]
-        }
-      ]
-    },
+const cheatsheet = {
+  monitoring: {
+    title: 'Domain 1: Monitoring, Logging, Analysis, Remediation, and Performance Optimization (22%)',
+    sections: [
+      {
+        title: 'CloudWatch Core (Metrics, Alarms, Dashboards, Agent, SNS)',
+        content: [
+          {
+            topic: 'CloudWatch Metrics',
+            details: [
+              'Default EC2 metrics: CPU, network in/out, disk I/O (no memory or disk space by default).',
+              'Custom metrics via PutMetricData API or CloudWatch agent (e.g., memory, disk usage, application metrics).',
+              {
+                name: 'CLI Example',
+                text: 'Use `aws cloudwatch put-metric-data --namespace "MyApp" --metric-name "ProcessedOrders" --value 1` to push a custom metric.'
+              },
+              'Metric math for aggregations and calculations across metrics (averages, percentages, ratios).',
+              {
+                name: 'Examples',
+                text: 'Example 1: `(m1 + m2) / 2` to compute an average across two Auto Scaling groups. Example 2: metric math expression `SEARCH({AWS/EC2,CPUUtilization},"InstanceId","Average",300)` to select specific instances by dimension.'
+              },
+              'High-resolution metrics (up to 1-second granularity) for fine-grained alarms and analysis.',
+              {
+                name: 'Examples',
+                text: 'High-resolution alarm for `p99` latency on a critical API; set period to `10` seconds with `Standard` statistics to capture spiky workloads.'
+              },
+              'Retention: 15 months with automatic aggregation (1-minute, 5-minute, 1-hour periods). Important for questions about historical trend analysis and capacity planning.'
+            ],
+            resources: [
+              { name: 'CloudWatch Metrics Guide', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html' }
+            ]
+          },
+          {
+            topic: 'CloudWatch Alarms',
+            details: [
+              'Alarm States: OK, ALARM, INSUFFICIENT_DATA.',
+              'Actions can directly invoke AWS services: SNS notifications, Auto Scaling policies, EC2 stop/terminate/recover/reboot, Systems Manager actions.',
+              {
+                name: 'Exam Pattern',
+                text: 'CPU > 80% for 5 minutes triggers an Auto Scaling step or target tracking policy to add capacity.'
+              },
+              'Composite alarms: combine multiple alarms with AND/OR logic to reduce alarm noise and implement “only page when multiple signals fail”.',
+              'Anomaly detection: ML-based dynamic thresholds instead of static values.',
+              {
+                name: 'Example',
+                text: 'Detect abnormal surges in `5XXError` rate on an ALB without guessing a static threshold.'
+              },
+              'Can target EventBridge to fan out events to Lambda, SSM Automation, or other services for remediation.',
+              {
+                name: 'Pattern',
+                text: 'CloudWatch alarm -> EventBridge rule -> Lambda or SSM Automation runbook to perform auto-remediation (e.g., restart instance, resize, rotate, or collect diagnostics).'
+              },
+              'Billing alarms are created in `us-east-1` (N. Virginia) only.',
+              {
+                name: 'Exam Gotcha',
+                text: 'If a question mentions “cannot find billing metrics” in another Region, the answer usually involves switching to us-east-1 to configure the billing alarm.'
+              }
+            ],
+            resources: [
+              { name: 'CloudWatch Alarms', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html' }
+            ]
+          },
+          {
+            topic: 'CloudWatch Logs',
+            details: [
+              'Organized as log groups (applications/components) and log streams (instance/container/process).',
+              'Configurable retention from 1 day to 10 years or “never expire”.',
+              'Metric filters convert log patterns (e.g., `ERROR`, `5xx`) into CloudWatch metrics for alarms.',
+              {
+                name: 'Example',
+                text: 'Create a metric filter on `ERROR` in an application log group and alarm when error count exceeds a threshold in 5 minutes.'
+              },
+              'CloudWatch Logs Insights provides a query language to analyze logs at scale (filtering, aggregation, and visualization).',
+              {
+                name: 'Query Example',
+                text: 'Use `fields @timestamp, @message | filter status >= 500 | stats count() by bin(5m)` to find spikes in HTTP 5xx responses over time.'
+              },
+              'Logs can be exported to S3 for long-term storage and analytics (up to 12-hour delay).',
+              'Supports real-time subscription filters to Kinesis/Lambda/Firehose for streaming processing and near real-time analytics.'
+            ],
+            resources: [
+              { name: 'CloudWatch Logs', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html' }
+            ]
+          },
+          {
+            topic: 'CloudWatch Agent & Container Metrics',
+            details: [
+              'CloudWatch agent installs on EC2, on-premises servers, and container hosts (ECS/EKS nodes) to collect OS-level metrics and logs.',
+              'Used to collect memory, disk space, processes, swap usage, and application logs that are NOT available as default EC2 metrics.',
+              'Configuration via JSON/TOML file; can be stored in Systems Manager Parameter Store for central management.',
+              {
+                name: 'CLI Example',
+                text: 'Store CloudWatch agent config JSON in Parameter Store and reference it with `amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c ssm:parameter-name`.'
+              },
+              'Deployed and updated at scale using Systems Manager Distributor and Run Command.',
+              'For ECS/EKS, use CloudWatch agent or AWS Distro for OpenTelemetry (ADOT) to send container-level metrics to CloudWatch or Prometheus backends.'
+            ],
+            resources: [
+              { name: 'CloudWatch Agent', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html' }
+            ]
+          },
+          {
+            topic: 'CloudWatch Dashboards',
+            details: [
+              'Customizable and shareable dashboards to visualize metrics, alarms, and logs across AWS resources.',
+              'Dashboards can include widgets from multiple services, Regions, and accounts (via cross-account data).',
+              'Common widgets: time series graphs, single-value metrics, text widgets, and alarm status widgets.',
+              'Useful for exam scenarios about “single pane of glass” monitoring for operations teams.',
+              'Dashboards are global (not bound to a Region) and billed per dashboard per month after the free tier.',
+              'Ideal to display KPIs for EC2, RDS, EKS, S3, and application-specific metrics in a single view.'
+            ],
+            resources: [
+              { name: 'CloudWatch Dashboards', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Dashboards.html' }
+            ]
+          },
+          {
+            topic: 'Notifications & Amazon SNS Integration',
+            details: [
+              'CloudWatch alarms commonly publish to Amazon SNS topics to send email/SMS/HTTP notifications or trigger Lambda/other subscribers.',
+              'SNS provides fan-out so one alarm can notify multiple subscribers (e.g., email, chat, Lambda, incident management tools).',
+              'SNS + CloudWatch alarms can integrate with AWS User Notifications to surface alerts in the console and mobile app.',
+              {
+                name: 'Exam Pattern',
+                text: 'Typical question: “When CPU > 80% for 5 minutes, send an email to Ops and trigger a Lambda function to scale another service.” Solution: CloudWatch alarm -> SNS topic -> email + Lambda subscription.'
+              }
+            ],
+            resources: [
+              { name: 'Amazon SNS', url: 'https://docs.aws.amazon.com/sns/latest/dg/welcome.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Logging, Audit, and CloudTrail',
+        content: [
+          {
+            topic: 'CloudWatch Logs',
+            details: [
+              'Organized as log groups (applications/components) and log streams (instance/container/process).',
+              'Configurable retention from 1 day to 10 years or “never expire”.',
+              'Metric filters convert log patterns (e.g., `ERROR`, `5xx`) into CloudWatch metrics for alarms.',
+              {
+                name: 'Example',
+                text: 'Create a metric filter on `"[status_code] >= 500"` to track HTTP 5xx errors and drive an alarm when errors exceed a threshold.'
+              },
+              'CloudWatch Logs Insights provides a query language to analyze logs at scale (filtering, aggregation, and visualization).',
+              {
+                name: 'Query Example',
+                text: 'Use `stats avg(latency) by bin(1m)` to view average latency over time and find performance regressions.'
+              },
+              'Logs can be exported to S3 for long-term storage and analytics (up to 12-hour delay).',
+              'Supports real-time subscription filters to Kinesis/Lambda/Firehose for streaming processing.'
+            ],
+            resources: [
+              { name: 'CloudWatch Logs', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html' }
+            ]
+          },
+          {
+            topic: 'AWS CloudTrail',
+            details: [
+              'Records API calls and console actions for governance, compliance, and forensic analysis.',
+              'Management events (control plane) and data events (S3 object-level, Lambda function-level) can be logged.',
+              'Trails deliver logs to S3; optional integration with CloudWatch Logs for real-time alerting.',
+              {
+                name: 'Example',
+                text: 'Send CloudTrail logs to CloudWatch Logs, add a metric filter for `ConsoleLogin` failures, and trigger an alarm when failures spike.'
+              },
+              'CloudTrail Insights identifies unusual API patterns (e.g., spikes in failed logins or IAM changes).',
+              'Common exam use: “Who did X and when?” or “Detect unauthorized changes in production accounts.”'
+            ],
+            resources: [
+              { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'AWS Systems Manager & Automation (for Remediation)',
+        content: [
+          {
+            topic: 'SSM Agent & Session Manager',
+            details: [
+              'SSM Agent is pre-installed on many Amazon Linux and Windows AMIs; required for Systems Manager operations.',
+              'Session Manager gives browser/CLI-based shell access without SSH keys, bastion hosts, or opening inbound ports.',
+              'Session logs can be sent to S3 and CloudWatch Logs for audit/compliance.',
+              'Access controlled via IAM policies, enabling fine-grained least-privilege access to instances.',
+              {
+                name: 'Exam Pattern',
+                text: 'If the requirement says “no inbound ports, no SSH, centralized auditing of commands,” the answer is almost always Session Manager.'
+              }
+            ],
+            resources: [
+              { name: 'Session Manager', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html' }
+            ]
+          },
+          {
+            topic: 'Parameter Store',
+            details: [
+              'Secure, hierarchical storage for configuration values and secrets (plaintext or encrypted with KMS).',
+              'Standard parameters (up to 4 KB) are free with no advanced features; advanced parameters (up to 8 KB) support policies and higher throughput (extra cost).',
+              'Versioned parameters with history; can roll back to previous versions if needed.',
+              'Integrates with CloudFormation, Lambda, EC2 User Data, and many AWS services for centralized configuration.',
+              {
+                name: 'Exam Pattern',
+                text: 'Typical scenario: “Securely store DB passwords and rotate with KMS encryption and IAM-based access; avoid hardcoding in User Data.” Answer: SSM Parameter Store (or Secrets Manager in Security domain).'
+              }
+            ],
+            resources: [
+              { name: 'Parameter Store', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html' }
+            ]
+          },
+          {
+            topic: 'Patch Manager',
+            details: [
+              'Automates OS and application patching across EC2, on-premises servers, and hybrid environments.',
+              'Uses patch baselines (AWS managed or custom) to define which patches are approved.',
+              'Maintenance Windows schedule when patching can occur to reduce impact.',
+              'Patch groups (via tags) to target specific environments (e.g., dev, test, prod).',
+              'Provides compliance reports showing which instances are missing patches (important for audit/compliance questions).'
+            ],
+            resources: [
+              { name: 'Patch Manager', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html' }
+            ]
+          },
+          {
+            topic: 'Automation Runbooks & Incident Response',
+            details: [
+              'Systems Manager Automation runbooks define multi-step workflows (e.g., restart instance, collect logs, patch, rollback).',
+              'Supports AWS-provided and custom runbooks; can be triggered manually, on a schedule, or via EventBridge/Lambda/SDK.',
+              {
+                name: 'Pattern',
+                text: 'CloudWatch alarm -> EventBridge rule -> SSM Automation runbook to perform auto-remediation (restart service, detach volume, change instance type, gather diagnostics).'
+              },
+              'Supports approvals, rate control, and rollback steps for safer operations.',
+              'Maps directly to Skill 1.2.3: create/run custom and predefined automation runbooks to streamline processes.'
+            ],
+            resources: [
+              { name: 'Systems Manager Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'EventBridge (CloudWatch Events) – Event Routing & Remediation',
+        content: [
+          {
+            topic: 'Event Patterns & Rules',
+            details: [
+              'Event sources: AWS services, custom applications, and SaaS partners.',
+              'Event patterns match on `detail-type`, `source`, and fields in the event; schedules (`rate`/`cron`) create time-based events.',
+              'Targets: Lambda, SQS, SNS, Step Functions, Systems Manager Automation, Kinesis, ECS tasks, and more.',
+              'Event buses: default, custom, and partner buses support multi-account and SaaS integration.',
+              'Event replay and archive allow you to store and reprocess events for testing or recovery.',
+              'Troubleshooting rules: check rule matching (pattern vs. event), target permissions (IAM), and DLQs for failed invocations.',
+              {
+                name: 'Exam Mapping',
+                text: 'Directly maps to Skill 1.2.2: use EventBridge to route, enrich, and deliver events and troubleshoot event bus rules.'
+              }
+            ],
+            resources: [
+              { name: 'EventBridge', url: 'https://docs.aws.amazon.com/eventbridge/latest/userguide/what-is-amazon-eventbridge.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Performance & Cost Optimization (Compute, Storage, Database)',
+        content: [
+          {
+            topic: 'Compute Optimization',
+            details: [
+              'Right-size EC2 using CPU/memory/network metrics and Compute Optimizer recommendations.',
+              'Use Auto Scaling (target tracking, step, scheduled) to match capacity to demand and improve cost-efficiency.',
+              'Prefer modern instance families (e.g., `M6g`, `C7g`) and Savings Plans/Reserved Instances for steady workloads.',
+              'Tag resources by environment, application, and owner to drive cost and performance reporting.',
+              'Consider Spot Instances for interruptible workloads to reduce cost significantly.',
+              {
+                name: 'Exam Mapping',
+                text: 'Ties to Skill 1.3.1 and 1.3.6 for optimizing compute resources and EC2 performance (including Auto Scaling and placement strategies).'
+              }
+            ],
+            resources: [
+              { name: 'Compute Optimizer', url: 'https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is.html' }
+            ]
+          },
+          {
+            topic: 'EBS Performance & Volume Types',
+            details: [
+              'General Purpose SSD (`gp3`/`gp2`) for balanced workloads; `gp3` lets you provision IOPS and throughput independently of size.',
+              'Provisioned IOPS SSD (`io1`/`io2`) for latency-sensitive and high-IOPS workloads (typically databases).',
+              'Monitor key metrics: `VolumeReadOps`, `VolumeWriteOps`, `VolumeQueueLength`, and `BurstBalance` for burstable volumes.',
+              'Use EBS-optimized instances and appropriate block size to improve performance.',
+              'Resize volumes or switch types (e.g., `gp2` → `gp3`, `gp3` → `io2`) to fix bottlenecks and/or reduce cost.',
+              {
+                name: 'Exam Mapping',
+                text: 'Maps to Skill 1.3.2: analyze EBS metrics, troubleshoot performance issues, and optimize volume types.'
+              }
+            ],
+            resources: [
+              { name: 'EBS Performance', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimizing.html' }
+            ]
+          },
+          {
+            topic: 'S3 Performance & Data Transfer',
+            details: [
+              'Multipart uploads improve throughput for large objects and resilience to network issues.',
+              'S3 Transfer Acceleration uses optimized edge network paths to speed up uploads over long distances.',
+              'AWS DataSync accelerates data movement between on-premises, S3, EFS, and FSx with built-in encryption and verification.',
+              'Use S3 Lifecycle policies and Intelligent-Tiering to optimize storage costs while maintaining access patterns.',
+              'Request parallelization and prefix randomization are less critical now due to modern S3 scaling, but may still appear in exam questions.',
+              {
+                name: 'Exam Mapping',
+                text: 'Maps to Skill 1.3.3: implement and optimize S3 performance strategies for data transfer, storage efficiency, and access patterns.'
+              }
+            ],
+            resources: [
+              { name: 'S3 Performance', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html' }
+            ]
+          },
+          {
+            topic: 'Shared Storage – EFS & FSx',
+            details: [
+              'Amazon EFS: managed NFS for Linux instances and containers, scales automatically with usage.',
+              'Performance modes: General Purpose (low latency) vs. Max I/O (higher throughput for many clients).',
+              'Throughput modes: Bursting and Provisioned Throughput for predictable performance.',
+              'Lifecycle policies move infrequently accessed files to lower-cost storage classes (e.g., EFS Infrequent Access).',
+              'Amazon FSx provides managed file systems for specific workloads (e.g., FSx for Windows, FSx for Lustre).',
+              {
+                name: 'Exam Mapping',
+                text: 'Maps to Skill 1.3.4: evaluate and optimize shared storage solutions (EFS/FSx) for specific use cases.'
+              }
+            ],
+            resources: [
+              { name: 'EFS', url: 'https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html' }
+            ]
+          },
+          {
+            topic: 'RDS Performance Insights & RDS Proxy',
+            details: [
+              'Performance Insights provides database load visualization (`DBLoad`), top SQL, wait events, and helps find bottlenecks quickly.',
+              'You can create CloudWatch alarms on Performance Insights metrics for proactive detection.',
+              'RDS Proxy pools and reuses database connections for serverless and highly concurrent applications, reducing DB overhead.',
+              'Use CloudWatch metrics (`CPUUtilization`, `FreeableMemory`, `ReadIOPS`/`WriteIOPS`, `DatabaseConnections`) plus Performance Insights to decide when to scale or tune.',
+              {
+                name: 'Exam Mapping',
+                text: 'Maps to Skill 1.3.5: monitor RDS metrics and modify configuration (including RDS Proxy) for performance efficiency.'
+              }
+            ],
+            resources: [
+              { name: 'RDS Performance Insights', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html' }
+            ]
+          },
+          {
+            topic: 'EC2 Networking & Placement Groups',
+            details: [
+              'Placement groups: Cluster (low-latency, high throughput between instances), Spread (isolate instances across hardware), and Partition (for large, distributed workloads).',
+              'Use enhanced networking (ENA, SR-IOV) and appropriate instance families for network-intensive workloads.',
+              'Monitor `NetworkIn`/`NetworkOut`, `NetworkPacketsIn`/`NetworkPacketsOut`, and CPU credits (for T-family instances) to identify bottlenecks.',
+              {
+                name: 'Exam Mapping',
+                text: 'Fits into Skill 1.3.6: optimize EC2 instances and their associated storage and networking capabilities, including placement strategy choices.'
+              }
+            ],
+            resources: [
+              { name: 'Placement Groups', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Container & Prometheus Monitoring',
+        content: [
+          {
+            topic: 'Amazon Managed Service for Prometheus (AMP)',
+            details: [
+              'Fully managed, Prometheus-compatible monitoring service for container workloads (EKS/ECS/self-managed Kubernetes).',
+              'Scrapes and stores Prometheus metrics; you query using PromQL (Prometheus Query Language).',
+              'Integrates with AWS Distro for OpenTelemetry (ADOT) agents/collectors running in your clusters.',
+              {
+                name: 'Exam Pattern',
+                text: 'If the question mentions “Prometheus metrics at scale for EKS” or “managed Prometheus backend”, the correct service is Amazon Managed Service for Prometheus.'
+              }
+            ],
+            resources: [
+              { name: 'Amazon Managed Service for Prometheus', url: 'https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html' }
+            ]
+          },
+          {
+            topic: 'Amazon Managed Grafana (Context for Dashboards)',
+            details: [
+              'Managed Grafana workspaces for building dashboards across CloudWatch, Prometheus, X-Ray, and more.',
+              'Often paired with AMP to visualize container metrics and application SLOs.',
+              {
+                name: 'Exam Pattern',
+                text: 'Recognize diagrams where Grafana sits on top of AMP/CloudWatch/X-Ray for “central dashboards across multiple accounts and data sources”.'
+              }
+            ],
+            resources: [
+              { name: 'Amazon Managed Grafana', url: 'https://docs.aws.amazon.com/grafana/latest/userguide/what-is-AMG.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Cost Management',
+        content: [
+          {
+            topic: 'EC2 Purchasing Options',
+            details: [
+              'On-Demand: pay per second/hour, flexible but most expensive.',
+              'Reserved Instances: 1–3 years, up to ~72% discount for predictable workloads.',
+              'Spot Instances: up to ~90% discount, can be interrupted; best for fault-tolerant and flexible jobs.',
+              'Savings Plans: flexible, hourly commitment across instance families/Regions (compute or EC2 types).',
+              'Dedicated Hosts: physical server visibility for compliance/licensing.',
+              'Dedicated Instances: hardware isolation without host visibility.'
+            ],
+            resources: [
+              { name: 'EC2 Pricing', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html' }
+            ]
+          },
+          {
+            topic: 'Cost Monitoring',
+            details: [
+              'Cost Explorer: visualize historical and forecasted spending.',
+              'AWS Budgets: alerts for cost and usage thresholds via email/SNS.',
+              'Cost Allocation Tags: track spend by project, team, environment.',
+              'Reserved Instance and Savings Plans recommendations for long-running workloads.',
+              'Trusted Advisor: cost optimization checks (idle resources, underutilized instances, low-utilization RIs).',
+              'S3 Storage Classes and Lifecycle policies to move data to cheaper tiers over time.'
+            ],
+            resources: [
+              { name: 'Cost Explorer', url: 'https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Performance Optimization',
+        content: [
+          {
+            topic: 'Compute Optimization',
+            details: [
+              'Right-sizing: match instance family and size to workload based on utilization metrics.',
+              'Use Compute Optimizer recommendations to adjust instance types and sizes.',
+              'Burstable instances (T3/T4g) for workloads with low baseline and occasional bursts.',
+              'Instance store for temporary or cache data with high I/O needs (not durable).',
+              'Placement groups for high network performance where low-latency communication is critical.',
+              'Enhanced networking (SR-IOV/ENA) for high-throughput, low-latency networking.'
+            ],
+            resources: [
+              { name: 'Compute Optimizer', url: 'https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is.html' }
+            ]
+          },
+          {
+            topic: 'Storage Optimization',
+            details: [
+              'EBS: gp3 for balanced cost/performance and tunable IOPS/throughput.',
+              'EBS-optimized instances improve performance and reduce contention.',
+              'S3 Transfer Acceleration to speed up long-distance uploads.',
+              'S3 Intelligent-Tiering to automatically move objects between access tiers based on usage.',
+              'EFS performance modes (General Purpose vs. Max I/O) chosen based on latency vs. throughput needs.',
+              'CloudFront for caching static and dynamic content closer to users to reduce latency and offload origins.'
+            ],
+            resources: [
+              { name: 'EBS Optimization', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
     'reliability': {
       title: 'Domain 2: Reliability and Business Continuity (22%)',
       sections: [
