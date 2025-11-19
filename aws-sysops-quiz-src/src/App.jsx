@@ -1477,23 +1477,56 @@ const arraysEqual = (a, b) => {
                     // Details as a list
                     if (key === "details") {
                       return (
-                        <ul key={idx} className="list-disc list-inside space-y-1 text-gray-600 text-sm">
+                        <ul
+                          key={idx}
+                          className="list-disc list-inside space-y-1 text-gray-600 text-sm"
+                        >
                           {value.map((detail, detailIdx) => (
                             <li key={detailIdx}>
-                              {typeof detail === 'string' ? renderInlineCode(detail) : (
+                              {typeof detail === "string" ? (
+                                // normal bullet: just text + inline code support
+                                renderInlineCode(detail)
+                              ) : (
                                 <>
-                                  <strong>
-                                    {detail.url ? (
-                                      <a href={detail.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-                                        {detail.name}
-                                      </a>
-                                    ) : detail.name}:
-                                  </strong>
-                                  <ul className="list-disc list-inside ml-6 mt-1 space-y-0.5">
-                                    {(detail.text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()) || [detail.text]).map((sentence, sIdx) => (
-                                      <li key={sIdx}>{renderInlineCode(sentence)}</li>
-                                    ))}
-                                  </ul>
+                                  {/* Header line like "Examples", "CLI Example", "Exam Pattern", etc. */}
+                                  <div className="flex items-start gap-2">
+                                    <span className="text-gray-500">⤷</span>
+                                    <span className="text-gray-700 text-sm font-semibold">
+                                      {detail.url ? (
+                                        <a
+                                          href={detail.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-blue-600 hover:text-blue-800"
+                                        >
+                                          {detail.name}
+                                        </a>
+                                      ) : (
+                                        detail.name
+                                      )}
+                                      {detail.name ? ":" : null}
+                                    </span>
+                                  </div>
+                    
+                                  {/* Sub-examples inside, each with → */}
+                                  {typeof detail.text === "string" && (
+                                    <div className="ml-6 mt-1 space-y-0.5">
+                                      {(
+                                        detail.text.match(/[^.!?]+[.!?]+/g)?.map((s) => s.trim()) ||
+                                        [detail.text]
+                                      ).map((sentence, sIdx) => (
+                                        <div
+                                          key={sIdx}
+                                          className="flex items-start gap-2"
+                                        >
+                                          <span className="text-gray-400">→</span>
+                                          <span className="text-gray-600 text-sm">
+                                            {renderInlineCode(sentence)}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                                 </>
                               )}
                             </li>
