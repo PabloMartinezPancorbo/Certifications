@@ -801,691 +801,691 @@ const cheatsheet = {
                 { name: 'SSM Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
               ]
             }
-          ]
-        }
-      ]
-    },
-
-deployment: {
-  title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
-  sections: [
-    {
-      title: 'CloudFormation & AWS CDK (IaC Core)',
-      content: [
-        {
-          topic: 'Stack Operations',
-          details: [
-            'Create/Update/Delete stacks to manage related resources as a single unit.',
-            'Change sets let you preview what will change before executing an update (safe updates in production).',
-            'Stack policies protect critical resources from accidental updates (for example, prevent DB deletion).',
-            'Drift detection identifies resources that have been changed outside CloudFormation.',
-            'Nested stacks improve reusability and modular design (shared VPC, IAM, networking, logging templates).',
-            'StackSets deploy stacks across multiple accounts and Regions from a central administrator account.',
-            {
-              name: 'Troubleshooting Patterns',
-              text: 'Common issues: missing IAM permissions for CloudFormation service role, circular dependencies between resources, invalid references (!Ref to non-existent logical ID), or quota limits (for example, VPC CIDR exhaustion, EIP limits).'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Directly maps to Skills 3.1.2 and 3.1.3: create/manage CloudFormation stacks and identify/remediate deployment issues such as subnet sizing, IAM/permission errors, and template syntax problems.'
-            },
-            {
-              name: 'Exam Pattern',
-              text: 'If the question says “roll out the same networking stack to multiple accounts and Regions with centralized control,” the answer is usually CloudFormation StackSets, not manual deployment or scripts.'
-            }
-          ],
-          resources: [
-            { name: 'CloudFormation Guide', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html' }
-          ]
-        },
-        {
-          topic: 'Template Components',
-          details: [
-            'Parameters: Input values for stacks (for example, environment, instance type, CIDR).',
-            'Resources: AWS resources to create (must have unique logical IDs).',
-            'Mappings: Static lookup tables (for example, Region → AMI ID).',
-            'Conditions: Control whether resources/properties are created (for example, create NAT only in prod).',
-            'Outputs: Values exported for use by other stacks or humans (for example, VPC ID, ALB DNS name).',
-            'Metadata: Additional information for tools, such as CloudFormation Designer or helper scripts.',
-            {
-              name: 'Example',
-              text: 'Typical exam pattern: parameterized VPC CIDR and instance types; mappings for Region-specific AMIs; conditions for enabling features only in production.'
-            }
-          ],
-          resources: [
-            { name: 'Template Anatomy', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html' }
-          ]
-        },
-        {
-          topic: 'Intrinsic Functions & Pseudo Parameters',
-          details: [
-            '!Ref: Reference parameters and resources (for example, `!Ref MySubnet`).',
-            '!GetAtt: Get resource attributes (for example, `!GetAtt MyALB.DNSName`).',
-            '!Sub: String substitution and embedding parameter/attribute values within strings.',
-            '!Join: Concatenate values into a single string (for example, building ARNs or names).',
-            '!Select and !Split: Choose elements from lists or split strings (useful with `Fn::GetAZs`).',
-            '!If: Conditional values based on Conditions section.',
-            '!FindInMap: Look up values from Mappings (for example, Region → AMI).',
-            '!ImportValue: Import Outputs exported from other stacks (cross-stack references).',
-            {
-              name: 'Pseudo Parameters',
-              text: 'Common ones: `AWS::Region`, `AWS::AccountId`, `AWS::StackName`, used to build ARNs or names without hardcoding environment-specific values.'
-            },
-            {
-              name: 'Exam Pattern',
-              text: 'Questions mentioning “reuse template across environments with different parameters (e.g., dev/prod) and environment-specific values” typically involve Parameters + Mappings + Conditions with intrinsic functions like `!Ref`, `!FindInMap`, `!If`, and `!Sub`.'
-            }
-          ],
-          resources: [
-            { name: 'Intrinsic Functions', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html' }
-          ]
-        },
-        {
-          topic: 'AWS CDK Basics (with CloudFormation under the hood)',
-          details: [
-            'AWS CDK: Define infrastructure in familiar programming languages (TypeScript, Python, Java, C#, etc.).',
-            'CDK apps synthesize to CloudFormation templates (`cdk synth`), which are then deployed by CloudFormation.',
-            'Constructs: L1 (CFN resources), L2 (opinionated high-level APIs), and L3 (patterns/solutions).',
-            'Use context and environment variables to manage differences between stages (dev/test/prod).',
-            {
-              name: 'CDK Example',
-              text: 'You define constructs (L2/L3) in code, run `cdk synth` to generate CloudFormation, then `cdk deploy` to create/update stacks. Exam keyword: “define infra in TypeScript/Python instead of YAML/JSON templates.”'
-            },
-            'Terraform is a popular third-party IaC tool that also manages AWS resources, using state files to track resource mappings.',
-            {
-              name: 'Git & CI/CD',
-              text: 'Infrastructure repos typically live in Git (CodeCommit/GitHub/GitLab). You integrate with CodePipeline / CodeBuild / GitHub Actions to automatically validate and deploy CloudFormation/CDK/Terraform changes on commit.'
-            },
-            {
-              name: 'Exam Pattern',
-              text: 'If the question mentions “existing Terraform/IaC tooling” or “company standardizes on Terraform,” the answer is usually to integrate Terraform with IAM roles and use remote state (e.g., S3 + DynamoDB) instead of forcing migration to CloudFormation.'
-            },
-            {
-              name: 'Exam Pattern',
-              text: 'If the question mentions “infrastructure as code using TypeScript/Python” and CloudFormation templates produced automatically, the correct service is AWS CDK, but CloudFormation still performs the deployment.'
-            }
-          ],
-          resources: [
-            { name: 'AWS CDK', url: 'https://docs.aws.amazon.com/cdk/latest/guide/home.html' }
-          ]
-        }
-      ]
-    },
-
-    {
-      title: 'Images, AMIs, and Containers',
-      content: [
-        {
-          topic: 'AMIs & EC2 Image Builder',
-          details: [
-            'An Amazon Machine Image (AMI) is a template that contains the software configuration (OS, application, dependencies) required to launch EC2 instances.',
-            'Golden AMIs provide standardized, hardened images for consistent deployments across environments.',
-            'EC2 Image Builder automates building, testing, and distributing AMIs on a schedule or triggered basis.',
-            'Pipelines can include hardening, security scanning, and updating base OS and agents (for example, CloudWatch/SSM).',
-            {
-              name: 'Example',
-              text: 'Use EC2 Image Builder to create a monthly patched web-server AMI and reference it in Auto Scaling launch templates so new instances always use the latest hardened image.'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Maps to Skill 3.1.1: create and manage AMIs and automate image pipelines instead of manual instance baking.'
-            },
-            {
-              name: 'Pipeline Pattern',
-              text: 'Source image (e.g., Amazon Linux 2) -> Build component (install agents, app dependencies) -> Test component (run tests) -> Output AMI -> Distribute to multiple Regions/accounts.'
-            },
-            'You can share AMIs across accounts by modifying launch permissions or via AWS RAM in some scenarios.',
-            {
-              name: 'Exam Pattern',
-              text: 'If you see “keep EC2 images patched and compliant across many accounts/Regions, reduce manual AMI creation”, the likely answer is EC2 Image Builder + distribution settings, not manual AMI creation from instances.'
-            }
-          ],
-          resources: [
-            { name: 'EC2 Image Builder', url: 'https://docs.aws.amazon.com/imagebuilder/latest/userguide/what-is-image-builder.html' }
-          ]
-        },
-        {
-          topic: 'Container Images & Amazon ECR',
-          details: [
-            'Amazon ECR is a fully managed container registry for storing Docker/OCI images.',
-            'Supports private repositories with IAM-based access control and public repositories for public images.',
-            'Lifecycle policies automatically expire old image versions to control storage cost.',
-            'Image scanning (basic or enhanced) detects vulnerabilities in container images.',
-            'Integrates directly with ECS, EKS, and Fargate for pulling images at deploy time.',
-            'You can build images with CodeBuild, GitHub Actions, or local Docker and push to ECR for ECS/EKS/Fargate use.',
-            {
-              name: 'Exam Pattern',
-              text: 'If the scenario mentions “store and version container images for ECS/EKS” with IAM-controlled access and vulnerability scanning, the correct answer is Amazon ECR.'
-            },
-            {
-              name: 'Example',
-              text: 'Use CodeBuild buildspec to run `docker build`, `docker tag`, and `docker push` to ECR on each commit; ECS service uses the latest tagged image in a rolling deployment.'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Skill 3.1.1: “Create and manage AMIs and container images (for example, EC2 Image Builder)”—look for patterns around immutable infrastructure, golden images, and container registries like ECR.'
-            }
-          ],
-          resources: [
-            { name: 'Amazon ECR', url: 'https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html' }
-          ]
-        }
-      ]
-    },
-
-    {
-      title: 'Multi-Account & Multi-Region Provisioning',
-      content: [
-        {
-          topic: 'CloudFormation StackSets',
-          details: [
-            'Deploy CloudFormation stacks to multiple accounts and Regions from a central administrator account.',
-            'CloudFormation StackSets deploy stacks automatically across multiple AWS accounts and Regions using delegated admin.',
-            'Targets can be AWS accounts or entire AWS Organizations OUs (automatic inclusion of new accounts).',
-            'Supports automatic deployment to new accounts in an OU, and automatic rollback on failure.',
-            'Used for baseline infrastructure: IAM roles, Config rules, CloudTrail, logging buckets, guardrails.',
-            {
-              name: 'Exam Pattern',
-              text: 'If you see “deploy the same stack to hundreds of accounts and Regions with centralized control”, the solution is CloudFormation StackSets (Skill 3.1.4).'
-            },
-            {
-              name: 'Example',
-              text: 'Use a StackSet to roll out a standardized VPC, Config rules, or CloudTrail trail to every account in an AWS Organization with one operation.'
-            }
-          ],
-          resources: [
-            { name: 'CloudFormation StackSets', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html' }
-          ]
-        },
-        {
-          topic: 'AWS Resource Access Manager (AWS RAM)',
-          details: [
-            'AWS Resource Access Manager (AWS RAM) shares resources (e.g., subnets, Transit Gateways, Route 53 Resolver rules, License Manager) across accounts without duplication.',
-            {
-              name: 'Exam Pattern',
-              text: 'If the requirement says “central network account, application accounts consume shared subnets/Transit Gateway,” the answer is usually AWS RAM + shared VPC resources, not peering every account pair.'
-            },
-            'Share AWS resources across accounts and within AWS Organizations (for example, subnets, Route 53 Resolver rules, Transit Gateways, License Manager configs).',
-            'Avoids duplicating shared infrastructure resources in every account (centralized networking design).',
-            'Works with both individual account invitations and Organizations-based sharing.',
-            {
-              name: 'Example',
-              text: 'Share a central VPC subnet or Transit Gateway with multiple workload accounts, so they can attach their VPCs without each account owning its own TGW.'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Maps to Skill 3.1.4: provision and share resources across multiple Regions and accounts using AWS RAM instead of manual peering in every account.'
-            }
-          ],
-          resources: [
-            { name: 'AWS RAM', url: 'https://docs.aws.amazon.com/ram/latest/userguide/what-is.html' }
-          ]
-        }
-      ]
-    },
-
-    {
-      title: 'Deployment Strategies & Services',
-      content: [
-    {
-      title: 'Deployment Strategies & Elastic Beanstalk',
-      content: [
-        {
-          topic: 'Generic Deployment Strategies',
-          details: [
-            'All-at-once: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk.',
-            'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
-            'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
-            'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
-            'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target group switch.',
-            {
-              name: 'Exam Pattern',
-              text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
-            }
-          ]
-        },
-        {
-          topic: 'Elastic Beanstalk Deployment Options',
-          details: [
-            'All at once: fast, downtime during deployment; suitable for dev/test.',
-            'Rolling: updates in batches, maintains some capacity but may temporarily reduce total capacity.',
-            'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
-            'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
-            'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over.',
-            'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
-            {
-              name: 'Exam Mapping',
-              text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
-            }
-          ],
-          resources: [
-            { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
-          ]
-        },
-        {
-          topic: 'CodeDeploy & Application Deployment Strategies',
-          details: [
-            'Supports in-place and blue/green deployments for EC2/On-Prem and ECS services.',
-            'Deployment groups define which instances or services receive updates.',
-            'Hooks/lifecycle events (for example, `BeforeInstall`, `AfterInstall`, `BeforeAllowTraffic`) run scripts for validation, migration, or rollback.',
-            'Traffic shifting options (for example, linear, canary, all-at-once) for blue/green deployments via ALB or Route 53.',
-            {
-              name: 'Exam Pattern',
-              text: 'If the question mentions “automated rollback when health checks fail during deployment” for EC2/ECS, CodeDeploy with blue/green and health checks is the expected answer.'
-            }
-          ],
-          resources: [
-            { name: 'CodeDeploy', url: 'https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html' }
-          ]
-        },
-        {
-          topic: 'Lambda & Weighted Routing for Deployments',
-          details: [
-            'Lambda aliases (for example, `prod`, `beta`) can point to different versions of a function.',
-            'Traffic shifting between versions/aliases supports canary or linear rollout (for example, 10% → 50% → 100%).',
-            'Route 53 and ALB can use weighted routing to gradually shift traffic between two environments (blue/green pattern).',
-            {
-              name: 'Exam Pattern',
-              text: 'Look for phrases like “shift 5% of traffic to the new version and automatically roll back if errors spike” – solved with Lambda aliases or weighted routing in Route 53/ALB.'
-            }
-          ]
-        },
-        {
-          topic: 'Third-Party IaC Tools (Terraform, Git, etc.)',
-          details: [
-            'Terraform: popular third-party IaC tool that manages resources by calling AWS APIs; state stored remotely (for example, S3 + DynamoDB).',
-            'Git-based workflows: store infrastructure code (CloudFormation, CDK, Terraform) in Git and trigger CI/CD pipelines on commits.',
-            {
-              name: 'Exam Mapping',
-              text: 'Skill 3.1.6: recognize that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
-            }
-          ]
-        }
-      ]
-    },
-
-    {
-      title: 'Systems Manager & Operational Automation',
-      content: [
-        {
-          topic: 'Systems Manager Run Command',
-          details: [
-            'Run Command executes shell/PowerShell commands on EC2/on-premises instances without SSH/RDP or open inbound ports.',
-            'Ideal for ad-hoc operations (for example, restart services, apply config changes, collect logs).',
-            'Supports rate controls, concurrency limits, and error thresholds when targeting large fleets.',
-            'Can send command output to S3 and CloudWatch Logs for auditing and troubleshooting.',
-            'Access controlled with IAM, enabling fine-grained control over which users can run which commands.',
-            {
-              name: 'Exam Mapping',
-              text: 'Maps to Skill 3.2.1: use AWS Systems Manager to automate operational processes on existing resources without opening inbound ports.'
-            },
-            {
-              name: 'Exam Pattern',
-              text: 'If you see “run a script on hundreds of instances in multiple Regions, without opening SSH and with audit logs,” the correct answer is Systems Manager Run Command.'
-            }
-          ],
-          resources: [
-            { name: 'Run Command', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/execute-remote-commands.html' }
-          ]
-        },
-        {
-          topic: 'Automation Documents (SSM Runbooks)',
-          details: [
-            'Automation documents (runbooks) define multi-step workflows (for example, stop instance, snapshot EBS, start instance).',
-            'AWS provides many predefined runbooks, and you can create custom ones in JSON/YAML.',
-            'Support approvals, rate control, and integrations with Lambda, SNS, and EventBridge.',
-            'Can run across accounts and Regions when properly configured.',
-            'Can be triggered manually, on a schedule (Maintenance Windows), or programmatically (EventBridge, Lambda, SDK).',
-            {
-              name: 'Exam Mapping',
-              text: 'Skill 3.2.1: “Use AWS services to automate operational processes.” Automation runbooks are a common answer when you need standardized remediation/maintenance across fleets (snapshot, patch, restart, collect logs).'
-            },
-            {
-              name: 'Pattern',
-              text: 'EventBridge rule -> SSM Automation runbook to remediate drift or perform routine tasks (for example, restart unhealthy instance, attach IAM role, rotate logs).'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Maps to Skills 3.2.1 and 3.2.2: automate management of existing resources and trigger automation based on events.'
-            }
-          ],
-          resources: [
-            { name: 'Systems Manager Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
-          ]
-        }
-      ]
-    },
-    {
-      title: 'Event-Driven Automation (Lambda, S3, EventBridge)',
-      content: [
-        {
-          topic: 'Event-Driven Automation (Lambda, S3 Events, EventBridge)',
-          details: [
-            'Lambda + S3 Event Notifications: trigger functions on object creation/deletion (e.g., resize images, process logs, move files).',
-            'Lambda + CloudWatch Logs subscriptions: near real-time log processing and alerting based on patterns.',
-            'S3 can emit events (for example, `s3:ObjectCreated:*`, `s3:ObjectRemoved:*`) to Lambda, SNS, or SQS.',
-            'Common pattern: S3 upload → Lambda function to process/transform files or update metadata.',
-            'Use dead-letter queues (DLQs) or on-failure destinations for failed Lambda invocations.',
-            {
-              name: 'Exam Pattern',
-              text: 'Maps to Skill 3.2.2: “When an object is uploaded to an S3 bucket, automatically process it” – configure S3 event notification to trigger a Lambda function or send to SQS/SNS.'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Skill 3.2.2: “Implement event-driven automation by using AWS services and features (for example, Lambda, S3 Event Notifications).” Look for keywords like “trigger automatically when X happens” or “serverless event-driven processing.”'
-            }
-          ],
-          resources: [
-            { name: 'S3 Event Notifications', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/NotificationHowTo.html' }
-          ]
-        },
-        {
-          topic: 'EventBridge for Operational Automation',
-          details: [
-            'EventBridge rules match events from AWS services, custom apps, and SaaS partners and route them to targets (Lambda, SQS, SNS, Step Functions, SSM Automation, and more).',
-            'Supports scheduled events (cron/rate) for time-based automation (for example, nightly cleanup jobs).',
-            'Enables centralized event-driven automation across multiple accounts using event buses and cross-account rules.',
-            {
-              name: 'Pattern',
-              text: '“When a new object is uploaded to S3, automatically process and store metadata in DynamoDB” → S3 Event Notification → Lambda → DynamoDB (or EventBridge → Lambda).'
-            },
-            {
-              name: 'Exam Mapping',
-              text: 'Skill 3.2.2: implement event-driven automation, for example “trigger SSM Automation when an EC2 instance becomes unhealthy” using EventBridge + SSM runbook.'
-            }
-          ],
-          resources: [
-            { name: 'EventBridge', url: 'https://docs.aws.amazon.com/eventbridge/latest/userguide/what-is-amazon-eventbridge.html' }
-          ]
-        }
-      ]
-    },
-    {
-      title: 'Troubleshooting Provisioning & Deployment',
-      content: [
-        {
-          topic: 'Common CloudFormation & Networking Issues',
-          details: [
-            'Subnet sizing issues: too-small CIDR blocks cause IP exhaustion and failed instance launches.',
-            'Incorrect subnet type: launching public resources (e.g., ALB) in private subnets without an Internet Gateway leads to unreachable endpoints.',
-            'Dependency/order issues: resources failing because required IAM roles, security groups, or subnets are not defined correctly in the template.',
-            'Rollbacks on failure: CloudFormation automatically rolls back the stack if a resource creation/update fails, unless disabled.',
-            {
-              name: 'Exam Pattern',
-              text: 'Questions about “stack stuck in ROLLBACK_COMPLETE” or failures referencing missing IAM permissions often test your ability to identify misconfigured IAM roles/policies or missing capabilities like `CAPABILITY_NAMED_IAM` for IAM changes.'
-            }
-          ]
-        },
-        {
-          topic: 'Permissions & IAM Issues in Deployments',
-          details: [
-            'CloudFormation needs IAM permissions to create/update/delete resources; insufficient permissions cause stack failures.',
-            'IAM roles for service principals (e.g., CodeBuild, CodePipeline, EC2, Lambda) must allow required actions on target resources.',
-            'Cross-account deployments require trust relationships and appropriate role assumptions (e.g., StackSets with delegated admin).',
-            {
-              name: 'Example',
-              text: 'A deployment pipeline fails to create an S3 bucket because the CodePipeline service role lacks `s3:CreateBucket` permission; fixing the IAM policy resolves the issue.'
-            }
             ]
-            ]
-          }
-        ]
-      }
-    ]
-  },
-
-security: {
-  title: 'Domain 4: Security and Compliance (16%)',
-  sections: [
-    {
-      title: 'IAM',
-      content: [
+          ]    // closes inner array(s) of reliability.sections
+        }        // closes last object in reliability.sections array
+      ]          // closes reliability.sections array
+    },           // closes reliability object **with comma**, as next property follows
+    deployment: { // begins next top-level object at same level as monitoring/reliability
+      title: 'Domain 3: Deployment, Provisioning, and Automation (22%)',
+      sections: [
         {
-          topic: 'Policies',
-          details: [
-            'Identity-based: Attached to users/groups/roles',
-            'Resource-based: Attached to resources',
-            'AWS managed vs Customer managed',
-            'Policy evaluation: Explicit Deny > Allow',
-            'Permission boundaries for maximum permissions',
-            'Service Control Policies (SCPs) in Organizations'
-          ],
-          resources: [
-            { name: 'IAM Policies', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html' }
+          title: 'CloudFormation & AWS CDK (IaC Core)',
+          content: [
+            {
+              topic: 'Stack Operations',
+              details: [
+                'Create/Update/Delete stacks to manage related resources as a single unit.',
+                'Change sets let you preview what will change before executing an update (safe updates in production).',
+                'Stack policies protect critical resources from accidental updates (for example, prevent DB deletion).',
+                'Drift detection identifies resources that have been changed outside CloudFormation.',
+                'Nested stacks improve reusability and modular design (shared VPC, IAM, networking, logging templates).',
+                'StackSets deploy stacks across multiple accounts and Regions from a central administrator account.',
+                {
+                  name: 'Troubleshooting Patterns',
+                  text: 'Common issues: missing IAM permissions for CloudFormation service role, circular dependencies between resources, invalid references (!Ref to non-existent logical ID), or quota limits (for example, VPC CIDR exhaustion, EIP limits).'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Directly maps to Skills 3.1.2 and 3.1.3: create/manage CloudFormation stacks and identify/remediate deployment issues such as subnet sizing, IAM/permission errors, and template syntax problems.'
+                },
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the question says “roll out the same networking stack to multiple accounts and Regions with centralized control,” the answer is usually CloudFormation StackSets, not manual deployment or scripts.'
+                }
+              ],
+              resources: [
+                { name: 'CloudFormation Guide', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html' }
+              ]
+            },
+            {
+              topic: 'Template Components',
+              details: [
+                'Parameters: Input values for stacks (for example, environment, instance type, CIDR).',
+                'Resources: AWS resources to create (must have unique logical IDs).',
+                'Mappings: Static lookup tables (for example, Region → AMI ID).',
+                'Conditions: Control whether resources/properties are created (for example, create NAT only in prod).',
+                'Outputs: Values exported for use by other stacks or humans (for example, VPC ID, ALB DNS name).',
+                'Metadata: Additional information for tools, such as CloudFormation Designer or helper scripts.',
+                {
+                  name: 'Example',
+                  text: 'Typical exam pattern: parameterized VPC CIDR and instance types; mappings for Region-specific AMIs; conditions for enabling features only in production.'
+                }
+              ],
+              resources: [
+                { name: 'Template Anatomy', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html' }
+              ]
+            },
+            {
+              topic: 'Intrinsic Functions & Pseudo Parameters',
+              details: [
+                '!Ref: Reference parameters and resources (for example, `!Ref MySubnet`).',
+                '!GetAtt: Get resource attributes (for example, `!GetAtt MyALB.DNSName`).',
+                '!Sub: String substitution and embedding parameter/attribute values within strings.',
+                '!Join: Concatenate values into a single string (for example, building ARNs or names).',
+                '!Select and !Split: Choose elements from lists or split strings (useful with `Fn::GetAZs`).',
+                '!If: Conditional values based on Conditions section.',
+                '!FindInMap: Look up values from Mappings (for example, Region → AMI).',
+                '!ImportValue: Import Outputs exported from other stacks (cross-stack references).',
+                {
+                  name: 'Pseudo Parameters',
+                  text: 'Common ones: `AWS::Region`, `AWS::AccountId`, `AWS::StackName`, used to build ARNs or names without hardcoding environment-specific values.'
+                },
+                {
+                  name: 'Exam Pattern',
+                  text: 'Questions mentioning “reuse template across environments with different parameters (e.g., dev/prod) and environment-specific values” typically involve Parameters + Mappings + Conditions with intrinsic functions like `!Ref`, `!FindInMap`, `!If`, and `!Sub`.'
+                }
+              ],
+              resources: [
+                { name: 'Intrinsic Functions', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html' }
+              ]
+            },
+            {
+              topic: 'AWS CDK Basics (with CloudFormation under the hood)',
+              details: [
+                'AWS CDK: Define infrastructure in familiar programming languages (TypeScript, Python, Java, C#, etc.).',
+                'CDK apps synthesize to CloudFormation templates (`cdk synth`), which are then deployed by CloudFormation.',
+                'Constructs: L1 (CFN resources), L2 (opinionated high-level APIs), and L3 (patterns/solutions).',
+                'Use context and environment variables to manage differences between stages (dev/test/prod).',
+                {
+                  name: 'CDK Example',
+                  text: 'You define constructs (L2/L3) in code, run `cdk synth` to generate CloudFormation, then `cdk deploy` to create/update stacks. Exam keyword: “define infra in TypeScript/Python instead of YAML/JSON templates.”'
+                },
+                'Terraform is a popular third-party IaC tool that also manages AWS resources, using state files to track resource mappings.',
+                {
+                  name: 'Git & CI/CD',
+                  text: 'Infrastructure repos typically live in Git (CodeCommit/GitHub/GitLab). You integrate with CodePipeline / CodeBuild / GitHub Actions to automatically validate and deploy CloudFormation/CDK/Terraform changes on commit.'
+                },
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the question mentions “existing Terraform/IaC tooling” or “company standardizes on Terraform,” the answer is usually to integrate Terraform with IAM roles and use remote state (e.g., S3 + DynamoDB) instead of forcing migration to CloudFormation.'
+                },
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the question mentions “infrastructure as code using TypeScript/Python” and CloudFormation templates produced automatically, the correct service is AWS CDK, but CloudFormation still performs the deployment.'
+                }
+              ],
+              resources: [
+                { name: 'AWS CDK', url: 'https://docs.aws.amazon.com/cdk/latest/guide/home.html' }
+              ]
+            }
           ]
         },
-        {
-          topic: 'Roles',
-          details: [
-            'EC2 instance profiles',
-            'Cross-account access',
-            'Service roles for AWS services',
-            'AssumeRole with STS',
-            'External ID for third parties',
-            'Session policies for temporary restrictions'
-          ],
-          resources: [
-            { name: 'IAM Roles', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html' }
-          ]
-        }
-      ]
-    },
-    {
-      title: 'Data Protection',
-      content: [
-        {
-          topic: 'Encryption at Rest',
-          details: [
-            'S3: SSE-S3, SSE-KMS, SSE-C',
-            'EBS: Encryption by default setting',
-            'RDS: Encryption at creation only',
-            'EFS: Encryption at creation',
-            'Snapshot encryption inherits from volume'
-          ],
-          resources: [
-            { name: 'S3 Encryption', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html' }
-          ]
-        },
-        {
-          topic: 'Encryption in Transit',
-          details: [
-            'TLS/SSL for HTTPS endpoints',
-            'VPN for site-to-site connections',
-            'ACM for certificate management',
-            'CloudFront for HTTPS distribution',
-            'S3 Transfer Acceleration with encryption'
-          ],
-          resources: [
-            { name: 'ACM Guide', url: 'https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html' }
-          ]
-        }
-      ]
-    },
-    {
-      title: 'Compliance & Auditing',
-      content: [
-        {
-          topic: 'AWS Config',
-          details: [
-            "AWS Config: a service that provides a detailed view of your AWS resources, including their configurations, relationships, and how they have changed over time. It's used for compliance auditing, security analysis, and tracking resource changes to help you manage governance and troubleshoot issues.",
-            'AWS Config is used to enforce policies by continuously monitoring resource configurations, evaluating them against a set of rules, and then automating remediation actions for non-compliant resources. This process involves defining configuration rules (either using AWS-provided managed rules or custom ones) to check for deviations from desired settings, such as security or tagging policies.',
-            'Configuration history tracking',
-            'Compliance rules evaluation',
-            'Auto-remediation with SSM',
-            'Configuration snapshots',
-            'Aggregators for multi-account'
-          ],
-          image: {
-            url: 'https://docs.aws.amazon.com/images/config/latest/developerguide/images/how-AWSconfig-works-2.png',
-            alt: 'AWS Config'
-          },
-          resources: [
-            { name: 'AWS Config', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
-          ]
-        },
-        {
-          topic: 'CloudTrail',
-          details: [
-            'CloudTrail: a service that records user activity and API calls for an AWS account, enabling governance, compliance, and auditing. It logs who made a request, what action was taken, and when, helping with security monitoring, operational troubleshooting, and identifying potential issues.',
-            'Records events: It logs events, such as a user creating an Amazon S3 bucket, and delivers log files to an Amazon S3 bucket.',
-            'Management events: Control plane',
-            'Data events: S3/Lambda operations',
-            'Insights: Unusual activity detection',
-            'Event history: 90 days free',
-            'S3 logging with integrity validation',
-            'Provides visibility: It provides visibility into user activity by recording who made the request, the services used, the actions performed, and the parameters and responses for those actions.',
-            'Answers "who, what, where, and when": It helps answer fundamental questions about your AWS environment by tracking actions taken through the AWS Management Console, Command Line Interface (CLI), and SDKs.'
-          ],
-          image: {
-            url: 'https://media.amazonwebservices.com/blog/2013/cloudtrail_flow_4.png',
-            alt: 'AWS CloudTrail'
-          },
-          resources: [
-            { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
-            ]
-          }
-        ]
-      }
-    ]
-  },
     
-  networking: {
-    title: 'Domain 5: Networking and Content Delivery (18%)',
-    sections: [
-      {
-        title: 'VPC',
-        content: [
-          {
-            topic: 'Subnets & Routing',
-            details: [
-              'VPC: a secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets.',
-              'Each VPC is confined to a single region.',
-              'Subnet: a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.',
-              'Each subnet in a VPC is confined to a single AZ.',
-              'Default limit: The default limit is five VPCs per region',
-              'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
-              'CIDR blocks: /16 to /28',
-              'Public subnet: Route to IGW',
-              'Private subnet: Route to NAT',
-              'Route table priority: Most specific',
-              'Local route: Cannot be deleted',
-              'VPC Peering: No transitive routing'
-            ],
-            image: {
-              url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
-              alt: 'AWS VPCs and Subnets'
+        {
+          title: 'Images, AMIs, and Containers',
+          content: [
+            {
+              topic: 'AMIs & EC2 Image Builder',
+              details: [
+                'An Amazon Machine Image (AMI) is a template that contains the software configuration (OS, application, dependencies) required to launch EC2 instances.',
+                'Golden AMIs provide standardized, hardened images for consistent deployments across environments.',
+                'EC2 Image Builder automates building, testing, and distributing AMIs on a schedule or triggered basis.',
+                'Pipelines can include hardening, security scanning, and updating base OS and agents (for example, CloudWatch/SSM).',
+                {
+                  name: 'Example',
+                  text: 'Use EC2 Image Builder to create a monthly patched web-server AMI and reference it in Auto Scaling launch templates so new instances always use the latest hardened image.'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 3.1.1: create and manage AMIs and automate image pipelines instead of manual instance baking.'
+                },
+                {
+                  name: 'Pipeline Pattern',
+                  text: 'Source image (e.g., Amazon Linux 2) -> Build component (install agents, app dependencies) -> Test component (run tests) -> Output AMI -> Distribute to multiple Regions/accounts.'
+                },
+                'You can share AMIs across accounts by modifying launch permissions or via AWS RAM in some scenarios.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If you see “keep EC2 images patched and compliant across many accounts/Regions, reduce manual AMI creation”, the likely answer is EC2 Image Builder + distribution settings, not manual AMI creation from instances.'
+                }
+              ],
+              resources: [
+                { name: 'EC2 Image Builder', url: 'https://docs.aws.amazon.com/imagebuilder/latest/userguide/what-is-image-builder.html' }
+              ]
             },
-            resources: [
-              { name: 'VPC Guide', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html' }
-            ]
-          },
-          {
-            topic: 'Security Groups & NACLs',
-            details: [
-              'Security Groups: Stateful, instance level',
-              'NACLs: Stateless, subnet level',
-              'SG: Allow only, default deny',
-              'NACL: Allow/Deny, rule numbers',
-              'NACL evaluation: Lowest number first',
-              'Default NACL: Allows all'
-            ],
-            image: {
-              url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/security-group-overview.png',
-              alt: 'Security Groups'
+            {
+              topic: 'Container Images & Amazon ECR',
+              details: [
+                'Amazon ECR is a fully managed container registry for storing Docker/OCI images.',
+                'Supports private repositories with IAM-based access control and public repositories for public images.',
+                'Lifecycle policies automatically expire old image versions to control storage cost.',
+                'Image scanning (basic or enhanced) detects vulnerabilities in container images.',
+                'Integrates directly with ECS, EKS, and Fargate for pulling images at deploy time.',
+                'You can build images with CodeBuild, GitHub Actions, or local Docker and push to ECR for ECS/EKS/Fargate use.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the scenario mentions “store and version container images for ECS/EKS” with IAM-controlled access and vulnerability scanning, the correct answer is Amazon ECR.'
+                },
+                {
+                  name: 'Example',
+                  text: 'Use CodeBuild buildspec to run `docker build`, `docker tag`, and `docker push` to ECR on each commit; ECS service uses the latest tagged image in a rolling deployment.'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.1.1: “Create and manage AMIs and container images (for example, EC2 Image Builder)”—look for patterns around immutable infrastructure, golden images, and container registries like ECR.'
+                }
+              ],
+              resources: [
+                { name: 'Amazon ECR', url: 'https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html' }
+              ]
+            }
+          ]
+        },
+    
+        {
+          title: 'Multi-Account & Multi-Region Provisioning',
+          content: [
+            {
+              topic: 'CloudFormation StackSets',
+              details: [
+                'Deploy CloudFormation stacks to multiple accounts and Regions from a central administrator account.',
+                'CloudFormation StackSets deploy stacks automatically across multiple AWS accounts and Regions using delegated admin.',
+                'Targets can be AWS accounts or entire AWS Organizations OUs (automatic inclusion of new accounts).',
+                'Supports automatic deployment to new accounts in an OU, and automatic rollback on failure.',
+                'Used for baseline infrastructure: IAM roles, Config rules, CloudTrail, logging buckets, guardrails.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If you see “deploy the same stack to hundreds of accounts and Regions with centralized control”, the solution is CloudFormation StackSets (Skill 3.1.4).'
+                },
+                {
+                  name: 'Example',
+                  text: 'Use a StackSet to roll out a standardized VPC, Config rules, or CloudTrail trail to every account in an AWS Organization with one operation.'
+                }
+              ],
+              resources: [
+                { name: 'CloudFormation StackSets', url: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html' }
+              ]
             },
-            image2: {
-              url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/network-acl.png',
-              alt: 'NACLs'
+            {
+              topic: 'AWS Resource Access Manager (AWS RAM)',
+              details: [
+                'AWS Resource Access Manager (AWS RAM) shares resources (e.g., subnets, Transit Gateways, Route 53 Resolver rules, License Manager) across accounts without duplication.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the requirement says “central network account, application accounts consume shared subnets/Transit Gateway,” the answer is usually AWS RAM + shared VPC resources, not peering every account pair.'
+                },
+                'Share AWS resources across accounts and within AWS Organizations (for example, subnets, Route 53 Resolver rules, Transit Gateways, License Manager configs).',
+                'Avoids duplicating shared infrastructure resources in every account (centralized networking design).',
+                'Works with both individual account invitations and Organizations-based sharing.',
+                {
+                  name: 'Example',
+                  text: 'Share a central VPC subnet or Transit Gateway with multiple workload accounts, so they can attach their VPCs without each account owning its own TGW.'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 3.1.4: provision and share resources across multiple Regions and accounts using AWS RAM instead of manual peering in every account.'
+                }
+              ],
+              resources: [
+                { name: 'AWS RAM', url: 'https://docs.aws.amazon.com/ram/latest/userguide/what-is.html' }
+              ]
+            }
+          ]
+        },
+    
+        {
+          title: 'Deployment Strategies & Services',
+          content: [
+        {
+          title: 'Deployment Strategies & Elastic Beanstalk',
+          content: [
+            {
+              topic: 'Generic Deployment Strategies',
+              details: [
+                'All-at-once: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk.',
+                'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
+                'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
+                'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
+                'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target group switch.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
+                }
+              ]
             },
-            resources: [
-              { name: 'Security Groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html' }
-            ]
-          },
-          {
-            topic: 'VPC Connectivity',
-            details: [
-              { name: 'Internet Gateway', text: 'a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.' },
-              { name: 'NAT Gateway', text: 'it enables **private subnet instances to connect to internet, other VPCs, on-premises networks**; handles IPv4, IPv6 traffic routing, connectivity types. If you aim **to provide Internet access to private instances, the NAT gateway must be located in a public subnet**.' },
-              { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
-              { name: 'VPN', text: 'IPSec encrypted tunnel' },
-              { name: 'Direct Connect', text: 'a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs' },
-              { name: 'Transit Gateway', text: 'a network transit hub used to **interconnect VPCs and on-premises networks**' },
-              { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
-              { name: 'VPC Peering VS Transit Gateway', text: "**VPC peering connects two VPCs directly**, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs" },
-            ],
-            image: {
-              url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/connectivity-overview.png',
-              alt: 'Connect your VPC to other networks'
+            {
+              topic: 'Elastic Beanstalk Deployment Options',
+              details: [
+                'All at once: fast, downtime during deployment; suitable for dev/test.',
+                'Rolling: updates in batches, maintains some capacity but may temporarily reduce total capacity.',
+                'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
+                'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
+                'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over.',
+                'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
+                }
+              ],
+              resources: [
+                { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
+              ]
             },
-            resources: [
-              { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' }
+            {
+              topic: 'CodeDeploy & Application Deployment Strategies',
+              details: [
+                'Supports in-place and blue/green deployments for EC2/On-Prem and ECS services.',
+                'Deployment groups define which instances or services receive updates.',
+                'Hooks/lifecycle events (for example, `BeforeInstall`, `AfterInstall`, `BeforeAllowTraffic`) run scripts for validation, migration, or rollback.',
+                'Traffic shifting options (for example, linear, canary, all-at-once) for blue/green deployments via ALB or Route 53.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'If the question mentions “automated rollback when health checks fail during deployment” for EC2/ECS, CodeDeploy with blue/green and health checks is the expected answer.'
+                }
+              ],
+              resources: [
+                { name: 'CodeDeploy', url: 'https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html' }
+              ]
+            },
+            {
+              topic: 'Lambda & Weighted Routing for Deployments',
+              details: [
+                'Lambda aliases (for example, `prod`, `beta`) can point to different versions of a function.',
+                'Traffic shifting between versions/aliases supports canary or linear rollout (for example, 10% → 50% → 100%).',
+                'Route 53 and ALB can use weighted routing to gradually shift traffic between two environments (blue/green pattern).',
+                {
+                  name: 'Exam Pattern',
+                  text: 'Look for phrases like “shift 5% of traffic to the new version and automatically roll back if errors spike” – solved with Lambda aliases or weighted routing in Route 53/ALB.'
+                }
+              ]
+            },
+            {
+              topic: 'Third-Party IaC Tools (Terraform, Git, etc.)',
+              details: [
+                'Terraform: popular third-party IaC tool that manages resources by calling AWS APIs; state stored remotely (for example, S3 + DynamoDB).',
+                'Git-based workflows: store infrastructure code (CloudFormation, CDK, Terraform) in Git and trigger CI/CD pipelines on commits.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.1.6: recognize that Terraform/Git can be used to automate resource deployment, but AWS-native services (CloudFormation/CDK/CodePipeline) remain preferred in exam scenarios unless question explicitly mentions third-party tools.'
+                }
+              ]
+            }
+          ]
+        },
+    
+        {
+          title: 'Systems Manager & Operational Automation',
+          content: [
+            {
+              topic: 'Systems Manager Run Command',
+              details: [
+                'Run Command executes shell/PowerShell commands on EC2/on-premises instances without SSH/RDP or open inbound ports.',
+                'Ideal for ad-hoc operations (for example, restart services, apply config changes, collect logs).',
+                'Supports rate controls, concurrency limits, and error thresholds when targeting large fleets.',
+                'Can send command output to S3 and CloudWatch Logs for auditing and troubleshooting.',
+                'Access controlled with IAM, enabling fine-grained control over which users can run which commands.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skill 3.2.1: use AWS Systems Manager to automate operational processes on existing resources without opening inbound ports.'
+                },
+                {
+                  name: 'Exam Pattern',
+                  text: 'If you see “run a script on hundreds of instances in multiple Regions, without opening SSH and with audit logs,” the correct answer is Systems Manager Run Command.'
+                }
+              ],
+              resources: [
+                { name: 'Run Command', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/execute-remote-commands.html' }
+              ]
+            },
+            {
+              topic: 'Automation Documents (SSM Runbooks)',
+              details: [
+                'Automation documents (runbooks) define multi-step workflows (for example, stop instance, snapshot EBS, start instance).',
+                'AWS provides many predefined runbooks, and you can create custom ones in JSON/YAML.',
+                'Support approvals, rate control, and integrations with Lambda, SNS, and EventBridge.',
+                'Can run across accounts and Regions when properly configured.',
+                'Can be triggered manually, on a schedule (Maintenance Windows), or programmatically (EventBridge, Lambda, SDK).',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.2.1: “Use AWS services to automate operational processes.” Automation runbooks are a common answer when you need standardized remediation/maintenance across fleets (snapshot, patch, restart, collect logs).'
+                },
+                {
+                  name: 'Pattern',
+                  text: 'EventBridge rule -> SSM Automation runbook to remediate drift or perform routine tasks (for example, restart unhealthy instance, attach IAM role, rotate logs).'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Maps to Skills 3.2.1 and 3.2.2: automate management of existing resources and trigger automation based on events.'
+                }
+              ],
+              resources: [
+                { name: 'Systems Manager Automation', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Event-Driven Automation (Lambda, S3, EventBridge)',
+          content: [
+            {
+              topic: 'Event-Driven Automation (Lambda, S3 Events, EventBridge)',
+              details: [
+                'Lambda + S3 Event Notifications: trigger functions on object creation/deletion (e.g., resize images, process logs, move files).',
+                'Lambda + CloudWatch Logs subscriptions: near real-time log processing and alerting based on patterns.',
+                'S3 can emit events (for example, `s3:ObjectCreated:*`, `s3:ObjectRemoved:*`) to Lambda, SNS, or SQS.',
+                'Common pattern: S3 upload → Lambda function to process/transform files or update metadata.',
+                'Use dead-letter queues (DLQs) or on-failure destinations for failed Lambda invocations.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'Maps to Skill 3.2.2: “When an object is uploaded to an S3 bucket, automatically process it” – configure S3 event notification to trigger a Lambda function or send to SQS/SNS.'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.2.2: “Implement event-driven automation by using AWS services and features (for example, Lambda, S3 Event Notifications).” Look for keywords like “trigger automatically when X happens” or “serverless event-driven processing.”'
+                }
+              ],
+              resources: [
+                { name: 'S3 Event Notifications', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/NotificationHowTo.html' }
+              ]
+            },
+            {
+              topic: 'EventBridge for Operational Automation',
+              details: [
+                'EventBridge rules match events from AWS services, custom apps, and SaaS partners and route them to targets (Lambda, SQS, SNS, Step Functions, SSM Automation, and more).',
+                'Supports scheduled events (cron/rate) for time-based automation (for example, nightly cleanup jobs).',
+                'Enables centralized event-driven automation across multiple accounts using event buses and cross-account rules.',
+                {
+                  name: 'Pattern',
+                  text: '“When a new object is uploaded to S3, automatically process and store metadata in DynamoDB” → S3 Event Notification → Lambda → DynamoDB (or EventBridge → Lambda).'
+                },
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.2.2: implement event-driven automation, for example “trigger SSM Automation when an EC2 instance becomes unhealthy” using EventBridge + SSM runbook.'
+                }
+              ],
+              resources: [
+                { name: 'EventBridge', url: 'https://docs.aws.amazon.com/eventbridge/latest/userguide/what-is-amazon-eventbridge.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Troubleshooting Provisioning & Deployment',
+          content: [
+            {
+              topic: 'Common CloudFormation & Networking Issues',
+              details: [
+                'Subnet sizing issues: too-small CIDR blocks cause IP exhaustion and failed instance launches.',
+                'Incorrect subnet type: launching public resources (e.g., ALB) in private subnets without an Internet Gateway leads to unreachable endpoints.',
+                'Dependency/order issues: resources failing because required IAM roles, security groups, or subnets are not defined correctly in the template.',
+                'Rollbacks on failure: CloudFormation automatically rolls back the stack if a resource creation/update fails, unless disabled.',
+                {
+                  name: 'Exam Pattern',
+                  text: 'Questions about “stack stuck in ROLLBACK_COMPLETE” or failures referencing missing IAM permissions often test your ability to identify misconfigured IAM roles/policies or missing capabilities like `CAPABILITY_NAMED_IAM` for IAM changes.'
+                }
+              ]
+            },
+            {
+              topic: 'Permissions & IAM Issues in Deployments',
+              details: [
+                'CloudFormation needs IAM permissions to create/update/delete resources; insufficient permissions cause stack failures.',
+                'IAM roles for service principals (e.g., CodeBuild, CodePipeline, EC2, Lambda) must allow required actions on target resources.',
+                'Cross-account deployments require trust relationships and appropriate role assumptions (e.g., StackSets with delegated admin).',
+                {
+                  name: 'Example',
+                  text: 'A deployment pipeline fails to create an S3 bucket because the CodePipeline service role lacks `s3:CreateBucket` permission; fixing the IAM policy resolves the issue.'
+                }
+                ]
+                ]
+              }
             ]
           }
         ]
       },
-      {
-        title: 'Load Balancing',
-        content: [
-          {
-            topic: 'ELB Types',
-            details: [
-              'ALB: Layer 7, HTTP/HTTPS, path routing',
-              'NLB: Layer 4, TCP/UDP, ultra-low latency',
-              'CLB: Legacy, avoid for new apps',
-              'GWLB: Layer 3, for virtual appliances',
-              'Cross-zone load balancing',
-              'Connection draining/deregistration delay'
-            ],
-            resources: [
-              { name: 'ELB Guide', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html' }
-            ]
-          },
-          {
-            topic: 'Target Groups',
-            details: [
-              'Instance targets: EC2',
-              'IP targets: On-premises, containers',
-              'Lambda targets: Serverless',
-              'Health checks: HTTP/HTTPS/TCP',
-              'Stickiness: Application or duration',
-              'Slow start mode for gradual traffic'
-            ],
-            resources: [
-              { name: 'Target Groups', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html' }
+
+    security: {
+      title: 'Domain 4: Security and Compliance (16%)',
+      sections: [
+        {
+          title: 'IAM',
+          content: [
+            {
+              topic: 'Policies',
+              details: [
+                'Identity-based: Attached to users/groups/roles',
+                'Resource-based: Attached to resources',
+                'AWS managed vs Customer managed',
+                'Policy evaluation: Explicit Deny > Allow',
+                'Permission boundaries for maximum permissions',
+                'Service Control Policies (SCPs) in Organizations'
+              ],
+              resources: [
+                { name: 'IAM Policies', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html' }
+              ]
+            },
+            {
+              topic: 'Roles',
+              details: [
+                'EC2 instance profiles',
+                'Cross-account access',
+                'Service roles for AWS services',
+                'AssumeRole with STS',
+                'External ID for third parties',
+                'Session policies for temporary restrictions'
+              ],
+              resources: [
+                { name: 'IAM Roles', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Data Protection',
+          content: [
+            {
+              topic: 'Encryption at Rest',
+              details: [
+                'S3: SSE-S3, SSE-KMS, SSE-C',
+                'EBS: Encryption by default setting',
+                'RDS: Encryption at creation only',
+                'EFS: Encryption at creation',
+                'Snapshot encryption inherits from volume'
+              ],
+              resources: [
+                { name: 'S3 Encryption', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html' }
+              ]
+            },
+            {
+              topic: 'Encryption in Transit',
+              details: [
+                'TLS/SSL for HTTPS endpoints',
+                'VPN for site-to-site connections',
+                'ACM for certificate management',
+                'CloudFront for HTTPS distribution',
+                'S3 Transfer Acceleration with encryption'
+              ],
+              resources: [
+                { name: 'ACM Guide', url: 'https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Compliance & Auditing',
+          content: [
+            {
+              topic: 'AWS Config',
+              details: [
+                "AWS Config: a service that provides a detailed view of your AWS resources, including their configurations, relationships, and how they have changed over time. It's used for compliance auditing, security analysis, and tracking resource changes to help you manage governance and troubleshoot issues.",
+                'AWS Config is used to enforce policies by continuously monitoring resource configurations, evaluating them against a set of rules, and then automating remediation actions for non-compliant resources. This process involves defining configuration rules (either using AWS-provided managed rules or custom ones) to check for deviations from desired settings, such as security or tagging policies.',
+                'Configuration history tracking',
+                'Compliance rules evaluation',
+                'Auto-remediation with SSM',
+                'Configuration snapshots',
+                'Aggregators for multi-account'
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/config/latest/developerguide/images/how-AWSconfig-works-2.png',
+                alt: 'AWS Config'
+              },
+              resources: [
+                { name: 'AWS Config', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
+              ]
+            },
+            {
+              topic: 'CloudTrail',
+              details: [
+                'CloudTrail: a service that records user activity and API calls for an AWS account, enabling governance, compliance, and auditing. It logs who made a request, what action was taken, and when, helping with security monitoring, operational troubleshooting, and identifying potential issues.',
+                'Records events: It logs events, such as a user creating an Amazon S3 bucket, and delivers log files to an Amazon S3 bucket.',
+                'Management events: Control plane',
+                'Data events: S3/Lambda operations',
+                'Insights: Unusual activity detection',
+                'Event history: 90 days free',
+                'S3 logging with integrity validation',
+                'Provides visibility: It provides visibility into user activity by recording who made the request, the services used, the actions performed, and the parameters and responses for those actions.',
+                'Answers "who, what, where, and when": It helps answer fundamental questions about your AWS environment by tracking actions taken through the AWS Management Console, Command Line Interface (CLI), and SDKs.'
+              ],
+              image: {
+                url: 'https://media.amazonwebservices.com/blog/2013/cloudtrail_flow_4.png',
+                alt: 'AWS CloudTrail'
+              },
+              resources: [
+                { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
+                ]
+              }
             ]
           }
         ]
       },
-      {
-        title: 'CloudFront',
-        content: [
-          {
-            topic: 'Distribution Settings',
-            details: [
-              'Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users.',
-              "CloudFront works as a content delivery network (CDN) by storing cached copies of your content in its global network of data centers called edge locations. When a user requests content, it is delivered from the edge location geographically closest to them, which reduces latency and speeds up delivery. If the content isn't in that cache, CloudFront fetches it from the origin server, delivers it to the user, and then caches it at the edge location for future requests.",
-              'Origins: S3, ALB, or HTTP server; with support for origin failover and custom origin headers',
-              "Behaviors: Path patterns for URL-specific rules, cache settings per pattern, origin routing, viewer protocols, TTL settings",
-              "Security features: SSL/TLS encryption, field-level encryption, integration with AWS Shield and WAF, geographic restrictions, and signed URLs/cookies for private content access",
-              "Performance: Regional edge caches, origin shield protection, compression options, custom error responses",
-              "TTL: Minimum/maximum/default cache durations, override origin headers, custom cache control",
-              "Invalidations: Remove specific content from edge caches, wildcard patterns, batch processing",
-              'Origin access identity for S3, SSL/TLS certificates, field-level encryption, WAF integration',
-              "Protocol handling with options for HTTP/HTTPS, HTTPS-only, or Match Viewer settings, along with support for custom SSL certificates and SNI"
-            ],
-            image: {
-              url: 'https://docs.aws.amazon.com/images/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png',
-              alt: 'AWS CloudFront'
+    
+    networking: {
+      title: 'Domain 5: Networking and Content Delivery (18%)',
+      sections: [
+        {
+          title: 'VPC',
+          content: [
+            {
+              topic: 'Subnets & Routing',
+              details: [
+                'VPC: a secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets.',
+                'Each VPC is confined to a single region.',
+                'Subnet: a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.',
+                'Each subnet in a VPC is confined to a single AZ.',
+                'Default limit: The default limit is five VPCs per region',
+                'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
+                'CIDR blocks: /16 to /28',
+                'Public subnet: Route to IGW',
+                'Private subnet: Route to NAT',
+                'Route table priority: Most specific',
+                'Local route: Cannot be deleted',
+                'VPC Peering: No transitive routing'
+              ],
+              image: {
+                url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
+                alt: 'AWS VPCs and Subnets'
+              },
+              resources: [
+                { name: 'VPC Guide', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html' }
+              ]
             },
-            resources: [
-              { name: 'CloudFront', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-};
+            {
+              topic: 'Security Groups & NACLs',
+              details: [
+                'Security Groups: Stateful, instance level',
+                'NACLs: Stateless, subnet level',
+                'SG: Allow only, default deny',
+                'NACL: Allow/Deny, rule numbers',
+                'NACL evaluation: Lowest number first',
+                'Default NACL: Allows all'
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/security-group-overview.png',
+                alt: 'Security Groups'
+              },
+              image2: {
+                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/network-acl.png',
+                alt: 'NACLs'
+              },
+              resources: [
+                { name: 'Security Groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html' }
+              ]
+            },
+            {
+              topic: 'VPC Connectivity',
+              details: [
+                { name: 'Internet Gateway', text: 'a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.' },
+                { name: 'NAT Gateway', text: 'it enables **private subnet instances to connect to internet, other VPCs, on-premises networks**; handles IPv4, IPv6 traffic routing, connectivity types. If you aim **to provide Internet access to private instances, the NAT gateway must be located in a public subnet**.' },
+                { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
+                { name: 'VPN', text: 'IPSec encrypted tunnel' },
+                { name: 'Direct Connect', text: 'a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs' },
+                { name: 'Transit Gateway', text: 'a network transit hub used to **interconnect VPCs and on-premises networks**' },
+                { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
+                { name: 'VPC Peering VS Transit Gateway', text: "**VPC peering connects two VPCs directly**, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs" },
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/connectivity-overview.png',
+                alt: 'Connect your VPC to other networks'
+              },
+              resources: [
+                { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Load Balancing',
+          content: [
+            {
+              topic: 'ELB Types',
+              details: [
+                'ALB: Layer 7, HTTP/HTTPS, path routing',
+                'NLB: Layer 4, TCP/UDP, ultra-low latency',
+                'CLB: Legacy, avoid for new apps',
+                'GWLB: Layer 3, for virtual appliances',
+                'Cross-zone load balancing',
+                'Connection draining/deregistration delay'
+              ],
+              resources: [
+                { name: 'ELB Guide', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html' }
+              ]
+            },
+            {
+              topic: 'Target Groups',
+              details: [
+                'Instance targets: EC2',
+                'IP targets: On-premises, containers',
+                'Lambda targets: Serverless',
+                'Health checks: HTTP/HTTPS/TCP',
+                'Stickiness: Application or duration',
+                'Slow start mode for gradual traffic'
+              ],
+              resources: [
+                { name: 'Target Groups', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html' }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'CloudFront',
+          content: [
+            {
+              topic: 'Distribution Settings',
+              details: [
+                'Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users.',
+                "CloudFront works as a content delivery network (CDN) by storing cached copies of your content in its global network of data centers called edge locations. When a user requests content, it is delivered from the edge location geographically closest to them, which reduces latency and speeds up delivery. If the content isn't in that cache, CloudFront fetches it from the origin server, delivers it to the user, and then caches it at the edge location for future requests.",
+                'Origins: S3, ALB, or HTTP server; with support for origin failover and custom origin headers',
+                "Behaviors: Path patterns for URL-specific rules, cache settings per pattern, origin routing, viewer protocols, TTL settings",
+                "Security features: SSL/TLS encryption, field-level encryption, integration with AWS Shield and WAF, geographic restrictions, and signed URLs/cookies for private content access",
+                "Performance: Regional edge caches, origin shield protection, compression options, custom error responses",
+                "TTL: Minimum/maximum/default cache durations, override origin headers, custom cache control",
+                "Invalidations: Remove specific content from edge caches, wildcard patterns, batch processing",
+                'Origin access identity for S3, SSL/TLS certificates, field-level encryption, WAF integration',
+                "Protocol handling with options for HTTP/HTTPS, HTTPS-only, or Match Viewer settings, along with support for custom SSL certificates and SNI"
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png',
+                alt: 'AWS CloudFront'
+              },
+              resources: [
+                { name: 'CloudFront', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  };
 
   const practiceQuestions = [
     {
