@@ -1231,258 +1231,256 @@ const cheatsheet = {
       ]
     },
 
-    'security': {
-      title: 'Domain 4: Security and Compliance (16%)',
-      sections: [
+'security': {
+  title: 'Domain 4: Security and Compliance (16%)',
+  sections: [
+    {
+      title: 'IAM',
+      content: [
         {
-          title: 'IAM',
-          content: [
-            {
-              topic: 'Policies',
-              details: [
-                'Identity-based: Attached to users/groups/roles',
-                'Resource-based: Attached to resources',
-                'AWS managed vs Customer managed',
-                'Policy evaluation: Explicit Deny > Allow',
-                'Permission boundaries for maximum permissions',
-                'Service Control Policies (SCPs) in Organizations'
-              ],
-              resources: [
-                { name: 'IAM Policies', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html' }
-              ]
-            },
-            {
-              topic: 'Roles',
-              details: [
-                'EC2 instance profiles',
-                'Cross-account access',
-                'Service roles for AWS services',
-                'AssumeRole with STS',
-                'External ID for third parties',
-                'Session policies for temporary restrictions'
-              ],
-              resources: [
-                { name: 'IAM Roles', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html' }
-              ]
-            }
+          topic: 'Policies',
+          details: [
+            'Identity-based: Attached to users/groups/roles',
+            'Resource-based: Attached to resources',
+            'AWS managed vs Customer managed',
+            'Policy evaluation: Explicit Deny > Allow',
+            'Permission boundaries for maximum permissions',
+            'Service Control Policies (SCPs) in Organizations'
+          ],
+          resources: [
+            { name: 'IAM Policies', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html' }
           ]
         },
         {
-          title: 'Data Protection',
-          content: [
-            {
-              topic: 'Encryption at Rest',
-              details: [
-                'S3: SSE-S3, SSE-KMS, SSE-C',
-                'EBS: Encryption by default setting',
-                'RDS: Encryption at creation only',
-                'EFS: Encryption at creation',
-                'Snapshot encryption inherits from volume'
-              ],
-              resources: [
-                { name: 'S3 Encryption', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html' }
-              ]
-            },
-            {
-              topic: 'Encryption in Transit',
-              details: [
-                'TLS/SSL for HTTPS endpoints',
-                'VPN for site-to-site connections',
-                'ACM for certificate management',
-                'CloudFront for HTTPS distribution',
-                'S3 Transfer Acceleration with encryption'
-              ],
-              resources: [
-                { name: 'ACM Guide', url: 'https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html' }
-              ]
-            }
+          topic: 'Roles',
+          details: [
+            'EC2 instance profiles',
+            'Cross-account access',
+            'Service roles for AWS services',
+            'AssumeRole with STS',
+            'External ID for third parties',
+            'Session policies for temporary restrictions'
+          ],
+          resources: [
+            { name: 'IAM Roles', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html' }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Data Protection',
+      content: [
+        {
+          topic: 'Encryption at Rest',
+          details: [
+            'S3: SSE-S3, SSE-KMS, SSE-C',
+            'EBS: Encryption by default setting',
+            'RDS: Encryption at creation only',
+            'EFS: Encryption at creation',
+            'Snapshot encryption inherits from volume'
+          ],
+          resources: [
+            { name: 'S3 Encryption', url: 'https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html' }
           ]
         },
         {
-          title: 'Compliance & Auditing',
-          content: [
-            {
-              topic: 'AWS Config',
-              details: [
-                "AWS Config: a service that provides a detailed view of your AWS resources, including their configurations, relationships, and how they have changed over time. It's used for compliance auditing, security analysis, and tracking resource changes to help you manage governance and troubleshoot issues.",
-                'AWS Config is used to enforce policies by continuously monitoring resource configurations, evaluating them against a set of rules, and then automating remediation actions for non-compliant resources. This process involves defining configuration rules (either using AWS-provided managed rules or custom ones) to check for deviations from desired settings, such as security or tagging policies.',
-                'Configuration history tracking',
-                'Compliance rules evaluation',
-                'Auto-remediation with SSM',
-                'Configuration snapshots',
-                'Aggregators for multi-account'
-              ],
-              image: {
-                url: 'https://docs.aws.amazon.com/images/config/latest/developerguide/images/how-AWSconfig-works-2.png',
-                alt: 'AWS Config'
-              },
-              resources: [
-                { name: 'AWS Config', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
-              ]
-            },
-            {
-              topic: 'CloudTrail',
-              details: [
-                'CloudTrail: a service that records user activity and API calls for an AWS account, enabling governance, compliance, and auditing. It logs who made a request, what action was taken, and when, helping with security monitoring, operational troubleshooting, and identifying potential issues.',
-                'Records events: It logs events, such as a user creating an Amazon S3 bucket, and delivers log files to an Amazon S3 bucket.',
-                'Management events: Control plane',
-                'Data events: S3/Lambda operations',
-                'Insights: Unusual activity detection',
-                'Event history: 90 days free',
-                'S3 logging with integrity validation',
-                'Provides visibility: It provides visibility into user activity by recording who made the request, the services used, the actions performed, and the parameters and responses for those actions.',
-                'Answers "who, what, where, and when": It helps answer fundamental questions about your AWS environment by tracking actions taken through the AWS Management Console, Command Line Interface (CLI), and SDKs.'
-              ],
-              image: {
-                url: 'https://media.amazonwebservices.com/blog/2013/cloudtrail_flow_4.png',
-                alt: 'AWS CloudTrail'
-              },
-              resources: [
-                { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
-              ]
-            }
+          topic: 'Encryption in Transit',
+          details: [
+            'TLS/SSL for HTTPS endpoints',
+            'VPN for site-to-site connections',
+            'ACM for certificate management',
+            'CloudFront for HTTPS distribution',
+            'S3 Transfer Acceleration with encryption'
+          ],
+          resources: [
+            { name: 'ACM Guide', url: 'https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html' }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Compliance & Auditing',
+      content: [
+        {
+          topic: 'AWS Config',
+          details: [
+            "AWS Config: a service that provides a detailed view of your AWS resources, including their configurations, relationships, and how they have changed over time. It's used for compliance auditing, security analysis, and tracking resource changes to help you manage governance and troubleshoot issues.",
+            'AWS Config is used to enforce policies by continuously monitoring resource configurations, evaluating them against a set of rules, and then automating remediation actions for non-compliant resources. This process involves defining configuration rules (either using AWS-provided managed rules or custom ones) to check for deviations from desired settings, such as security or tagging policies.',
+            'Configuration history tracking',
+            'Compliance rules evaluation',
+            'Auto-remediation with SSM',
+            'Configuration snapshots',
+            'Aggregators for multi-account'
+          ],
+          image: {
+            url: 'https://docs.aws.amazon.com/images/config/latest/developerguide/images/how-AWSconfig-works-2.png',
+            alt: 'AWS Config'
+          },
+          resources: [
+            { name: 'AWS Config', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
+          ]
+        },
+        {
+          topic: 'CloudTrail',
+          details: [
+            'CloudTrail: a service that records user activity and API calls for an AWS account, enabling governance, compliance, and auditing. It logs who made a request, what action was taken, and when, helping with security monitoring, operational troubleshooting, and identifying potential issues.',
+            'Records events: It logs events, such as a user creating an Amazon S3 bucket, and delivers log files to an Amazon S3 bucket.',
+            'Management events: Control plane',
+            'Data events: S3/Lambda operations',
+            'Insights: Unusual activity detection',
+            'Event history: 90 days free',
+            'S3 logging with integrity validation',
+            'Provides visibility: It provides visibility into user activity by recording who made the request, the services used, the actions performed, and the parameters and responses for those actions.',
+            'Answers "who, what, where, and when": It helps answer fundamental questions about your AWS environment by tracking actions taken through the AWS Management Console, Command Line Interface (CLI), and SDKs.'
+          ],
+          image: {
+            url: 'https://media.amazonwebservices.com/blog/2013/cloudtrail_flow_4.png',
+            alt: 'AWS CloudTrail'
+          },
+          resources: [
+            { name: 'CloudTrail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html' }
           ]
         }
       ]
     },
 
-    'networking': {
-      title: 'Domain 5: Networking and Content Delivery (18%)',
-      sections: [
-        {
-          title: 'VPC',
-          content: [
-            {
-              topic: 'Subnets & Routing',
-              details: [
-                'VPC: a secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets.',
-                'Each VPC is confined to a single region.',
-                'Subnet: a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.',
-                'Each subnet in a VPC is confined to a single AZ.',
-                'Default limit: The default limit is five VPCs per region',
-                'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
-                'CIDR blocks: /16 to /28',
-                'Public subnet: Route to IGW',
-                'Private subnet: Route to NAT',
-                'Route table priority: Most specific',
-                'Local route: Cannot be deleted',
-                'VPC Peering: No transitive routing'
-              ],
-              image: {
-                url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
-                alt: 'AWS VPCs and Subnets'
-              },
-              resources: [
-                { name: 'VPC Guide', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html' }
-              ]
+  'networking': {
+    title: 'Domain 5: Networking and Content Delivery (18%)',
+    sections: [
+      {
+        title: 'VPC',
+        content: [
+          {
+            topic: 'Subnets & Routing',
+            details: [
+              'VPC: a secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets.',
+              'Each VPC is confined to a single region.',
+              'Subnet: a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.',
+              'Each subnet in a VPC is confined to a single AZ.',
+              'Default limit: The default limit is five VPCs per region',
+              'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
+              'CIDR blocks: /16 to /28',
+              'Public subnet: Route to IGW',
+              'Private subnet: Route to NAT',
+              'Route table priority: Most specific',
+              'Local route: Cannot be deleted',
+              'VPC Peering: No transitive routing'
+            ],
+            image: {
+              url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
+              alt: 'AWS VPCs and Subnets'
             },
-            {
-              topic: 'Security Groups & NACLs',
-              details: [
-                'Security Groups: Stateful, instance level',
-                'NACLs: Stateless, subnet level',
-                'SG: Allow only, default deny',
-                'NACL: Allow/Deny, rule numbers',
-                'NACL evaluation: Lowest number first',
-                'Default NACL: Allows all'
-              ],
-              image: {
-                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/security-group-overview.png',
-                alt: 'Security Groups'
-              },
-              image2: {
-                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/network-acl.png',
-                alt: 'NACLs'
-              },
-              resources: [
-                { name: 'Security Groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html' }
-              ]
+            resources: [
+              { name: 'VPC Guide', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html' }
+            ]
+          },
+          {
+            topic: 'Security Groups & NACLs',
+            details: [
+              'Security Groups: Stateful, instance level',
+              'NACLs: Stateless, subnet level',
+              'SG: Allow only, default deny',
+              'NACL: Allow/Deny, rule numbers',
+              'NACL evaluation: Lowest number first',
+              'Default NACL: Allows all'
+            ],
+            image: {
+              url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/security-group-overview.png',
+              alt: 'Security Groups'
             },
-            {
-              topic: 'VPC Connectivity',
-              details: [
-                { name: 'Internet Gateway', text: 'a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.' },
-                { name: 'NAT Gateway', text: 'it enables **private subnet instances to connect to internet, other VPCs, on-premises networks**; handles IPv4, IPv6 traffic routing, connectivity types. If you aim **to provide Internet access to private instances, the NAT gateway must be located in a public subnet**.' },
-                { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
-                { name: 'VPN', text: 'IPSec encrypted tunnel' },
-                { name: 'Direct Connect', text: 'a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs' },
-                { name: 'Transit Gateway', text: 'a network transit hub used to **interconnect VPCs and on-premises networks**' },
-                { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
-                { name: 'VPC Peering VS Transit Gateway', text: "**VPC peering connects two VPCs directly**, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs" },
-              ],
-              image: {
-                url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/connectivity-overview.png',
-                alt: 'Connect your VPC to other networks'
-              },
-              resources: [
-                { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'Load Balancing',
-          content: [
-            {
-              topic: 'ELB Types',
-              details: [
-                'ALB: Layer 7, HTTP/HTTPS, path routing',
-                'NLB: Layer 4, TCP/UDP, ultra-low latency',
-                'CLB: Legacy, avoid for new apps',
-                'GWLB: Layer 3, for virtual appliances',
-                'Cross-zone load balancing',
-                'Connection draining/deregistration delay'
-              ],
-              resources: [
-                { name: 'ELB Guide', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html' }
-              ]
+            image2: {
+              url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/network-acl.png',
+              alt: 'NACLs'
             },
-            {
-              topic: 'Target Groups',
-              details: [
-                'Instance targets: EC2',
-                'IP targets: On-premises, containers',
-                'Lambda targets: Serverless',
-                'Health checks: HTTP/HTTPS/TCP',
-                'Stickiness: Application or duration',
-                'Slow start mode for gradual traffic'
-              ],
-              resources: [
-                { name: 'Target Groups', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html' }
-              ]
-            }
-          ]
-        },
-        {
-          title: 'CloudFront',
-          content: [
-            {
-              topic: 'Distribution Settings',
-              details: [
-                'Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users.',
-                "CloudFront works as a content delivery network (CDN) by storing cached copies of your content in its global network of data centers called edge locations. When a user requests content, it is delivered from the edge location geographically closest to them, which reduces latency and speeds up delivery. If the content isn't in that cache, CloudFront fetches it from the origin server, delivers it to the user, and then caches it at the edge location for future requests.",
-                'Origins: S3, ALB, or HTTP server; with support for origin failover and custom origin headers',
-                "Behaviors: Path patterns for URL-specific rules, cache settings per pattern, origin routing, viewer protocols, TTL settings",
-                "Security features: SSL/TLS encryption, field-level encryption, integration with AWS Shield and WAF, geographic restrictions, and signed URLs/cookies for private content access",
-                "Performance: Regional edge caches, origin shield protection, compression options, custom error responses",
-                "TTL: Minimum/maximum/default cache durations, override origin headers, custom cache control",
-                "Invalidations: Remove specific content from edge caches, wildcard patterns, batch processing",
-                'Origin access identity for S3, SSL/TLS certificates, field-level encryption, WAF integration',
-                "Protocol handling with options for HTTP/HTTPS, HTTPS-only, or Match Viewer settings, along with support for custom SSL certificates and SNI"
-              ],
-              image: {
-                url: 'https://docs.aws.amazon.com/images/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png',
-                alt: 'AWS CloudFront'
-              },
-              resources: [
-                { name: 'CloudFront', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-  };
+            resources: [
+              { name: 'Security Groups', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html' }
+            ]
+          },
+          {
+            topic: 'VPC Connectivity',
+            details: [
+              { name: 'Internet Gateway', text: 'a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.' },
+              { name: 'NAT Gateway', text: 'it enables **private subnet instances to connect to internet, other VPCs, on-premises networks**; handles IPv4, IPv6 traffic routing, connectivity types. If you aim **to provide Internet access to private instances, the NAT gateway must be located in a public subnet**.' },
+              { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
+              { name: 'VPN', text: 'IPSec encrypted tunnel' },
+              { name: 'Direct Connect', text: 'a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs' },
+              { name: 'Transit Gateway', text: 'a network transit hub used to **interconnect VPCs and on-premises networks**' },
+              { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
+              { name: 'VPC Peering VS Transit Gateway', text: "**VPC peering connects two VPCs directly**, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs" },
+            ],
+            image: {
+              url: 'https://docs.aws.amazon.com/images/vpc/latest/userguide/images/connectivity-overview.png',
+              alt: 'Connect your VPC to other networks'
+            },
+            resources: [
+              { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Load Balancing',
+        content: [
+          {
+            topic: 'ELB Types',
+            details: [
+              'ALB: Layer 7, HTTP/HTTPS, path routing',
+              'NLB: Layer 4, TCP/UDP, ultra-low latency',
+              'CLB: Legacy, avoid for new apps',
+              'GWLB: Layer 3, for virtual appliances',
+              'Cross-zone load balancing',
+              'Connection draining/deregistration delay'
+            ],
+            resources: [
+              { name: 'ELB Guide', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html' }
+            ]
+          },
+          {
+            topic: 'Target Groups',
+            details: [
+              'Instance targets: EC2',
+              'IP targets: On-premises, containers',
+              'Lambda targets: Serverless',
+              'Health checks: HTTP/HTTPS/TCP',
+              'Stickiness: Application or duration',
+              'Slow start mode for gradual traffic'
+            ],
+            resources: [
+              { name: 'Target Groups', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html' }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'CloudFront',
+        content: [
+          {
+            topic: 'Distribution Settings',
+            details: [
+              'Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, such as .html, .css, .js, and image files, to your users.',
+              "CloudFront works as a content delivery network (CDN) by storing cached copies of your content in its global network of data centers called edge locations. When a user requests content, it is delivered from the edge location geographically closest to them, which reduces latency and speeds up delivery. If the content isn't in that cache, CloudFront fetches it from the origin server, delivers it to the user, and then caches it at the edge location for future requests.",
+              'Origins: S3, ALB, or HTTP server; with support for origin failover and custom origin headers',
+              "Behaviors: Path patterns for URL-specific rules, cache settings per pattern, origin routing, viewer protocols, TTL settings",
+              "Security features: SSL/TLS encryption, field-level encryption, integration with AWS Shield and WAF, geographic restrictions, and signed URLs/cookies for private content access",
+              "Performance: Regional edge caches, origin shield protection, compression options, custom error responses",
+              "TTL: Minimum/maximum/default cache durations, override origin headers, custom cache control",
+              "Invalidations: Remove specific content from edge caches, wildcard patterns, batch processing",
+              'Origin access identity for S3, SSL/TLS certificates, field-level encryption, WAF integration',
+              "Protocol handling with options for HTTP/HTTPS, HTTPS-only, or Match Viewer settings, along with support for custom SSL certificates and SNI"
+            ],
+            image: {
+              url: 'https://docs.aws.amazon.com/images/AmazonCloudFront/latest/DeveloperGuide/images/how-you-configure-cf.png',
+              alt: 'AWS CloudFront'
+            },
+            resources: [
+              { name: 'CloudFront', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+};
 
   const practiceQuestions = [
     {
