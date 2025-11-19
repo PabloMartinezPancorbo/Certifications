@@ -33,10 +33,10 @@ const AWSSysOpsExamApp = () => {
               topic: 'CloudWatch Metrics',
               details: [
                 'Default EC2 metrics: CPU, network in/out, disk I/O (no memory or disk space by default).',
-                'Custom metrics via PutMetricData API or CloudWatch agent (e.g., memory, disk usage, application metrics).',
-                'Metric math for aggregations and calculations across metrics (averages, percentages, ratios).',
-                'High-resolution metrics (up to 1-second granularity) for fine-grained alarms and analysis.',
-                'Retention: 15 months with automatic aggregation (1-minute, 5-minute, 1-hour periods).'
+                'Custom metrics via PutMetricData API or CloudWatch agent (e.g., memory, disk usage, application metrics). Example CLI: `aws cloudwatch put-metric-data --namespace "MyApp" --metric-name "ProcessedOrders" --value 1.`',
+                'Metric math for aggregations and calculations across metrics (averages, percentages, ratios). Example 1: `(m1 + m2) / 2` to compute an average across two Auto Scaling groups. Example 2: metric math expression `SEARCH({AWS/EC2,CPUUtilization},"InstanceId","Average",300)` to select specific instances.',
+                'High-resolution metrics (up to 1-second granularity) for fine-grained alarms and analysis. Example 1: high-resolution alarm for `p99` latency on a critical API. Example 2: set period to `10` seconds with `Standard` statistics for spiky workloads.',', 
+                'Retention: 15 months with automatic aggregation (1-minute, 5-minute, 1-hour periods).Important for questions about historical trend analysis.'
               ],
               resources: [
                 { name: 'CloudWatch Metrics Guide', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html' }
@@ -46,11 +46,11 @@ const AWSSysOpsExamApp = () => {
               topic: 'CloudWatch Alarms',
               details: [
                 'Alarm States: OK, ALARM, INSUFFICIENT_DATA',
-                'Actions can directly invoke AWS services: SNS notifications, Auto Scaling policies, EC2 stop/terminate/recover/reboot, Systems Manager actions.',
+                'Actions can directly invoke AWS services: SNS notifications, Auto Scaling policies, EC2 stop/terminate/recover/reboot, Systems Manager actions. Example exam pattern: `CPU > 80%` for 5 minutes triggers an Auto Scaling step policy.',
                 'Composite alarms: combine multiple alarms with AND/OR logic to reduce alarm noise (useful for exam questions on “alarm storms”).',
-                'Anomaly detection: ML-based dynamic thresholds instead of static values.',
-                'Can target EventBridge to fan out events to Lambda, SSM Automation, or other services for remediation.',
-                'Billing alarms are created in us-east-1 only.'
+                'Anomaly detection: ML-based dynamic thresholds instead of static values. Example: detect abnormal surge in `5xx` errors without hard thresholds.',
+                'Can target EventBridge to fan out events to Lambda, SSM Automation, or other services for remediation. Pattern: CloudWatch alarm -> EventBridge rule -> Lambda or SSM runbook.',
+                'Billing alarms are created in us-east-1 only. Typical exam gotcha: you must create billing alarms in the N. Virginia Region.'
               ],
               resources: [
                 { name: 'CloudWatch Alarms', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html' }
@@ -1338,7 +1338,26 @@ const arraysEqual = (a, b) => {
       i % 2 === 1 ? <strong key={i}>{part}</strong> : part
     ).filter(part => part !== '');
   };
-  
+
+  const renderInlineCode = (text) => {
+  // Split on segments wrapped in `...`
+  const parts = text.split(/(`[^`]+`)/g);
+
+  return parts.map((part, i) => {
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code
+          key={i}
+          className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono text-gray-800"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+};
+
  const renderCheatsheetSection = (sectionData) => {
   return (
     <div className="space-y-6">
@@ -1370,7 +1389,7 @@ const arraysEqual = (a, b) => {
                         <ul key={idx} className="list-disc list-inside space-y-1 text-gray-600 text-sm">
                           {value.map((detail, detailIdx) => (
                             <li key={detailIdx}>
-                              {typeof detail === 'string' ? detail : (
+                              {typeof detail === 'string' ? renderInlineCode(detail) : (
                                 <>
                                   <strong>
                                     {detail.url ? (
