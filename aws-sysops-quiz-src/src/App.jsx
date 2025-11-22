@@ -1468,8 +1468,9 @@ const cheatsheet = {
               ]
             },
             {
-              topic: 'Security Groups & NACLs',
+              topic: 'Secure your VPC: BPA, Security Groups & NACLs',
               details: [
+                {name:'', text: 'VPC Block Public Access (BPA) is a centralized security feature that enables you to authoritatively prevent public internet access to VPC resources across an entire AWS account, ensuring compliance with security requirements while providing flexibility for specific exceptions and audit capabilities. The VPC BPA feature has the following modes: Bidirectional: All traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets) is blocked. Ingress-only: All internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded) is blocked. Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.'},
                 'Security Groups: Stateful, instance level',
                 'NACLs: Stateless, subnet level',
                 'SG: Allow only, default deny',
@@ -2075,6 +2076,32 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 0,
     explanation: 'CloudWatch can collect and track metrics for AWS services, including EC2 instances and RDS databases. You can configure CloudWatch alarms to be invoked when metrics exceed specified thresholds. This solution provides automated monitoring and notification capabilities. This solution requires minimal setup and maintenance. B Incorrect: CloudTrail tracks API activity. CloudTrail is not designed to monitor metrics. CloudTrail can be useful for security and auditing purposes. However, CloudTrail does not provide the metric monitoring and alarm capabilities that you need for this scenario. C Incorrect: Lambda functions can collect metrics from EC2 instances and RDS databases. However, using Lambda to collect metrics would require custom development and maintenance. Firehose can load streaming data into Amazon Redshift for analysis. However, this solution introduces additional operational overhead and complexity for metric monitoring and alerting. Amazon Redshift is a data warehouse that is more suitable for complex analytical queries on large datasets. Amazon Redshift is not suitable for real-time metric monitoring and alerting. You can use Systems Manager to manage EC2 instances. The SSM Agent can collect metrics from EC2 instances. However, the SSM Agent cannot directly monitor RDS databases.'
+  },
+  {
+    id: 38,
+    domain: 'Deployment, Provisioning, and Automation',
+    question: 'A company uses AWS CloudFormation StackSets to provision resources across multiple AWS accounts in AWS Organizations. The company wants to detect any manual changes to the resources that StackSets provisions. Which solution will meet these requirements with the LEAST operational effort?',
+    options: [
+      "Use AWS CloudTrail to monitor the changes that are made to the stacks.",
+      "Configure a service control policy (SCP) that prevents changes to StackSets.",
+      "Run CloudFormation drift detection on all stack sets at regular intervals.",
+      "Use CloudFormation hooks to detect changes that are made to StackSets.",
+    ],
+    correct: 2,
+    explanation: 'Drift detection is a feature that you can run on StackSets. Drift detection determines if any of the stack instances within a stack set are different from the original configuration. Drift detection on CloudFormation StackSets can detect the changes that are made to StackSets outside of the normal update process. This solution requires the least operational overhead. The feature can perform the drift detection on the StackSets with minimal intervention. You can use SCPs to control actions at various levels. SCPs do not integrate with StackSets to prevent changes or to detect drift. This solution would require significant operational effort to keep the SCPs in sync with stack set deployments.  You can use CloudFormation hooks to perform custom validations before you provision resources. CloudFormation hooks do not detect any manual changes to the resources that StackSets provisions. CloudTrail records the actions that are taken in an AWS account. CloudTrail can record the required activities. However, this solution requires complex filtering to find the events that relate to the changes of resources for a given stack set. This solution requires significant operational effort to meet the requirements.'
+  },
+  {
+    id: 39,
+    domain: 'Networking and Content Delivery ',
+    question: 'A CloudOps engineer must block inbound traffic from the internet to a VPC. The VPC has been configured with bidirectional internet access by using an attached internet gateway and NAT gateways in public subnets. Which solution will meet these requirements with the LEAST operational overhead?',
+    options: [
+      "Set VPC Block Public Access (BPA) to ingress-only mode.",
+      "Add a NAT gateway VPC security group inbound rule to deny traffic from 0.0.0.0/0.",
+      "Replace the internet gateway with an egress-only internet gateway.",
+      "Delete the VPC default security group inbound rule that allows traffic from 0.0.0.0/0.",
+    ],
+    correct: 0,
+    explanation: 'VPC BPA is a security feature that you can use to prevent public internet access to VPC resources. BPA in ingress-only mode blocks all traffic from the internet. This feature supersedes any other settings and blocks any inbound traffic from the internet. When you use ingress-only mode, outbound traffic from the VPC to the internet is allowed. This solution blocks inbound traffic from the internet with minimal operational overhead because you do not need to make any additional configurations.'
   }
 ];
   
