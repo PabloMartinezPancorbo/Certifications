@@ -510,7 +510,7 @@ const cheatsheet = {
                 'Spot Instances provide you with access to unused EC2 capacity at steep discounts relative to On-Demand prices. When a Spot Instance is terminated, the Amazon EC2 Auto Scaling group attempts to launch a replacement instance to maintain the desired capacity for the group.',
                 'When instances are launched, if you specified multiple Availability Zones, the desired capacity is distributed across these Availability Zones. If a scaling action occurs, Amazon EC2 Auto Scaling automatically maintains balance across all of the Availability Zones that you specify.',
                 'Key policies: target tracking, step scaling, scheduled scaling, and predictive scaling.',
-                'Target tracking keeps a metric (for example, `ASGAverageCPUUtilization` at 50%) similar to a thermostat.',
+                'A tracking scaling policy automatically scales the capacity of your Amazon EC2 Auto Scaling group based on a target metric value, keeping a metric (for example, `ASGAverageCPUUtilization` at 50%) similar to a thermostat.',
                 {
                   name: 'Example',
                   text: 'Target tracking policy maintaining `ASGAverageCPUUtilization` at 50% with a scale-out cooldown of 300 seconds to avoid flapping.'
@@ -1500,6 +1500,7 @@ const cheatsheet = {
               details: [
                 { name: 'Connection Error Types', text: '`500` - a generic, client-side message indicating that the website server encountered an unexpected problem and cannot fulfill the request —> this is a server-side issue, not a problem with the browser, computer, or internet connection of the user. `501` - `Not Implemented` means the server does not support the specific functionality needed to fulfill a request. `502` - `Bad Gateway` server error response status code indicates that a server was acting as a gateway or proxy and that it received an invalid response. `503` - `Service Unavailable` error, which means a server is temporarily unable to handle a request, meaning for ALBs that the target groups for the load balancer have no registered targets, or all of the registered targets are in an unused state. `504` - a gateway timeout, a server-side error that occurs when a server acting as a gateway or proxy does not receive a timely response from an upstream server needed to complete a request.' },
                 'ALB: Layer 7, for HTTP/HTTPS traffic, offering host-based or path routing',
+                'You can use ALBs to distribute incoming traffic across targets. ALBs cannot route traffic based on instance CPU utilization, that is something Auto Scaling Groups can track.',
                 'NLB: Layer 4, for TCP/UDP/TLS traffic, providing high-performance, low-latency, and supports static IPs',
                 'CLB: Legacy, avoid for new apps',
                 'GWLB: Layer 3, for deployment and management of a fleet of virtual network appliances like firewalls',
