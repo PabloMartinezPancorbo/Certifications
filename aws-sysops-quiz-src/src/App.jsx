@@ -213,7 +213,7 @@ const cheatsheet = {
               'Session Manager gives browser/CLI-based shell access without SSH keys, bastion hosts, or opening inbound ports.',
               'Session logs can be sent to S3 and CloudWatch Logs for audit/compliance.',
               'Access controlled via IAM policies, enabling fine-grained least-privilege access to instances.',
-              { name: 'SSM Automation', text: 'Automation, a tool in AWS Systems Manager, simplifies common maintenance, deployment, and remediation tasks for AWS services. You can create your own runbooks as well. Runbooks use YAML or JSON, and they include steps and parameters that you specify. Steps run in sequential order.'},
+              { name: 'SSM Automation', text: 'Automation, a tool in AWS Systems Manager, simplifies common maintenance, deployment, and remediation tasks for AWS services. An Automation runbook defines the actions (predefined procedures to achieve a specific outcome) that SSM performs on your managed instances and other AWS resources when an automation runs. Runbooks use YAML or JSON, and they include steps and parameters that you specify. Steps run in sequential order. Runbooks should contain the minimum information necessary to successfully perform the procedure. Start with a valid effective manual process, implement it in code and trigger automated execution where appropriate.'},
               { name: 'State Manager', text: 'A tool in AWS Systems Manager, is a secure and scalable configuration management service that automates the process of keeping your managed nodes and other AWS resources in a state that you define.'},
               {
                 name: 'Exam Pattern',
