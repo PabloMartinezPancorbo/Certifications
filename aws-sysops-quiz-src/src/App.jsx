@@ -202,8 +202,10 @@ const cheatsheet = {
         title: 'AWS Systems Manager & Automation (for Remediation)',
         content: [
           {
-            topic: 'SSM Agent & Session Manager',
+            topic: 'AWS Systems Manager, SSM Agent & Session Manager',
             details: [
+              { name: 'AWS Systems Manager (SSM)', text: 'It helps you centrally view, manage, monitor, and operate nodes at scale in AWS, on-premises, and multicloud environments.' },
+              'Key features include automating tasks like patch management and user management, enabling secure remote access to instances without SSH or bastion hosts, and providing a centralized view of your resources with capabilities like natural language querying via Amazon Q Developer.',
               'SSM Agent is pre-installed on many Amazon Linux and Windows AMIs; required for Systems Manager operations.',
               'Session Manager gives browser/CLI-based shell access without SSH keys, bastion hosts, or opening inbound ports.',
               'Session logs can be sent to S3 and CloudWatch Logs for audit/compliance.',
@@ -2031,6 +2033,19 @@ Where should you place the NAT Gateway?`,
     ],
     correct: [0, 2],
     explanation: 'An interface VPC endpoint is a network interface with a private IP address that serves as an entry point for traffic going to a supported service. As the service consumer, the company should create the interface endpoint, and the third-party vendor should create the PrivateLink service.'
+  },
+  {
+    id: 35,
+    domain: 'Reliability and Business Continuity ',
+    question: 'A company runs a web application on an Auto Scaling group of Amazon EC2 instances behind an Application Load Balancer (ALB). Amazon CloudWatch metrics show high CPU utilization on the instances during peak hours. The high CPU utilization leads to an increased number of 503 errors. Which action will resolve high CPU utilization in the MOST cost-effective way?',
+    options: [
+      "Configure a target tracking scaling policy based on average CPU utilization.",
+      "Modify the launch template to use a larger instance type with more CPU power.",
+      "Disable scaling policies. Set the Auto Scaling group size to a fixed number of instances.",
+      "Configure the ALB to route more traffic to instances with available CPU capacity during peak hours.",
+    ],
+    correct: [0],
+    explanation: 'A target tracking scaling policy based on average CPU utilization will automatically adjust the number of instances in the Auto Scaling group based on the actual workload. This solution optimizes compute resources by scaling out when CPU utilization is high and scaling in when CPU utilization is low. This action will resolve the high CPU utilization during peak hours in a cost-effective way. You pay for increased CPU resources only during peak hours.'
   }
 ];
   
