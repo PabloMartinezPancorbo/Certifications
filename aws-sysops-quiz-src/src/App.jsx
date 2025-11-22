@@ -1072,14 +1072,22 @@ const cheatsheet = {
               ]
             },
             {
-              topic: 'Elastic Beanstalk Deployment Options',
+              topic: 'Deployment Options',
               details: [
-                'All at once: fast, downtime during deployment; suitable for dev/test.',
-                'Rolling: updates in batches, maintains some capacity but may temporarily reduce total capacity.',
+                'In-place deployments: a deployment strategy that updates the application version without replacing any infrastructure components, directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates, while minimal, not acceptable for zero downtime requirements.',
+                'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over. These deployments provide releases with near zero-downtime and rollback capabilities. The fundamental idea behind blue/green deployment is to shift traffic between two identical environments that are running different versions of your application.',
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/whitepapers/latest/blue-green-deployments/images/blue-green-example.png',
+                alt: 'Blue/green deployment'
+              },
+              details: [
+                'Canary deployments: a type of blue/green deployment strategy that is more risk-averse. This strategy involves a phased approach in which traffic is shifted to a new version of the application in two increments. The first increment is a small percentage of the traffic, which is referred to as the canary group. This group is used to test the new version, and if it is successful, the traffic is shifted to the new version in the second increment. Canary deployments can be implemented in two steps or linearly. In the two-step approach, the new application code is deployed and exposed for trial. Upon acceptance, it is rolled out either to the rest of the environment or in a linear fashion. The linear approach involves incrementally increasing traffic to the new version of the application until all traffic flows to the new release.',
+                'Rolling: generally faster than a blue/green deployment; however, unlike a blue/green deployment, in a rolling deployment there is no environment isolation between the old and new application versions. It updates in batches, maintains some capacity but may temporarily reduce total capacity. A deployment strategy that slowly replaces previous versions of an application with new versions of an application by completely replacing the infrastructure on which the application is running.',
                 'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
                 'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
-                'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over.',
                 'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
+                'All at once (only for Beanstalk): fast, downtime during deployment; suitable for dev/test. All instances in your environment are out of service for a short time while the deployment occurs.',
                 {
                   name: 'Exam Mapping',
                   text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
@@ -2143,6 +2151,32 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 1,
     explanation: "Systems Manager is a management service that provides a unified interface to manage AWS resources across accounts and Regions. Automation runbooks are designed specifically for automating common maintenance and deployment tasks across AWS resources. Runbooks can include predefined actions for patching, health checks, and automated remediation. State Manager can schedule the runbooks to run on a regular basis. All actions are automatically logged in Systems Manager. Therefore, this solution provides detailed audit trails. This solution uses built-in capabilities that require minimal operational overhead to implement and manage. So why was option C incorrect? State Manager can handle scheduled tasks such as patching and health checks. However, using Session Manager for manual remediation does not meet the requirement for automated remediation. Additionally, this solution does not provide built-in approval workflows for sensitive operations."
+  },
+  {
+    id: 43,
+    domain: "Reliability and Business Continuity",
+    question: "A company in a highly regulated industry must encrypt all its Amazon Elastic Block Store (Amazon EBS) volumes. The company created an AWS Key Management Service (AWS KMS) key in a development account to encrypt the EBS volumes. The key is a customer managed key. The company has used the key several times to encrypt and decrypt volumes in the development account. Now, the company wants to use the same key to encrypt volumes in a quality assurance (QA) account. An IAM user in the QA account attempted to encrypt a volume in the development account by using the Amazon Resource Name (ARN) of the key. However, the IAM user receives an access denied error, and the volume cannot be encrypted. The IAM user in the QA account has attached a policy that was written correctly. Which action will allow the user in the QA account to encrypt volumes in the development account?",
+    options: [
+      "Add an IAM policy to the IAM user in the QA account. Configure the policy to explicitly allow the action kms:Encrypt to the specific ARN of the KMS key (resource) in the development account.",
+      "Modify the resource policy of the KMS key in the development account to allow the IAM user in the QA account to use the key to encrypt resources.",
+      "Create a second KMS customer managed key in the QA account. Add a policy to the IAM user in the QA account that can encrypt EBS volumes by using the KMS key.",
+      "Configure an IAM user in the development account with encrypt permissions on the KMS key and permissions to create the required EBS volumes in the QA account.",
+    ],
+    correct: 1,
+    explanation: "A key policy is a resource policy that controls access to a KMS key. Cross-account access to KMS keys requires explicit permissions in the key policy to allow the external account or specific principals to use the key. Why the others are wrong? IAM policies define permissions for IAM principals to perform actions on AWS resources. An IAM principal in an AWS account is not allowed to access KMS keys in other accounts even if the IAM principal has permissions to do so. Even with this policy, cross-account KMS key access requires both IAM permissions and key policy permissions in the development account. Customer managed keys are KMS keys that you create, own, and manage in your AWS account. The company wants to encrypt all the volumes in both accounts by using the same KMS key. If you create another key in the QA account, you are not encrypting the volumes with the same KMS key. This solution does not meet the requirement to use the existing key from the development account. IAM principals can create resources only in their own account unless the principals are specifically granted cross-account access. Granting permissions in the development account does not allow the IAM user in the QA account to use the KMS key."
+  },
+  {
+    id: 44,
+    domain: "Reliability and Business Continuity",
+    question: "A CloudOps engineer needs to configure a deployment strategy that updates a containerized application. The application runs on Amazon Elastic Container Service (Amazon ECS) behind an Application Load Balancer (ALB). The deployment strategy must provide little to no downtime. Which deployment configuration of an ECS service will meet this requirement MOST cost-effectively?",
+    options: [
+      "Configure a linear deployment with two target groups.",
+      "Configure a rolling deployment with one target group.",
+      "Configure a canary deployment with weighted routing.",
+      "Configure an in-place deployment with one target group.",
+    ],
+    correct: 1,
+    explanation: "A rolling deployment sequentially deploys revisions to instances. This deployment gradually replaces tasks with new versions. Rolling deployments maintain application availability by gradually updating tasks in small batches. This strategy automatically replaces the old version with the new version. This strategy uses health checks to verify new tasks before removing old tasks. This strategy does not require you to maintain any additional infrastructure. Therefore, this strategy is the most cost-effective deployment configuration for this scenario. Why the others are not correct? A canary deployment shifts a small percentage of traffic for validation. A canary deployment with weighted routing requires additional infrastructure to split traffic. A weighted routing configuration leads to higher costs for this scenario. A linear deployment will shift traffic in equal increments with an equal number of minutes between each increment. A linear deployment with two target groups would incur additional costs to maintain a second target group. In-place deployments update tasks directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates. Therefore, this strategy does not meet the requirement for minimal downtime."
   }
 ];
   
