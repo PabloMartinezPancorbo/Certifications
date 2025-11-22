@@ -2233,6 +2233,71 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 3,
     explanation: "S3 Event Notifications can use prefix filtering to determine which objects trigger notifications. For example, this solution can determine what are valid and invalid prefix and suffix formats. You have a prefix configuration issue if files in a specific folder are not being processed while other folders are processing files successfully. You can verify and correct the S3 prefix configuration to ensure that notifications generate for files in all intended folders. For example, you cannot use a wildcard character ("*") in object filters as a prefix or suffix. Why are the other answer incorrect? You can verify Lambda permissions and implement retry logic. However, this solution would not resolve the specific folder processing issue. A permissions issue would affect files in all folders, not only one specific folder. The scenario indicates that files in other folders are processing successfully. You can increase the Lambda timeout and memory allocation to help if the function times out or runs out of memory. The scenario indicates that files in other folders are processing successfully. Therefore, the Lambda configuration is not the issue. Also, if the function is triggered but times out or runs out of memory, you would see errors in the logs indicating function timeout or out-of-memory. Replacing S3 Event Notifications with an EventBridge rule is an over-kill and introduces more overhead; you should first verify the simpler configuration issue."
+  },
+  {
+    id: 47,
+    domain: "Question 47",
+    question: "A company deploys a web application to Amazon EC2 instances behind Auto Scaling groups across multiple AWS Regions. The company configures Amazon CloudWatch alarms to be invoked when the average CPU utilization of the EC2 instances exceeds 70% for 5 minutes. A CloudOps engineer needs to implement a solution to automatically scale out the Auto Scaling groups in each Region when the CPU alarms are invoked. Which solution will meet these requirements with the LEAST operational overhead?",
+    options: [
+      "Create an AWS Lambda function that is invoked by the CloudWatch alarms. Write the Lambda function to call the Auto Scaling group's Auto Scaling APIs to dynamically scale out the groups in each Region.",
+      "Configure scaling policies directly on the Auto Scaling groups to scale out when the CloudWatch alarms are invoked.",
+      "Create AWS Step Functions state machines that are invoked by the CloudWatch alarms to scale out the Auto Scaling groups.",
+      "Configure AWS Systems Manager Automation documents to run on a schedule and check CloudWatch for invoked alarms before scaling out the Auto Scaling groups..",
+    ],
+    correct: 1,
+    explanation: "You can use scaling policies to scale the capacity of an Auto Scaling group based on CloudWatch alarms. You can use scaling policies to scale resources based on the CPUUtilization metric alarm. This solution requires minimal operational overhead because you can set the scaling policy within the Auto Scaling groups. You do not need to incorporate other services."
+  },
+  {
+    id: 48,
+    domain: "Question 48",
+    question: "A company is designing an application that will be load balanced across multiple Availability Zones. The application consists of a web tier and an API tier. The web tier serves HTTP web requests. The API tier handles millions of requests. The web tier and API tier must be integrated with health checks. A CloudOps engineer must configure health checks for each tier to ensure high availability. Which solution will meet these requirements?",
+    options: [
+      "Configure Application Load Balancer (ALB) health checks for the web tier by using the HTTP path /index.html and status codes 200–399. Configure Network Load Balancer (NLB) health checks for the API tier by using TCP health checks on port 8080.",
+      "Configure Application Load Balancer (ALB) health checks for both the web tier and the API tier. Configure the web tier by using TCP health checks on port 80. Configure the API tier by using TCP health checks on port 8080.",
+      "Configure Network Load Balancer (NLB) health checks for both the web tier and the API tier. Configure the web tier by using HTTP path /index.html on port 8080. Configure the API tier by using TCP health checks on port 8080.",
+      "Configure Application Load Balancer (ALB) health checks for the web tier by using TCP health checks on port 80. Configure Network Load Balancer (NLB) health checks for the API tier by using the HTTP path /api/health and status codes 200–399.",
+    ],
+    correct: 0,
+    explanation: "An ALB is suitable for the web tier because ALBs support layer 7 routing and HTTP health checks on specific paths. An NLB is suitable for the API tier because an NLB performs load balancing at layer 4 and supports TCP health checks on a specific port. Additionally, an NLB can handle the millions of requests that the API tier requires."
+  },
+  {
+    id: 49,
+    domain: "Question 49",
+    question: "A company created a serverless application based on microservices that run on AWS Lambda functions. The application works as expected. However, the response times are higher than expected. A CloudOps engineer investigates Amazon CloudWatch Lambda Insights. The cause of the issue is that one of the Lambda functions spends extra time running during the initialization of the code. Which solution will resolve this issue with the LEAST development effort?",
+    options: [
+      "Configure reserved concurrency on the Lambda function.",
+      "Configure provisioned concurrency on the Lambda function.",
+      "Modify the initialization code for the Lambda function.",
+      "Create another Lambda function with the same initialization code and split the invocations.",
+    ],
+    correct: 1,
+    explanation: "Provisioned concurrency specifies the number of pre-initialized execution environments that a Lambda function has. If the initialization of the code is pre-provisioned, then the Lambda function will spend less time running."
+  },
+  {
+    id: 50,
+    domain: "Question 50",
+    question: "A financial company runs a regulated web application. The company uses AWS CloudFormation to deploy the application. The application runs on Amazon EC2 instances behind an Application Load Balancer (ALB). The instances run in an Amazon EC2 Auto Scaling group. For compliance, the company must send a complete copy of all regulated data on the attached Amazon Elastic Block Store (Amazon EBS) volumes to an Amazon S3 bucket before an EC2 instance is terminated. In testing, some EC2 instances are terminated before the data can be completely copied. What can a CloudOps engineer do to resolve this problem in normal operating conditions?",
+    options: [
+      "Configure EC2 Auto Scaling lifecycle hooks to put the instances into a Terminating:Wait status before the instances are terminated. When the copy is complete, use the complete-lifecycle-action command.",
+      "Use S3 Lifecycle hooks to enable the CreateMultipartUpload API feature with S3 Transfer Acceleration. When the copy is complete, use the complete-lifecycle-action command.",
+      "Update the CloudFormation stack template, and set the DisableApiTermination property to true for the EC2 instances. Run an update-stack operation.",
+      "Update the CloudFormation stack template, and set the AutoEnableIO property to true for the EBS volumes. Run an update-stack operation.",
+    ],
+    correct: 0,
+    explanation: "The implementation of functions on a terminating instance can take time that must be accounted for as part of the EC2 lifecycle. EC2 Auto Scaling allows for a lifecycle hook to be applied to an instance as it begins to be decommissioned. The lifecycle hook puts the instance into a wait state (Terminating:Wait). During the default timeout period, exit functions can be run on the instance. When these functions are complete, a change in the status to Terminating:Proceed allows the termination function to finish."
+  },
+  {
+    id: 51,
+    domain: "Question 51",
+    question: "A global company has an existing Amazon S3 bucket in the us-east-1 AWS Region that contains critical business documents. For compliance reasons, the company needs to replicate all new and modified objects to a bucket in the eu-west-1 Region. A CloudOps engineer must ensure that all future changes are replicated. Which solution will meet these requirements?",
+    options: [
+      "Enable versioning on the destination bucket. Configure a replication rule for both the source bucket and the destination bucket. Create an IAM role with the required permissions for S3 replication.",
+      "Enable versioning on the source bucket and the destination bucket. Configure a replication rule in the source account. Create an IAM role with the required permissions for S3 replication.",
+      "Configure a replication rule for the source bucket. Enable versioning on the source bucket. Create an IAM role with the required permissions for S3 replication.",
+      "Enable versioning on the source bucket. Configure a replication rule for the source bucket with an existing IAM role.",
+    ],
+    correct: 1,
+    explanation: "The implementation of functions on a terminating instance can take time that must be accounted for as part of the EC2 lifecycle. EC2 Auto Scaling allows for a lifecycle hook to be applied to an instance as it begins to be decommissioned. The lifecycle hook puts the instance into a wait state (Terminating:Wait). During the default timeout period, exit functions can be run on the instance. When these functions are complete, a change in the status to Terminating:Proceed allows the termination function to finish."
   }
 ];
   
