@@ -1080,7 +1080,6 @@ const cheatsheet = {
                 url: 'https://docs.aws.amazon.com/images/whitepapers/latest/blue-green-deployments/images/blue-green-example.png',
                 alt: 'Blue/green deployment'
               },
-              ],
               resources: [
                 { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
               ]
