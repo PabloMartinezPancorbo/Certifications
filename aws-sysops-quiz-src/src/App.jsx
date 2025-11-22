@@ -1470,7 +1470,7 @@ const cheatsheet = {
             {
               topic: 'Secure your VPC: BPA, Security Groups & NACLs',
               details: [
-                {name:'VPC Block Public Access (BPA)', text: 'VPC BPA is a centralized security feature that enables you to authoritatively prevent public internet access to VPC resources across an entire AWS account, ensuring compliance with security requirements while providing flexibility for specific exceptions and audit capabilities. The VPC BPA feature has the following modes: Bidirectional: All traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets) is blocked. Ingress-only: All internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded) is blocked. Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.'},
+                {name:'VPC Block Public Access (BPA)', text: 'VPC BPA is a centralized security feature that enables you to authoritatively prevent public internet access to VPC resources across an entire AWS account, ensuring compliance with security requirements while providing flexibility for specific exceptions and audit capabilities. The VPC BPA feature has the following modes:. Bidirectional: All traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets) is blocked. Ingress-only: All internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded) is blocked. Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.'},
                 'Security Groups: Stateful, instance level',
                 'NACLs: Stateless, subnet level',
                 'SG: Allow only, default deny',
@@ -2114,7 +2114,20 @@ Where should you place the NAT Gateway?`,
       "Configure an IAM user. Configure access and secret keys for the IAM user. Use the IAM access and secret keys with AWS Security Token Service (AWS STS) to generate temporary AWS credentials. Use the temporary credentials in the CI/CD system to integrate with the AWS environment.",
     ],
     correct: 2,
-    explanation: 'You can use IAM OIDC IdPs when you want to connect an external OIDC-compatible IdP to AWS resources. IAM OIDC IdPs use OIDC federation to enable machine-to-machine authentication workflows. You can configure an IAM OIDC IdP so that the CI/CD system can obtain short-lived credentials without managing additional AWS services. This solution uses the company's existing IdP and minimizes changes to the company's identity management setup. By creating an IAM web identity role that is associated with the OIDC provider, you establish a secure, temporary credential mechanism. This solution follows AWS security best practices for machine-to-machine authentication. Why is A incorrect? Incorrect. You can use IAM Identity Center to provide user access from external IdPs to AWS applications by using the SAML protocol. You would typically use IAM Identity Center to provide single sign-on access for external users to AWS services. In the scenario, you need to configure a machine-to-machine authentication workflow. You do not need to configure single sign-on access for external users. Why are B and D incorrect? Using IAM users is not short lived and is not a best practice, role are better suited for this purpose.'
+    explanation: "You can use IAM OIDC IdPs when you want to connect an external OIDC-compatible IdP to AWS resources. IAM OIDC IdPs use OIDC federation to enable machine-to-machine authentication workflows. You can configure an IAM OIDC IdP so that the CI/CD system can obtain short-lived credentials without managing additional AWS services. This solution uses the company's existing IdP and minimizes changes to the company's identity management setup. By creating an IAM web identity role that is associated with the OIDC provider, you establish a secure, temporary credential mechanism. This solution follows AWS security best practices for machine-to-machine authentication. Why is A incorrect? Incorrect. You can use IAM Identity Center to provide user access from external IdPs to AWS applications by using the SAML protocol. You would typically use IAM Identity Center to provide single sign-on access for external users to AWS services. In the scenario, you need to configure a machine-to-machine authentication workflow. You do not need to configure single sign-on access for external users. Why are B and D incorrect? Using IAM users is not short lived and is not a best practice, role are better suited for this purpose."
+  },
+  {
+    id: 41,
+    domain: "Security and Compliance",
+    question: "A company uses services in multiple AWS accounts in an organization in AWS Organizations. To meet compliance requirements, a CloudOps engineer must ensure that services are not deployed outside of the `us-east-1` and `eu-central-1` AWS Regions. Which solution will meet this requirement with the LEAST operational effort?",
+    options: [
+      "Create a service control policy (SCP) that denies all actions when the requested Region is not `us-east-1` or `eu-central-1`.",
+      "Create a service control policy (SCP) that allows all actions when the requested Region is `us-east-1` or `eu-central-1`.",
+      "In the management account, disable all Regions except `us-east-1` and `eu-central-1` for all member accounts.",
+      "In each member account, disable all Regions except `us-east-1` and `eu-central-1`.",
+    ],
+    correct: 0,
+    explanation: "SCPs are an organization policy that can limit which services, actions, or Regions are available in an AWS account. An SCP with an explicit deny for actions outside of the specified Regions provides the strongest enforcement with minimal operational effort. All accounts in the organization inherit SCPs. SCPs cannot be overridden. Therefore, this solution ensures consistent compliance."
   }
 ];
   
