@@ -2218,6 +2218,19 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 1,
     explanation: "You can add a TXT record with Sender Policy Framework (SPF) information. This solution helps receiving mail servers verify that the sending IP address is authorized to send email on behalf of the domain. The SPF record specifies which IP addresses are allowed to send email for the domain. To prevent spoofing and to improve email deliverability, you should add an SPF record as a TXT record. Why are MX records not the correct answer? You can use MX records to specify mail servers to receive emails. You would not use MX records to send emails. This configuration would not resolve the issue. Why no A/alias records? You can use an A record to map a domain to an IP address. An A record does not help with email authentication. And DNSSEC? DNSSEC provides the authentication of DNS responses. DNSSEC does not address email spam issues. DNSSEC does not validate that an IP address is authorized to send email for a domain."
+  },
+  {
+    id: 46,
+    domain: "Question 46",
+    question: "A CloudOps engineer is troubleshooting an event-driven system that processes customer transactions. The system uses Amazon S3 Event Notifications to invoke AWS Lambda functions. The Lambda functions process transaction files and store the results in a downstream data storage service. The CloudOps engineer observes that transaction files that are uploaded to a specific folder in Amazon S3 are not being processed. Files that are uploaded to other folders are processing successfully. The Lambda function logs have no visible errors. Which step should the CloudOps engineer take to address this issue?",
+    options: [
+      "Verify that the Lambda function's execution role has the necessary permissions to access the S3 bucket. Modify the Lambda function code to implement retry logic with exponential backoff for failed operations.",
+      "Increase the Lambda function's timeout and memory allocation. Monitor future invocations of the Lambda function.",
+      "Replace S3 Event Notifications with an Amazon EventBridge rule that invokes the Lambda functions. Configure an EventBridge rule to retry failed events and send unprocessable events to a downstream notification service.",
+      "Ensure that the S3 prefix for the S3 Event Notifications was set properly. Monitor future invocations of the Lambda function.",
+    ],
+    correct: 3,
+    explanation: "S3 Event Notifications can use prefix filtering to determine which objects trigger notifications. For example, this solution can determine what are valid and invalid prefix and suffix formats. You have a prefix configuration issue if files in a specific folder are not being processed while other folders are processing files successfully. You can verify and correct the S3 prefix configuration to ensure that notifications generate for files in all intended folders. For example, you cannot use a wildcard character ("*") in object filters as a prefix or suffix. Why are the other answer incorrect? You can verify Lambda permissions and implement retry logic. However, this solution would not resolve the specific folder processing issue. A permissions issue would affect files in all folders, not only one specific folder. The scenario indicates that files in other folders are processing successfully. You can increase the Lambda timeout and memory allocation to help if the function times out or runs out of memory. The scenario indicates that files in other folders are processing successfully. Therefore, the Lambda configuration is not the issue. Also, if the function is triggered but times out or runs out of memory, you would see errors in the logs indicating function timeout or out-of-memory. Replacing S3 Event Notifications with an EventBridge rule is an over-kill and introduces more overhead; you should first verify the simpler configuration issue."
   }
 ];
   
