@@ -2044,8 +2044,21 @@ Where should you place the NAT Gateway?`,
       "Disable scaling policies. Set the Auto Scaling group size to a fixed number of instances.",
       "Configure the ALB to route more traffic to instances with available CPU capacity during peak hours.",
     ],
-    correct: [0],
+    correct: 0,
     explanation: 'A target tracking scaling policy based on average CPU utilization will automatically adjust the number of instances in the Auto Scaling group based on the actual workload. This solution optimizes compute resources by scaling out when CPU utilization is high and scaling in when CPU utilization is low. This action will resolve the high CPU utilization during peak hours in a cost-effective way. You pay for increased CPU resources only during peak hours.'
+  },
+  {
+    id: 36,
+    domain: ' Monitoring, Logging, Analysis, Remediation, and Performance Optimization',
+    question: 'A company uses Amazon CloudWatch to monitor Amazon EC2 instances. The company uses AWS Systems Manager Automation to remediate findings for EC2 instances. The company wants to automatically run a custom runbook whenever a specific CloudWatch alarm is invoked. Which solution will meet this requirement with the LEAST operational overhead?',
+    options: [
+      "Create an Amazon EventBridge rule that matches the alarm state change event pattern for the specific CloudWatch alarm. Configure the rule to invoke the custom runbook as a target.",
+      "Create a custom AWS Config rule that produces a compliance change event if the CloudWatch alarm changes state. Configure AWS Config to directly invoke the custom runbook to automatically remediate the change event.",
+      "Adjust the configuration of the CloudWatch alarm to send notifications to an Amazon Simple Notification Service (Amazon SNS) topic whenever the alarm changes state. Create an SNS subscription within Automation to invoke the custom runbook.",
+      "Create an AWS Lambda function that is invoked by changes to the CloudWatch alarm state. Configure the Lambda function to invoke the custom runbook.",
+    ],
+    correct: 0,
+    explanation: 'You can use EventBridge to match alarm state change events and to invoke a runbook as a target. EventBridge can monitor CloudWatch alarm state changes through event patterns. EventBridge can directly invoke Automation runbooks as targets. This solution provides a serverless and automated way to execute remediation actions when specific alarms are invoked. This solution does not require the management of custom code. Why the others are wrong? B: AWS Config can monitor for configuration changes. AWS Config can trigger notifications or auto-remediations. However, AWS Config cannot respond to changes in the CloudWatch alarm state. C: Amazon SNS is a fully managed message delivery service. Amazon SNS is useful for fan-out notifications. Lambda, Amazon Simple Queue Service (Amazon SQS), and email addresses can directly subscribe to Amazon SNS. However, Automation cannot create subscriptions to Amazon SNS directly. For this solution, you would need to write a Lambda function that subscribes to the SNS topic and invokes a run of the custom runbook. This custom configuration requires additional operational overhead. D: Lambda runs serverless code. You can use Lambda to respond to events. CloudWatch alarms can invoke Lambda functions. However, adding an intermediary Lambda function introduces unnecessary complexity. This solution requires additional operational overhead to manage and maintain custom code.'
   }
 ];
   
