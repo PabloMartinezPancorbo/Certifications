@@ -206,6 +206,9 @@ const cheatsheet = {
             details: [
               { name: 'AWS Systems Manager (SSM)', text: 'It helps you centrally view, manage, monitor, and operate nodes at scale in AWS, on-premises, and multicloud environments.' },
               'Key features include automating tasks like patch management and user management, enabling secure remote access to instances without SSH or bastion hosts, and providing a centralized view of your resources with capabilities like natural language querying via Amazon Q Developer.',
+              'Monitoring is an important part of maintaining the reliability, availability, and performance of AWS Systems Manager and your AWS solutions. You should collect monitoring data from all parts of your AWS solution so that you can debug a multipoint failure if one occurs.',
+              'For example, you can monitor the success or failure of operations such as Automation workflows, the application of patch baselines, maintenance window events, and configuration compliance. Automation is a tool in AWS Systems Manager.',
+              'You can also monitor CPU utilization, disk I/O, and network utilization of your managed nodes. When performance falls outside your established baseline, you might need to reconfigure or optimize the node to reduce CPU utilization, improve disk I/O, or reduce network traffic. For more information about monitoring EC2 instances, see Monitor Amazon EC2 in the Amazon EC2 User Guide.',
               'SSM Agent is pre-installed on many Amazon Linux and Windows AMIs; required for Systems Manager operations.',
               'Session Manager gives browser/CLI-based shell access without SSH keys, bastion hosts, or opening inbound ports.',
               'Session logs can be sent to S3 and CloudWatch Logs for audit/compliance.',
@@ -2036,7 +2039,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 35,
-    domain: 'Reliability and Business Continuity ',
+    domain: 'Reliability and Business Continuity',
     question: 'A company runs a web application on an Auto Scaling group of Amazon EC2 instances behind an Application Load Balancer (ALB). Amazon CloudWatch metrics show high CPU utilization on the instances during peak hours. The high CPU utilization leads to an increased number of 503 errors. Which action will resolve high CPU utilization in the MOST cost-effective way?',
     options: [
       "Configure a target tracking scaling policy based on average CPU utilization.",
@@ -2059,6 +2062,19 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 0,
     explanation: 'You can use EventBridge to match alarm state change events and to invoke a runbook as a target. EventBridge can monitor CloudWatch alarm state changes through event patterns. EventBridge can directly invoke Automation runbooks as targets. This solution provides a serverless and automated way to execute remediation actions when specific alarms are invoked. This solution does not require the management of custom code. Why the others are wrong? B: AWS Config can monitor for configuration changes. AWS Config can trigger notifications or auto-remediations. However, AWS Config cannot respond to changes in the CloudWatch alarm state. C: Amazon SNS is a fully managed message delivery service. Amazon SNS is useful for fan-out notifications. Lambda, Amazon Simple Queue Service (Amazon SQS), and email addresses can directly subscribe to Amazon SNS. However, Automation cannot create subscriptions to Amazon SNS directly. For this solution, you would need to write a Lambda function that subscribes to the SNS topic and invokes a run of the custom runbook. This custom configuration requires additional operational overhead. D: Lambda runs serverless code. You can use Lambda to respond to events. CloudWatch alarms can invoke Lambda functions. However, adding an intermediary Lambda function introduces unnecessary complexity. This solution requires additional operational overhead to manage and maintain custom code.'
+  },
+  {
+    id: 37,
+    domain: 'Reliability and Business Continuity',
+    question: 'A company is hosting applications on Amazon EC2 instances. The company stores data in Amazon RDS databases. The company wants to monitor key metrics and receive alarm notifications for the EC2 instances and RDS databases. Which solution will meet these requirements with the LEAST operational overhead?',
+    options: [
+      "Configure Amazon CloudWatch to monitor metrics for the EC2 instances and RDS databases. Create CloudWatch alarms that invoke based on metric thresholds for the EC2 instances and RDS databases.",
+      "Use AWS CloudTrail to monitor API calls to the EC2 instances and RDS databases. Configure Amazon CloudWatch Logs to send logs to Amazon S3 for long-term storage.",
+      "Deploy AWS Lambda functions to collect metrics from the EC2 instances and RDS databases. Publish the metrics to Amazon Data Firehose for storage and analysis in Amazon Redshift.",
+      "Install the AWS Systems Manager Agent (SSM Agent) on the EC2 instances. Use Systems Manager to monitor and collect metrics from the EC2 instances and RDS databases.",
+    ],
+    correct: 0,
+    explanation: 'CloudWatch can collect and track metrics for AWS services, including EC2 instances and RDS databases. You can configure CloudWatch alarms to be invoked when metrics exceed specified thresholds. This solution provides automated monitoring and notification capabilities. This solution requires minimal setup and maintenance. B Incorrect: CloudTrail tracks API activity. CloudTrail is not designed to monitor metrics. CloudTrail can be useful for security and auditing purposes. However, CloudTrail does not provide the metric monitoring and alarm capabilities that you need for this scenario. C Incorrect: Lambda functions can collect metrics from EC2 instances and RDS databases. However, using Lambda to collect metrics would require custom development and maintenance. Firehose can load streaming data into Amazon Redshift for analysis. However, this solution introduces additional operational overhead and complexity for metric monitoring and alerting. Amazon Redshift is a data warehouse that is more suitable for complex analytical queries on large datasets. Amazon Redshift is not suitable for real-time metric monitoring and alerting. You can use Systems Manager to manage EC2 instances. The SSM Agent can collect metrics from EC2 instances. However, the SSM Agent cannot directly monitor RDS databases.'
   }
 ];
   
