@@ -2298,6 +2298,32 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 1,
     explanation: "The implementation of functions on a terminating instance can take time that must be accounted for as part of the EC2 lifecycle. EC2 Auto Scaling allows for a lifecycle hook to be applied to an instance as it begins to be decommissioned. The lifecycle hook puts the instance into a wait state (Terminating:Wait). During the default timeout period, exit functions can be run on the instance. When these functions are complete, a change in the status to Terminating:Proceed allows the termination function to finish."
+  },
+  {
+    id: 52,
+    domain: "Question 52",
+    question: "A medical company hosts an application on AWS. The company needs to be alerted if any logs in Amazon CloudWatch Logs contain protected health information (PHI). Which solution will meet this requirement?",
+    options: [
+      "Enable CloudWatch Logs data protection policies. Create a CloudWatch alarm that invokes based on the LogEventsWithFindings metric.",
+      "Configure Amazon Macie. Create a CloudWatch alarm that invokes based on any SensitiveData:* findings and sends a notification by using Amazon Simple Notification Service (Amazon SNS).",
+      "Configure Amazon Macie. Use an AWS Lambda function to process Macie events and publish a custom metric to CloudWatch based on any SensitiveData:* findings. Create a CloudWatch alarm that invokes based on the custom metric.",
+      "Enable Amazon GuardDuty. Use an AWS Lambda function to process GuardDuty findings. Create a CloudWatch alarm based on GuardDuty findings that relate to sensitive data events.",
+    ],
+    correct: 0,
+    explanation: "CloudWatch Logs data protection policies help identify and protect sensitive data within CloudWatch Logs. Sensitive data includes personally identifiable information (PII) or PHI. CloudWatch Logs data protection policies automatically detect sensitive data patterns. CloudWatch Logs data protection policies can invoke alerts or initiate actions when sensitive data is logged."
+  },
+  {
+    id: 53,
+    domain: "Question 53",
+    question: "A company has two VPCs in the same AWS Region. One VPC is a production VPC with CIDR block 10.0.0.0/16. The other VPC is a management VPC with CIDR block 172.16.0.0/16. A CloudOps engineer configured a VPC peering connection between the two VPCs and accepted the peering request. All subnets use the default network ACL. However, the Amazon EC2 instances in the production VPC cannot communicate with the instances in the management VPC. Amazon CloudWatch metrics indicate no recorded logs of communication. How can the CloudOps engineer resolve this issue?",
+    options: [
+      "Update the security groups in both VPCs to allow cross-VPC traffic.",
+      "Update the route tables in both VPCs to route traffic through the peering connection.",
+      "Update the network ACLs to allow traffic between both VPCs.",
+      "Update the CIDR block on the management VPC to overlap with the production VPC.",
+    ],
+    correct: 1,
+    explanation: "You must establish and accept a VPC peering connection. Then, you must update route tables in both VPCs to route traffic that is destined for the other VPC through the peering connection. Without these route table entries, the VPCs will not know how to route traffic to each other, even though the peering connection exists."
   }
 ];
   
