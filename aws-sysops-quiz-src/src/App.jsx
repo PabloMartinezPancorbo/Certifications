@@ -2196,15 +2196,15 @@ Where should you place the NAT Gateway?`,
   {
     id: 44,
     domain: "Question 44",
-    question: "A company hosts the domain example.com in Amazon Route 53. The company sends emails by using Amazon Simple Email Service (Amazon SES). Some recipients are not receiving the emails. A CloudOps engineer investigates the issue and identifies that some recipient servers are rejecting the emails. Which configuration in Route 53 will resolve the email delivery issue?",
+    question: "A CloudOps engineer needs to configure a deployment strategy that updates a containerized application. The application runs on Amazon Elastic Container Service (Amazon ECS) behind an Application Load Balancer (ALB). The deployment strategy must provide little to no downtime. Which deployment configuration of an ECS service will meet this requirement MOST cost-effectively?",
     options: [
-      "Add a mail exchange (MX) record that points to the IP addresses of the Amazon SES service.",
-      "Add a text (TXT) record with `v=spf1 include:amazonses.com -all`.",
-      "Add an alias (A) record that points to the IP addresses of the Amazon SES service.",
-      "Enable DNS Security Extensions (DNSSEC) for example.com.",
+      "Configure a linear deployment with two target groups.",
+      "Configure a rolling deployment with one target group.",
+      "Configure a canary deployment with weighted routing.",
+      "Configure an in-place deployment with one target group.",
     ],
     correct: 1,
-    explanation: "You can add a TXT record with Sender Policy Framework (SPF) information. This solution helps receiving mail servers verify that the sending IP address is authorized to send email on behalf of the domain. The SPF record specifies which IP addresses are allowed to send email for the domain. To prevent spoofing and to improve email deliverability, you should add an SPF record as a TXT record. Why are MX records not the correct answer? You can use MX records to specify mail servers to receive emails. You would not use MX records to send emails. This configuration would not resolve the issue. Why no A/alias records? You can use an A record to map a domain to an IP address. An A record does not help with email authentication. And DNSSEC? DNSSEC provides the authentication of DNS responses. DNSSEC does not address email spam issues. DNSSEC does not validate that an IP address is authorized to send email for a domain."
+    explanation: "A rolling deployment sequentially deploys revisions to instances. This deployment gradually replaces tasks with new versions. Rolling deployments maintain application availability by gradually updating tasks in small batches. This strategy automatically replaces the old version with the new version. This strategy uses health checks to verify new tasks before removing old tasks. This strategy does not require you to maintain any additional infrastructure. Therefore, this strategy is the most cost-effective deployment configuration for this scenario. A linear deployment will shift traffic in equal increments with an equal number of minutes between each increment. A linear deployment with two target groups would incur additional costs to maintain a second target group. A canary deployment shifts a small percentage of traffic for validation. A canary deployment with weighted routing requires additional infrastructure to split traffic. A weighted routing configuration leads to higher costs for this scenario. In-place deployments update tasks directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates. Therefore, this strategy does not meet the requirement for minimal downtime."
   },
   {
     id: 45,
