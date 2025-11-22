@@ -1566,6 +1566,7 @@ const cheatsheet = {
                   ["Example", "www.google.com → 142.250.184.142", "www.example.com (alias) → example.com (CNAME) or blog.example.com (alias) → shop.example.com (CNAME)", "example.com → 192.0.2.1", "example.com MX 10 mail1.example.net, MX 20 mail2.example.net", "example.com TXT \"v=spf1 include:_spf.example.com ~all\""],
                   ["Relationship to others", "Contains all record types (A, CNAME, MX, TXT, etc)", "Points to a canonical name, which is then resolved via an A/AAAA record", "Points to the final IP address that the browser or client will connect to", "Works together with A/AAAA of the mail servers; must point to a hostname (not a CNAME) per DNS spec", "Often complements MX records or other records; clients read TXT for policies/verification"],
                   ["Use case", "Any website or online service requiring name resolution", "When you want multiple names/aliases to point to a single canonical domain", "When you have a stable IPv4 address and want direct control over it", "When you host email for the domain and need prioritized mail servers", "When you must configure domain ownership validation, email sender policy (SPF), DKIM, or other metadata"]
+                ]
               },
               resources: [
                 { name: 'What is Amazon Route 53?', url: 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html' }
