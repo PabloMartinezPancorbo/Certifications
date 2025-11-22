@@ -6,7 +6,6 @@ const AWSSysOpsExamApp = () => {
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [showAnswers, setShowAnswers] = useState({});
-
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -2205,7 +2204,7 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 1,
     explanation: "A rolling deployment sequentially deploys revisions to instances. This deployment gradually replaces tasks with new versions. Rolling deployments maintain application availability by gradually updating tasks in small batches. This strategy automatically replaces the old version with the new version. This strategy uses health checks to verify new tasks before removing old tasks. This strategy does not require you to maintain any additional infrastructure. Therefore, this strategy is the most cost-effective deployment configuration for this scenario. Why the others are not correct? A canary deployment shifts a small percentage of traffic for validation. A canary deployment with weighted routing requires additional infrastructure to split traffic. A weighted routing configuration leads to higher costs for this scenario. A linear deployment will shift traffic in equal increments with an equal number of minutes between each increment. A linear deployment with two target groups would incur additional costs to maintain a second target group. In-place deployments update tasks directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates. Therefore, this strategy does not meet the requirement for minimal downtime."
-v
+  }
 ];
   
   // Helper to check if a question is multiple answer
