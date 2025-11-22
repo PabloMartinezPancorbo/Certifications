@@ -1548,6 +1548,48 @@ const cheatsheet = {
           ]
         },
         {
+          title: 'Routing',
+          content: [
+            {
+              topic: 'Main Routing and Web Hosting concepts',
+              details: [
+                { name: 'route 53', text: 'Amazon Route 53 is a highly available and scalable cloud domain name system (DNS) service that registers domain names and translates human-readable domain names into IP addresses to route internet traffic. Enables to customize DNS routing policies to reduce latency.' },
+                'It acts like a phone book for the internet, connecting domain names (like www.example.com) to their corresponding IP addresses (like 192.0.2.1). The name "53" refers to port 53, the standard TCP and UDP port used for DNS requests.',
+                'A records are another type of DNS record that point a domain name directly to an IP address. In short, a CNAME points to another name, while an A record points to an IP address, and DNS is the technology that manages all these different record types. ',
+                'DNS is the overall system that translates domain names into IP addresses, while CNAME is a specific type of DNS record that creates an alias, pointing one domain name to another.',
+              ],
+              table: {
+                title: 'Comparison',
+                headers: ["Feature", "DNS", "CNAME", "A Record", "ALIAS Record", "AAAA Record"],
+                rows: [
+                  ["Function", "The overall system for name resolution", "Creates an alias from one domain to another", "Points a domain name to an IP address (IPv4)", "Provides alias-behaviour at domain root or zone apex while appearing like an A/AAAA record", "Points a domain name to an IP address (IPv6)"],
+                  ["Purpose", "Translates domain names into IP addresses", "Redirects traffic or uses a nickname for a service", "Connects a domain directly to a server’s IPv4 address", "Enables aliasing at apex without violating DNS rules", "Connects a domain directly to a server’s IPv6 address"],
+                  ["Example", "www.google.com → 142.250.184.142", "www.example.com (alias) → example.com (CNAME) or blog.example.com (alias) → shop.example.com (CNAME)", "example.com → 192.0.2.1", "example.com (ALIAS) → service.myhost.net (behaves like CNAME at apex)", "example.com → 2001:0db8::1"],
+                  ["Relationship to others", "Contains all record types (like A, CNAME, ALIAS, AAAA)", "Points to a canonical name, which is then resolved via its A/AAAA record", "Points to the final IPv4 address that the browser or client will connect to", "Acts like a CNAME internally but appears like an A/AAAA externally so other record types (MX, etc) can coexist", "Points to the final IPv6 address that the browser or client will connect to"],
+                  ["Use case", "Any website or online service needing name resolution", "When you want multiple names/aliases to point to a single canonical domain", "When you have a stable IPv4 address and want direct control over it", "When you need alias-behaviour at the root/apex of a domain and also need other record types (e.g., MX) to coexist", "When you have a stable IPv6 address and want direct control over it"]
+                ]
+              },
+              resources: [
+                { name: 'What is Amazon Route 53?', url: 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html' }
+              ]
+            },
+            {
+              topic: 'Target Groups',
+              details: [
+                'Instance targets: EC2',
+                'IP targets: On-premises, containers',
+                'Lambda targets: Serverless',
+                'Health checks: HTTP/HTTPS/TCP',
+                'Stickiness: Application or duration',
+                'Slow start mode for gradual traffic'
+              ],
+              resources: [
+                { name: 'Target Groups', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html' }
+              ]
+            }
+          ]
+        },
+        {
           title: 'CloudFront',
           content: [
             {
@@ -2153,18 +2195,18 @@ Where should you place the NAT Gateway?`,
     explanation: "A key policy is a resource policy that controls access to a KMS key. Cross-account access to KMS keys requires explicit permissions in the key policy to allow the external account or specific principals to use the key. Why the others are wrong? IAM policies define permissions for IAM principals to perform actions on AWS resources. An IAM principal in an AWS account is not allowed to access KMS keys in other accounts even if the IAM principal has permissions to do so. Even with this policy, cross-account KMS key access requires both IAM permissions and key policy permissions in the development account. Customer managed keys are KMS keys that you create, own, and manage in your AWS account. The company wants to encrypt all the volumes in both accounts by using the same KMS key. If you create another key in the QA account, you are not encrypting the volumes with the same KMS key. This solution does not meet the requirement to use the existing key from the development account. IAM principals can create resources only in their own account unless the principals are specifically granted cross-account access. Granting permissions in the development account does not allow the IAM user in the QA account to use the KMS key."
   },
   {
-    id: 44,
-    domain: "Reliability and Business Continuity",
-    question: "A CloudOps engineer needs to configure a deployment strategy that updates a containerized application. The application runs on Amazon Elastic Container Service (Amazon ECS) behind an Application Load Balancer (ALB). The deployment strategy must provide little to no downtime. Which deployment configuration of an ECS service will meet this requirement MOST cost-effectively?",
+    id: 45,
+    domain: "Question 45",
+    question: "A company hosts the domain example.com in Amazon Route 53. The company sends emails by using Amazon Simple Email Service (Amazon SES). Some recipients are not receiving the emails. A CloudOps engineer investigates the issue and identifies that some recipient servers are rejecting the emails. Which configuration in Route 53 will resolve the email delivery issue?",
     options: [
-      "Configure a linear deployment with two target groups.",
-      "Configure a rolling deployment with one target group.",
-      "Configure a canary deployment with weighted routing.",
-      "Configure an in-place deployment with one target group.",
+      "Add a mail exchange (MX) record that points to the IP addresses of the Amazon SES service.",
+      "Add a text (TXT) record with `v=spf1 include:amazonses.com -all`.",
+      "Add an alias (A) record that points to the IP addresses of the Amazon SES service.",
+      "Enable DNS Security Extensions (DNSSEC) for example.com.",
     ],
     correct: 1,
     explanation: "A rolling deployment sequentially deploys revisions to instances. This deployment gradually replaces tasks with new versions. Rolling deployments maintain application availability by gradually updating tasks in small batches. This strategy automatically replaces the old version with the new version. This strategy uses health checks to verify new tasks before removing old tasks. This strategy does not require you to maintain any additional infrastructure. Therefore, this strategy is the most cost-effective deployment configuration for this scenario. Why the others are not correct? A canary deployment shifts a small percentage of traffic for validation. A canary deployment with weighted routing requires additional infrastructure to split traffic. A weighted routing configuration leads to higher costs for this scenario. A linear deployment will shift traffic in equal increments with an equal number of minutes between each increment. A linear deployment with two target groups would incur additional costs to maintain a second target group. In-place deployments update tasks directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates. Therefore, this strategy does not meet the requirement for minimal downtime."
-  }
+v
 ];
   
   // Helper to check if a question is multiple answer
