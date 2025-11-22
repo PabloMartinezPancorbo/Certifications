@@ -2324,7 +2324,34 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 1,
     explanation: "You must establish and accept a VPC peering connection. Then, you must update route tables in both VPCs to route traffic that is destined for the other VPC through the peering connection. Without these route table entries, the VPCs will not know how to route traffic to each other, even though the peering connection exists."
-  }
+  },
+  {
+    id: 54,
+    domain: "Question 54",
+    question: "A company requires that all instances receive operating system (OS) patches within 7 days of release. The company uses AWS Systems Manager to manage Amazon EC2 instances. The EC2 instances run Windows Server OS across development, testing, and production environments. All instances have the Systems Manager Agent (SSM Agent) installed and proper IAM roles configured. A CloudOps engineer needs to implement an automated patching solution. The solution must ensure that production workloads are not disrupted during business hours. Which combination of steps should the CloudOps engineer take to implement this solution? (Select TWO.)",
+    options: [
+      "Create a patch baseline with an auto-approval delay of 7 days. Configure the patch baseline as the default for Windows Server.",
+      "Configure AWS Config rules to check the patch compliance status and to automatically install missing patches.",
+      "Create a maintenance window task that runs weekly during nonbusiness hours and uses the AWS-RunPatchBaseline document.",
+      "Use Systems Manager State Manager to run the AWS-RunPatchBaseline document on a daily schedule.",
+      "Create an Amazon EventBridge rule to trigger AWS-RunPatchBaseline as soon as new patches are available.",
+    ],
+    correct: [0,2],
+    explanation: "Correct: Patch Manager patch baselines define which patches can be automatically approved and installed. Setting an auto-approval delay will meet the company's policy to patch within 7 days of release. You can use this approach to test in non-production environments before applying patches to production systems. Maintenance windows provide scheduled patching during specified time periods. This solution minimizes the impact on business operations. By scheduling the AWS-RunPatchBaseline document to run during nonbusiness hours, you can ensure that production workloads are not disrupted. Additionally, you can maintain regular patch compliance. Incorrect: AWS Config is a configuration assessment service that can monitor patch compliance. AWS Config cannot automatically install patches. You can use AWS Config to report on compliance status. However, actual patch deployment requires Patch Manager capabilities. State Manager is a configuration management service that you can use to automate the process to keep AWS resources in a defined state. You can use State Manager to run the AWS-RunPatchBaseline document. However, daily execution does not align with the business requirement to minimize disruption. Daily patching could cause unnecessary system interruptions. Daily patching does not address the business hours or maintenance window requirements. You can use EventBridge to decouple applications and build event-driven applications. You can use EventBridge to invoke immediate patching when updates become available. However, this approach would disrupt production workloads at unpredictable times. This approach does not address the business hours or maintenance window requirements. This approach would impact the production monitoring system."
+  },
+  {
+    id: 55,
+    domain: "Question 55",
+    question: "A CloudOps engineer must automate the creation of custom Amazon Machine Images (AMIs). The CloudOps engineer notices timeout errors on the EC2 Image Builder pipeline. What is the cause of the timeout errors?",
+    options: [
+      "There are insufficient permissions granted to the Image Builder role that is configured in the pipeline.",
+      "The base AMI that is specified in the configuration is no longer available.",
+      "The AWS Systems Manager Agent (SSM Agent) on the build instance is not running or reachable.",
+      "The Image Builder pipeline was tagged with the key value executable set to false.",
+    ],
+    correct: 2,
+    explanation: "Image Builder uses the SSM Agent to manage the build instance and to run build components. Additionally, the SSM Agent can collect logs. If the SSM Agent is not running, is unresponsive because of network issues, or is misconfigured, then the pipeline will hang during a build step. This issue will eventually lead to a timeout error as Image Builder waits for a response."
+  },
 ];
   
   // Helper to check if a question is multiple answer
