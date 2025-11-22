@@ -502,6 +502,13 @@ const cheatsheet = {
             {
               topic: 'EC2 Auto Scaling',
               details: [
+                'An Amazon EC2 Auto Scaling group contains a collection of EC2 instances that are treated as a logical grouping for the purposes of automatic scaling and management. An Amazon EC2 Auto Scaling group also lets you use Amazon EC2 Auto Scaling features such as health check replacements and scaling policies. Both maintaining the number of instances in an Amazon EC2 Auto Scaling group and automatic scaling are the core functionality of the Amazon EC2 Auto Scaling service.',
+                'The size of an Amazon EC2 Auto Scaling group depends on the number of instances that you set as the desired capacity. You can adjust its size to meet demand, either manually or by using automatic scaling.',
+                'An Amazon EC2 Auto Scaling group starts by launching enough instances to meet its desired capacity. It maintains this number of instances by performing periodic health checks on the instances in the group. The Amazon EC2 Auto Scaling group continues to maintain a fixed number of instances even if an instance becomes unhealthy. If an instance becomes unhealthy, the group terminates the unhealthy instance and launches another instance to replace it. For more information, see Health checks for instances in an Amazon EC2 Auto Scaling group.',
+                'You can use scaling policies to increase or decrease the number of instances in your group dynamically to meet changing conditions. When the scaling policy is in effect, the Amazon EC2 Auto Scaling group adjusts the desired capacity of the group, between the minimum and maximum capacity values that you specify, and launches or terminates the instances as needed. You can also scale on a schedule. For more information, see Choose your scaling method.',
+                'When creating an Amazon EC2 Auto Scaling group, you can choose whether to launch On-Demand Instances, Spot Instances, or both. You can specify multiple purchase options for your Amazon EC2 Auto Scaling group only when you use a launch template. For more information, see Amazon EC2 Auto Scaling groups with multiple instance types and purchase options.',
+                'Spot Instances provide you with access to unused EC2 capacity at steep discounts relative to On-Demand prices. When a Spot Instance is terminated, the Amazon EC2 Auto Scaling group attempts to launch a replacement instance to maintain the desired capacity for the group.',
+                'When instances are launched, if you specified multiple Availability Zones, the desired capacity is distributed across these Availability Zones. If a scaling action occurs, Amazon EC2 Auto Scaling automatically maintains balance across all of the Availability Zones that you specify.',
                 'Key policies: target tracking, step scaling, scheduled scaling, and predictive scaling.',
                 'Target tracking keeps a metric (for example, `ASGAverageCPUUtilization` at 50%) similar to a thermostat.',
                 {
@@ -602,7 +609,7 @@ const cheatsheet = {
             {
               topic: 'Elastic Load Balancing & Health Checks',
               details: [
-                'ALB and NLB distribute traffic across healthy targets in one or more Availability Zones.',
+                'ALB and NLB distribute traffic across healthy targets in one or more Availability Zones, , but they operate at different layers of the network model and have different features. ALB works at Layer 7 (Application Layer) and is ideal for HTTP/HTTPS traffic, offering advanced routing like host-based or path-based routing. NLB operates at Layer 4 (Transport Layer), providing high-performance, low-latency handling for TCP, UDP, and TLS traffic, and supports static IPs. ',
                 'Health checks define which targets receive traffic based on path, port, protocol, success codes, thresholds, and intervals.',
                 {
                   name: 'Example',
@@ -1424,6 +1431,7 @@ const cheatsheet = {
                 'Each subnet in a VPC is confined to a single AZ.',
                 'Default limit: The default limit is five VPCs per region',
                 'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
+                'ENI: An Elastic Network Interface (ENI) is a logical networking component in a VPC that enables network connectivity within a VPC. It can be dynamically attached to and detached from cloud instances (like AWS EC2 instances), allowing its network properties, such as private and public IP addresses, security groups, and MAC address, to be retained. This decoupling of network configuration from the instance allows for high availability through failover, multi-IP server configurations, and segmented network traffic.',
                 'CIDR blocks: /16 to /28',
                 'Public subnet: Route to IGW',
                 'Private subnet: Route to NAT',
@@ -1462,14 +1470,17 @@ const cheatsheet = {
               ]
             },
             {
-              topic: 'VPC Connectivity',
+              topic: 'VPC Connectivity & Gateways',
               details: [
                 { name: 'Internet Gateway', text: 'a horizontally scaled, redundant, and highly available VPC component that allows bidirectional communication between your VPC and the internet. It supports IPv4 and IPv6 traffic. It does not cause availability risks or bandwidth constraints on your network traffic.' },
                 { name: 'NAT Gateway', text: 'it enables **private subnet instances to connect to internet, other VPCs, on-premises networks**; handles IPv4, IPv6 traffic routing, connectivity types. If you aim **to provide Internet access to private instances, the NAT gateway must be located in a public subnet**.' },
                 { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
+                { name: 'Gateway VPC Endpoint', text: 'A gateway VPC endpoint for Amazon S3 provides direct private connectivity between your VPC and Amazon S3. This solution eliminates data transfer costs. Gateway endpoints are free to use. Gateway endpoints allow EC2 instances in private subnets to access Amazon S3 without using the internet or incurring data processing charges.' },
+                { name: 'Amazon S3 Transfer Acceleration', text: 'S3 Transfer Acceleration is a bucket-level feature that you can use to improve transfer speeds over long distances. S3 Transfer Acceleration would increase costs by adding acceleration fees to the existing data transfer costs. This solution can improve transfer speeds. However, this solution does not eliminate data transfer costs.' },
+                { name: 'S3 File Gateway', text: 'It provides a file interface into Amazon S3. You can use S3 File Gateway to store and retrieve objects in Amazon S3 by using file protocols such as NFS and SMB. This solution requires you to set up and manage a gateway instance. This solution still incurs data transfer charges.' },
                 { name: 'VPN', text: 'IPSec encrypted tunnel' },
                 { name: 'Direct Connect', text: 'a service establishes a dedicated connection that delivers consistent, low-latency performance from an on-premises network to one or more VPCs' },
-                { name: 'Transit Gateway', text: 'a network transit hub used to **interconnect VPCs and on-premises networks**' },
+                { name: 'Transit Gateway', text: "Amazon S3 Transfer Acceleration is a service that speeds up long-distance data transfers to and from an Amazon S3 bucket by routing traffic through Amazon CloudFront's globally distributed edge locations and using the AWS global backbone network. This improves performance by reducing the impact of internet congestion and distance, which can be particularly beneficial for applications with geographically dispersed users or for transferring large objects. To use it, you must enable the feature on your S3 bucket and then access it using a specific accelerated endpoint" },
                 { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
                 { name: 'VPC Peering VS Transit Gateway', text: "**VPC peering connects two VPCs directly**, making it a simple, low-latency solution for smaller networks, while Transit Gateway connects multiple VPCs, on-premises networks, and VPNs in a hub-and-spoke model, providing centralized management for larger, more complex infrastructures. VPC peering uses a direct, point-to-point connection which is easier for one-to-one needs, but it doesn't scale well as you have to manually manage each peering connection. Transit Gateway is more expensive and introduces a hop, but it scales better, offers centralized routing, and supports hybrid connectivity and transitive routing between VPCs" },
               ],
@@ -1489,12 +1500,12 @@ const cheatsheet = {
             {
               topic: 'ELB Types',
               details: [
-                'ALB: Layer 7, HTTP/HTTPS, path routing',
-                'NLB: Layer 4, TCP/UDP, ultra-low latency',
+                'ALB: Layer 7, for HTTP/HTTPS traffic, offering host-based or path routing',
+                'NLB: Layer 4, for TCP/UDP/TLS traffic, providing high-performance, low-latency, and supports static IPs',
                 'CLB: Legacy, avoid for new apps',
-                'GWLB: Layer 3, for virtual appliances',
-                'Cross-zone load balancing',
-                'Connection draining/deregistration delay'
+                'GWLB: Layer 3, for deployment and management of a fleet of virtual network appliances like firewalls',
+                'Cross-zone load balancing: a feature within these services that distributes traffic evenly across all enabled Availability Zones (AZs), improving availability and reliability',
+                'Connection draining/deregistration delay: a feature of AWS Elastic Load Balancing (ELB) that allows in-flight requests to complete before an instance is terminated or removed. The load balancer stops sending new requests to the instance while it waits for the configured deregistration delay (default 300 seconds) to expire or for all requests to finish'
               ],
               resources: [
                 { name: 'ELB Guide', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html' }
