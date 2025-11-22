@@ -2128,6 +2128,19 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 0,
     explanation: "SCPs are an organization policy that can limit which services, actions, or Regions are available in an AWS account. An SCP with an explicit deny for actions outside of the specified Regions provides the strongest enforcement with minimal operational effort. All accounts in the organization inherit SCPs. SCPs cannot be overridden. Therefore, this solution ensures consistent compliance."
+  },
+  {
+    id: 42,
+    domain: "Deployment, Provisioning, and Automation",
+    question: "A company needs to centralize the management of Amazon EC2 instances across multiple AWS accounts and AWS Regions. The company requires daily patching of critical security updates, weekly system health checks, and automated remediation of common issues. The solution must provide detailed logs of all the actions that are taken. The solution must support approval workflows for sensitive operations. Which solution will meet these requirements with the LEAST operational overhead?",
+    options: [
+      "Create AWS Lambda functions that are invoked by Amazon EventBridge rules to run scripts on the EC2 instances. Store logs in Amazon CloudWatch Logs. Implement AWS Step Functions for approval workflows.",
+      "Create AWS Systems Manager Automation runbooks that use predefined actions to perform patching, health checks, and remediation. Configure Systems Manager State Manager associations to run on a schedule and use approvals for sensitive operations.",
+      "Configure AWS Systems Manager State Manager associations to run command documents to perform patching and health checks. Use Systems Manager Session Manager for manual remediation of issues and logging operations.",
+      "Configure AWS Config rules to detect instances that require updates. Use AWS CloudFormation templates to deploy patches and remediation scripts when invoked by AWS Config rule violations. Store logs in Amazon S3. Use Amazon Simple Notification Service (Amazon SNS) for approvals.",
+    ],
+    correct: 1,
+    explanation: "Systems Manager is a management service that provides a unified interface to manage AWS resources across accounts and Regions. Automation runbooks are designed specifically for automating common maintenance and deployment tasks across AWS resources. Runbooks can include predefined actions for patching, health checks, and automated remediation. State Manager can schedule the runbooks to run on a regular basis. All actions are automatically logged in Systems Manager. Therefore, this solution provides detailed audit trails. This solution uses built-in capabilities that require minimal operational overhead to implement and manage. So why was option C incorrect? State Manager can handle scheduled tasks such as patching and health checks. However, using Session Manager for manual remediation does not meet the requirement for automated remediation. Additionally, this solution does not provide built-in approval workflows for sensitive operations."
   }
 ];
   
