@@ -1270,7 +1270,7 @@ const cheatsheet = {
                 'AWS managed vs Customer managed',
                 'Policy evaluation: Explicit Deny > Allow',
                 'Permission boundaries to cap maximum permissions for an identity',
-                'Service Control Policies (SCPs) in AWS Organizations enforce guardrails across accounts',
+                {name: 'Service Control Policies (SCPs)', text; 'SCPs in AWS Organizations enforce guardrails (managing permissions) across accounts. SCPs help you to ensure your accounts stay within your organization’s access control guidelines. They define a permission guardrail, or sets limits, on the actions that the IAM users and IAM roles in your organization can perform. SCPs do not grant permissions to the IAM users and IAM roles in your organization.}, ',
                 {
                   name: 'Best Practice',
                   text: 'Grant least-privilege by default; start broad, then refine. ([docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html))'
