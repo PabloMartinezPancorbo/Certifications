@@ -1060,38 +1060,26 @@ const cheatsheet = {
             {
               topic: 'Deployment Strategies & Elastic Beanstalk — Generic Deployment Strategies',
               details: [
-                'All-at-once: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk.',
-                'Rolling: update a subset of instances at a time; maintains some capacity but can temporarily mix old/new versions.',
-                'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment.',
-                'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG).',
-                'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target-group switch.',
+                'All-at-once/In-place: deploy new version to all instances simultaneously; fastest but causes downtime and higher risk; suitable for dev/test. All instances in your environment are out of service for a short time while the deployment occurs. It updates the application version without replacing any infrastructure components, directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates, while minimal, not acceptable for zero downtime requirements.',
+                'Immutable: launch a new ASG with new version, test it, then switch traffic; safer and easier rollback (replace ASG). It deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
+                'Blue/Green: maintain two environments (blue=prod, green=new); switch traffic using Route 53 or ALB/Target-group switch. create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over. These deployments provide releases with near zero-downtime and rollback capabilities. The fundamental idea behind blue/green deployment is to shift traffic between two identical environments that are running different versions of your application.',
                 {
                   name: 'Exam Pattern',
                   text: 'If the requirement is “zero downtime, easy rollback,” the best answer is usually immutable or blue/green deployments rather than all-at-once.'
+                },
+                'Canary deployments: a type of blue/green deployment strategy that is more risk-averse. This strategy involves a phased approach in which traffic is shifted to a new version of the application in two increments. The first increment is a small percentage of the traffic, which is referred to as the canary group. This group is used to test the new version, and if it is successful, the traffic is shifted to the new version in the second increment. Canary deployments can be implemented in two steps or linearly. In the two-step approach, the new application code is deployed and exposed for trial. Upon acceptance, it is rolled out either to the rest of the environment or in a linear fashion. The linear approach involves incrementally increasing traffic to the new version of the application until all traffic flows to the new release.',
+                'Rolling: generally faster than a blue/green deployment; however, unlike a blue/green deployment, in a rolling deployment there is no environment isolation between the old and new application versions, it can temporarily mix old/new versions. It updates in batches, maintains some capacity but may temporarily reduce total capacity. A deployment strategy that slowly replaces previous versions of an application with new versions of an application by completely replacing the infrastructure on which the application is running.',
+                'Rolling with additional batch: temporarily launches extra instances so you maintain full capacity during deployment/rollout.',
+                'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
+                {
+                  name: 'Exam Mapping',
+                  text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
                 }
-              ]
-            },
-            {
-              topic: 'Deployment Options',
-              details: [
-                'In-place deployments: a deployment strategy that updates the application version without replacing any infrastructure components, directly in a production environment. In-place deployments stop and start tasks on the same container instance. This strategy causes service interruptions during updates, while minimal, not acceptable for zero downtime requirements.',
-                'Blue/Green: create a separate environment with the new version and use Route 53 URL or CNAME swap to cut over. These deployments provide releases with near zero-downtime and rollback capabilities. The fundamental idea behind blue/green deployment is to shift traffic between two identical environments that are running different versions of your application.',
               ],
               image: {
                 url: 'https://docs.aws.amazon.com/images/whitepapers/latest/blue-green-deployments/images/blue-green-example.png',
                 alt: 'Blue/green deployment'
               },
-              details: [
-                'Canary deployments: a type of blue/green deployment strategy that is more risk-averse. This strategy involves a phased approach in which traffic is shifted to a new version of the application in two increments. The first increment is a small percentage of the traffic, which is referred to as the canary group. This group is used to test the new version, and if it is successful, the traffic is shifted to the new version in the second increment. Canary deployments can be implemented in two steps or linearly. In the two-step approach, the new application code is deployed and exposed for trial. Upon acceptance, it is rolled out either to the rest of the environment or in a linear fashion. The linear approach involves incrementally increasing traffic to the new version of the application until all traffic flows to the new release.',
-                'Rolling: generally faster than a blue/green deployment; however, unlike a blue/green deployment, in a rolling deployment there is no environment isolation between the old and new application versions. It updates in batches, maintains some capacity but may temporarily reduce total capacity. A deployment strategy that slowly replaces previous versions of an application with new versions of an application by completely replacing the infrastructure on which the application is running.',
-                'Rolling with additional batch: adds an extra batch to retain full capacity during rollout.',
-                'Immutable: deploys new version to a new set of instances in a new ASG, then swaps over; minimizes risk.',
-                'Traffic splitting: send a small percentage of traffic to the new version for canary testing before full rollout.',
-                'All at once (only for Beanstalk): fast, downtime during deployment; suitable for dev/test. All instances in your environment are out of service for a short time while the deployment occurs.',
-                {
-                  name: 'Exam Mapping',
-                  text: 'Skill 3.1.5: “Implement deployment strategies and services.” Beanstalk naming (All-at-once, Rolling, Immutable, Blue/Green) often appears in scenario questions about downtime vs risk and rollback.'
-                }
               ],
               resources: [
                 { name: 'Deployment Options', url: 'https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html' }
