@@ -1436,7 +1436,6 @@ const cheatsheet = {
                 'Route table priority: Most specific',
                 'Local route: Cannot be deleted',
                 'VPC Peering: No transitive routing',
-                { name: 'Connection Error Types', text: '`500` - a generic, client-side message indicating that the website server encountered an unexpected problem and cannot fulfill the request —> this is a server-side issue, not a problem with the browser, computer, or internet connection of the user. `501` - `Not Implemented` means the server does not support the specific functionality needed to fulfill a request. `502` - `Bad Gateway` server error response status code indicates that a server was acting as a gateway or proxy and that it received an invalid response. `503` - `Service Unavailable` error, which means a server is temporarily unable to handle a request. `504` - a gateway timeout, a server-side error that occurs when a server acting as a gateway or proxy does not receive a timely response from an upstream server needed to complete a request.' },
               ],
               image: {
                 url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
@@ -1499,6 +1498,7 @@ const cheatsheet = {
             {
               topic: 'ELB Types',
               details: [
+                { name: 'Connection Error Types', text: '`500` - a generic, client-side message indicating that the website server encountered an unexpected problem and cannot fulfill the request —> this is a server-side issue, not a problem with the browser, computer, or internet connection of the user. `501` - `Not Implemented` means the server does not support the specific functionality needed to fulfill a request. `502` - `Bad Gateway` server error response status code indicates that a server was acting as a gateway or proxy and that it received an invalid response. `503` - `Service Unavailable` error, which means a server is temporarily unable to handle a request, meaning for ALBs that the target groups for the load balancer have no registered targets, or all of the registered targets are in an unused state. `504` - a gateway timeout, a server-side error that occurs when a server acting as a gateway or proxy does not receive a timely response from an upstream server needed to complete a request.' },
                 'ALB: Layer 7, for HTTP/HTTPS traffic, offering host-based or path routing',
                 'NLB: Layer 4, for TCP/UDP/TLS traffic, providing high-performance, low-latency, and supports static IPs',
                 'CLB: Legacy, avoid for new apps',
