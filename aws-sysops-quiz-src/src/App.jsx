@@ -645,7 +645,7 @@ const cheatsheet = {
                   name: 'Pattern',
                   text: 'Use failover routing with primary and secondary records. When the primary health check fails, Route 53 returns the secondary record, such as a DR Region.'
                 },
-                'Health checks can monitor CloudWatch alarms to base DNS decisions on higher-level metrics (for example, ALB 5xx rate).',
+                'Health checks can monitor CloudWatch alarms to base DNS decisions on higher-level metrics (for example, ALB 5xx rate because of HTTP level).',
                 {
                   name: 'Exam Mapping',
                   text: 'Maps to Skill 2.2.1 and 2.2.2: combine Route 53 health checks and routing policies with Multi-AZ or multi-Region architectures for resilient endpoints.'
@@ -1519,8 +1519,10 @@ const cheatsheet = {
               details: [
                 { name: 'Connection Error Types', text: '`500` - a generic, client-side message indicating that the website server encountered an unexpected problem and cannot fulfill the request —> this is a server-side issue, not a problem with the browser, computer, or internet connection of the user. `501` - `Not Implemented` means the server does not support the specific functionality needed to fulfill a request. `502` - `Bad Gateway` server error response status code indicates that a server was acting as a gateway or proxy and that it received an invalid response. `503` - `Service Unavailable` error, which means a server is temporarily unable to handle a request, meaning for ALBs that the target groups for the load balancer have no registered targets, or all of the registered targets are in an unused state. `504` - a gateway timeout, a server-side error that occurs when a server acting as a gateway or proxy does not receive a timely response from an upstream server needed to complete a request.' },
                 'ALB: Layer 7, for HTTP/HTTPS traffic, offering host-based or path routing',
-                'You can use ALBs to distribute incoming traffic across targets. ALBs cannot route traffic based on instance CPU utilization, that is something Auto Scaling Groups can track.',
+                { name: 'Example', text: 'An ALB is suitable for the web tier because ALBs support layer 7 routing and HTTP health checks on specific paths.' },
+                'You can use ALBs to distribute incoming HTTP traffic across targets. ALBs cannot route traffic based on instance CPU utilization, that is something Auto Scaling Groups can track.',
                 'NLB: Layer 4, for TCP/UDP/TLS traffic, providing high-performance, low-latency, and supports static IPs',
+                { name: 'Example', text: 'An NLB is suitable for the API tier because an NLB performs load balancing at layer 4 and supports TCP health checks on a specific port. Additionally, an NLB can handle the millions of requests that the API tier requires.' },
                 'CLB: Legacy, avoid for new apps',
                 'GWLB: Layer 3, for deployment and management of a fleet of virtual network appliances like firewalls',
                 'Cross-zone load balancing: a feature within these services that distributes traffic evenly across all enabled Availability Zones (AZs), improving availability and reliability',
