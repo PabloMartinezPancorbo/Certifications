@@ -1425,10 +1425,8 @@ const cheatsheet = {
             {
               topic: 'Subnets & Routing',
               details: [
-                'VPC: a secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets.',
-                'Each VPC is confined to a single region.',
-                'Subnet: a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.',
-                'Each subnet in a VPC is confined to a single AZ.',
+                { name: 'VPC', text: "A secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets. Each VPC is confined to a single region." },
+                { name: 'Subnet', text: "A range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC. Each subnet in a VPC is confined to a single AZ." },
                 'Default limit: The default limit is five VPCs per region',
                 'Adjustable limit: You can request a quota increase from AWS to have more VPCs per region.',
                 'ENI: An Elastic Network Interface (ENI) is a logical networking component in a VPC that enables network connectivity within a VPC. It can be dynamically attached to and detached from cloud instances (like AWS EC2 instances), allowing its network properties, such as private and public IP addresses, security groups, and MAC address, to be retained. This decoupling of network configuration from the instance allows for high availability through failover, multi-IP server configurations, and segmented network traffic.',
@@ -1437,7 +1435,8 @@ const cheatsheet = {
                 'Private subnet: Route to NAT',
                 'Route table priority: Most specific',
                 'Local route: Cannot be deleted',
-                'VPC Peering: No transitive routing'
+                'VPC Peering: No transitive routing',
+                { name: 'Connection Error Types', text: '`500` - a generic, client-side message indicating that the website server encountered an unexpected problem and cannot fulfill the request. This is a server-side issue, not a problem with the browser, computer, or internet connection of the user. `501` - `Not Implemented` means the server does not support the specific functionality needed to fulfill a request. `502` - `Bad Gateway` server error response status code indicates that a server was acting as a gateway or proxy and that it received an invalid response. `503` - `Service Unavailable` error, which means a server is temporarily unable to handle a request. `504` - a gateway timeout, a server-side error that occurs when a server acting as a gateway or proxy does not receive a timely response from an upstream server needed to complete a request.' },
               ],
               image: {
                 url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
