@@ -697,6 +697,23 @@ const cheatsheet = {
               ]
             },
             {
+              topic: 'Amazon EC2 launch templates',
+              details: [
+                {
+                  name: 'EC2 launch template',
+                  text: 'It is used to store instance launch parameters so that you do not have to specify them every time you launch an Amazon EC2 instance.'
+                },
+                'For example, you can create a launch template that stores the AMI ID, instance type, and network settings that you typically use to launch instances.',
+                'When you launch an instance using the Amazon EC2 console, an AWS SDK, or a command line tool, you can specify the launch template instead of entering the parameters again.',
+                'For each launch template, you can create one or more numbered launch template versions. Each version can have different launch parameters.',
+                'When you launch an instance from a launch template, you can use any version of the launch template.',
+              ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/AWSEC2/latest/UserGuide/images/launch-template-diagram.png',
+                alt: 'AWS Launch Template Diagram'
+              },
+            },
+            {
               topic: 'Database Restore Methods and RTO/RPO',
               details: [
                 'RDS restores create a new DB instance from an automated backup or a snapshot; the original instance remains unchanged.',
