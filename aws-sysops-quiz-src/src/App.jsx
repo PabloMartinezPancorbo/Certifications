@@ -2431,8 +2431,21 @@ Where should you place the NAT Gateway?`,
         "Create a Systems Manager State Manager association with the command. Deploy the association to the account. Specify the instances as targets.",
         "Use Systems Manager Fleet Manager to establish individual terminal sessions to each instance. Run the command. Monitor the command output in each terminal session.",
       ],
-      correct: 2,
-      explanation: "Use Systems Manager Fleet Manager to establish individual terminal sessions to each instance. Run the command. Monitor the command output in each terminal session. Why not fleet manager? The Fleet Manager terminal feature requires you to establish individual connections to each instance. This solution is manual and time-consuming. This solution does not provide centralized execution status tracking. This solution would not meet the requirement to quickly deploy the security package across multiple instances. nd Stte mnger? State Manager is designed to maintain a consistent state over time. For example, State Manager can regularly apply specific software installations or configurations. You can run commands by using State Manager. However, this approach is not an appropriate tool for one-time command execution across multiple instances. Using State Manager requires more time to create a Systems Manager document and deploy the association."
+      correct: 1,
+      explanation: "Run Command is designed to run the simultaneous execution of commands across multiple instances. Run Command provides real-time status tracking. Run Command maintains an audit trail of command execution. Additionally, Run Command provides command output for each instance through the Systems Manager console. Why not fleet manager? The Fleet Manager terminal feature requires you to establish individual connections to each instance. This solution is manual and time-consuming. This solution does not provide centralized execution status tracking. This solution would not meet the requirement to quickly deploy the security package across multiple instances. nd Stte mnger? State Manager is designed to maintain a consistent state over time. For example, State Manager can regularly apply specific software installations or configurations. You can run commands by using State Manager. However, this approach is not an appropriate tool for one-time command execution across multiple instances. Using State Manager requires more time to create a Systems Manager document and deploy the association."
+    },
+    {
+      id: 58,
+      domain: "Question 58",
+      question: "A CloudOps engineer discovers drift in an AWS CloudFormation stack. The CloudOps engineer discovers that critical security group inbound rules were manually added to meet urgent security requirements. The CloudOps engineer needs to update the stack with the new inbound rules while preserving the security configuration. Which solution will meet these requirements?",
+      options: [
+        "Import the current security group inbound rules configuration into the template by using CloudFormation drift detection results. Perform the stack update.",
+        "Update the CloudFormation template to include the manually added security group inbound rules. Perform the stack update.",
+        "Create a custom CloudFormation resource that detects and automatically incorporates any manually created security group inbound rules during stack updates.",
+        "Create a change set to preview the impact of the stack update on the modified security group inbound rules. Perform the stack update.",
+      ],
+      correct: 1,
+      explanation: "You can update the CloudFormation template to include all the desired resource configurations. You can add the manually created security rules to the template before you perform the update. This solution preserves the critical security requirements and maintains the benefits of template-based resource management. Why not change set? You can use change sets to preview how proposed changes to a stack would impact your running resources. A change set does not meet the requirement to preserve manual changes. The change set will show that the manual security group rules will be removed. However, the change set does not provide a way to preserve the changes. The rules would still be lost during the stack update unless you add the rules to the template."
       }
 ];
   
