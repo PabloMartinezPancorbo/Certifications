@@ -2450,6 +2450,19 @@ Where should you place the NAT Gateway?`,
     {
       id: 59,
       domain: "Question 59",
+      question: "A company operates in a multi-account AWS environment by using AWS Organizations. A CloudOps engineer discovers that developers across different member accounts are launching Amazon EC2 instances that are larger than necessary. The CloudOps engineer needs a solution to set limits and control EC2 instance types across all accounts. Which solution will meet these requirements with the LEAST operational overhead?",
+      options: [
+        "Create an AWS Service Catalog portfolio in the management account. Share the portfolio with member accounts. Use IAM policies to require developers to launch instances only through Service Catalog products.",
+        "Deploy AWS Config rules by using AWS CloudFormation StackSets across all accounts to detect noncompliant instance types.",
+        "Create IAM permissions boundaries in each member account that restrict the EC2 instance types that developers can launch.",
+        "Create a service control policy (SCP) that restricts EC2 instance types to approved sizes across all member accounts.",
+      ],
+      correct: 3,
+      explanation: "SCPs are policies that you attach to organizations to manage permissions across accounts. SCPs provide a centralized way to enforce instance type restrictions across all accounts. This solution requires minimal maintenance and provides consistent control."
+    },
+    {
+      id: 60,
+      domain: "Question 60",
       question: "A CloudOps engineer discovers drift in an AWS CloudFormation stack. The CloudOps engineer discovers that critical security group inbound rules were manually added to meet urgent security requirements. The CloudOps engineer needs to update the stack with the new inbound rules while preserving the security configuration. Which solution will meet these requirements?",
       options: [
         "Import the current security group inbound rules configuration into the template by using CloudFormation drift detection results. Perform the stack update.",
