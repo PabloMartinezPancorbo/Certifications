@@ -383,7 +383,8 @@ const cheatsheet = {
           {
             topic: 'EC2 Networking & Placement Groups',
             details: [
-              'Placement groups: Cluster (low-latency, high throughput between instances), Spread (isolate instances across hardware), and Partition (for large, distributed workloads).',
+              {name:'Placement groups', text: 'There are three types of placement groups: cluster, partition, and spread. Cluster (low-latency, high throughput between instances, logical grouping of instances within a single Availability Zone). Partition (for large, distributed workloads, can place partitions in multiple Availability Zones in the same AWS Region to help reduce the likelihood of correlated hardware failures for an application). Spread (isolate instances across hardware).'},
+              {name:'Exam trick', text: "If they mention big data technologies such as cassandra clusters, it's almost guaranteed the correct answer will be partition placement groups"},
               'Use enhanced networking (ENA, SR-IOV) and appropriate instance families for network-intensive workloads.',
               'Monitor `NetworkIn`/`NetworkOut`, `NetworkPacketsIn`/`NetworkPacketsOut`, and CPU credits (for T-family instances) to identify bottlenecks.',
               {
@@ -2498,6 +2499,19 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 0,
       explanation: " AWS Health sends out events when an instance is scheduled for retirement. You can configure an EventBridge rule to watch for the event and invoke a Systems Manager document to stop and restart the affected instance. Why not CloudWatch Synthetics upon AWS Health event?  A canary is a script that you can create in CloudWatch Synthetics. You can use a canary to monitor endpoints and APIs. Canaries can mimic a customer's experience when they use the API or endpoint. Canaries can emit events to EventBridge. However, canaries run on a schedule and cannot receive events from EventBridge to take action based on those events. Why not CloudWatch Alarms? You can use CloudWatch alarms to monitor specific metrics that relate to the performance of your services or systems. CloudWatch alarms do not monitor AWS Health events. And CloudWatch Application Signals? You can use CloudWatch Application Signals to monitor the health and performance of an application. CloudWatch Application Signals are not integrated with AWS Health. CloudWatch Application Signals cannot respond to events from AWS Health."
+    },
+    {
+      id: 63,
+      domain: "Question 63",
+      question: "A robotics company is building an application that uses an Apache Cassandra cluster. The cluster runs on Amazon EC2 instances that will be deployed into a placement group. A CloudOps engineer must design for maximum resiliency of the compute layer. Which deployment strategy meets this requirement?",
+      options: [
+        "Deploy a partition placement group across a single Availability Zone.",
+        "Deploy a partition placement group across multiple Availability Zones.",
+        "Deploy a cluster placement group across a single Availability Zone.",
+        "Deploy a cluster placement group across multiple Availability Zones.",
+      ],
+      correct: 1,
+      explanation: "There are three types of placement groups: cluster, partition, and spread. Cluster placement groups provide the closest physical placement of instances. Instances in the same cluster placement group have a higher throughput limit for each flow for TCP/IP traffic and are placed in the same high-bisection bandwidth segment of the network. Cluster placement groups are Single-AZ deployments only. When resiliency is most important, partition and spread placement groups provide options of Single-AZ or Multi-AZ deployments while ensuring that individual nodes run on separate racks. Partition placement groups divide the cluster into three partitions that are physically separated in the Availability Zone. Spread placement groups place each instance on its own rack inside the Availability Zone. Service quotas can be a factor in the selection of a placement group."
     }
 ];
   
