@@ -1388,16 +1388,21 @@ const cheatsheet = {
             {
               topic: 'Configuration & Monitoring',
               details: [
-                'Use AWS Config to record resource configuration, evaluate compliance rules, and trigger remediation actions. ([docs.aws.amazon.com/config/latest/developerguide/security-best-practices.html](https://docs.aws.amazon.com/config/latest/developerguide/security-best-practices.html))',
-                'Enable Config Aggregator to monitor multiple accounts/regions.',
+                'Use AWS Config to record resource configuration, evaluate compliance rules (including patch compliance), and trigger remediation actions.',
+                'Enable Config Aggregator to monitor multiple accounts/regions. By enabling AWS Config in all accounts and using an AWS Config aggregator, you can centralize compliance data. You can implement an AWS Config managed rule to evaluate the compliance status of EC2 instances in the organization. The AWS Config aggregator view provides a centralized view of the patch compliance status of all the EC2 instances in the organization.',
                 'Use AWS Security Hub to aggregate findings from GuardDuty, Inspector, Config, etc, and enable automated remediation. ([aws.amazon.com/blogs/security/optimize-aws-config-for-aws-security-hub-to-effectively-manage-your-cloud-security-posture/](https://aws.amazon.com/blogs/security/optimize-aws-config-for-aws-security-hub-to-effectively-manage-your-cloud-security-posture/))',
+                'AWS Security Hub prioritizes your critical security issues and helps you respond at scale to protect your environment. It detects critical issues by correlating and enriching signals into actionable insights, enabling streamlined response.',
+                'Amazon GuardDuty is a threat detection service that monitors for malicious activity and anomalous behavior to protect AWS accounts, workloads, and data.',
+                'Amazon Inspector automatically discovers workloads, such as Amazon Elastic Compute Cloud (Amazon EC2) instances, container images, and AWS Lambda functions, as well as code repositories, and scans them for software vulnerabilities and unintended network exposure.',
+                'AWS Shield protects networks and applications by identifying network security configuration issues and defending applications against active web exploitation.',
                 {
                   name: 'Exam Pattern',
                   text: 'If you see “automated remediation when non-compliant resource found” → Config rule + EventBridge + SSM Automation runbook is typical.'
                 }
               ],
               resources: [
-                { name: 'AWS Config Guide', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' }
+                { name: 'AWS Config Guide', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' },
+                { name: 'AWS Security Best Practices', url: 'docs.aws.amazon.com/config/latest/developerguide/security-best-practices.html](https://docs.aws.amazon.com/config/latest/developerguide/security-best-practices.html'}
               ]
             },
             {
@@ -2512,6 +2517,19 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 1,
       explanation: "There are three types of placement groups: cluster, partition, and spread. Cluster placement groups provide the closest physical placement of instances. Instances in the same cluster placement group have a higher throughput limit for each flow for TCP/IP traffic and are placed in the same high-bisection bandwidth segment of the network. Cluster placement groups are Single-AZ deployments only. When resiliency is most important, partition and spread placement groups provide options of Single-AZ or Multi-AZ deployments while ensuring that individual nodes run on separate racks. Partition placement groups divide the cluster into three partitions that are physically separated in the Availability Zone. Spread placement groups place each instance on its own rack inside the Availability Zone. Service quotas can be a factor in the selection of a placement group."
+    },
+    {
+      id: 64,
+      domain: "Question 64",
+      question: "A company uses AWS Organizations. The company must produce reports on the patch compliance status of Amazon EC2 instances. The company uses AWS Systems Manager for patch management. A CloudOps engineer must evaluate all EC2 instances across all the accounts of the organization. Which solution will meet these requirements?",
+      options: [
+        "Deploy Amazon Inspector across the organization by using delegated administration. Configure assessment rules to scan for missing patches and to generate compliance reports through Amazon Inspector findings.",
+        "Use Amazon GuardDuty as a delegated administrator in the organization. Create custom findings that identify instances with missing patches based on Systems Manager patch data.",
+        "Configure Amazon Detective in the management account and enable integration with Systems Manager. Use Detective to generate patch compliance reports across organizational accounts.",
+        "Enable AWS Config in all accounts by using Organizations. Create an AWS Config aggregator in the management account. Deploy a managed rule that evaluates the Systems Manager patch compliance status and generates multi-account reports.",
+      ],
+      correct: 3,
+      explanation: "You can use AWS Config to evaluate the patch compliance status of EC2 instances across multiple accounts. By enabling AWS Config in all accounts and using an AWS Config aggregator, you can centralize compliance data. You can implement an AWS Config managed rule to evaluate the compliance status of EC2 instances in the organization. The AWS Config aggregator view provides a centralized view of the patch compliance status of all the EC2 instances in the organization. GuardDuty is a threat detection service that continuously monitors, analyzes, and processes AWS data sources and logs in AWS environments. You cannot use GuardDuty for instance patch compliance monitoring or reporting. GuardDuty does not integrate directly with Systems Manager patch data. You cannot create custom findings for patch status. Detective is designed for security investigations. Detective can analyze the root cause of potential security issues. Detective is not a compliance reporting tool. Detective does not directly integrate with Systems Manager for patch compliance evaluations. Detective can provide insights into security findings. However, Detective cannot generate patch compliance reports across an organization. You can use Amazon Inspector to scan workloads for software vulnerabilities and network exposures. Amazon Inspector does not evaluate EC2 instance patch compliance. The requirement is to report on patch compliance across the organization, not to identify specific vulnerabilities."
     }
 ];
   
