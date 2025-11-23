@@ -2485,7 +2485,6 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 1,
       explanation: "You can update the CloudFormation template to include all the desired resource configurations. You can add the manually created security rules to the template before you perform the update. This solution preserves the critical security requirements and maintains the benefits of template-based resource management. Why not change set? You can use change sets to preview how proposed changes to a stack would impact your running resources. A change set does not meet the requirement to preserve manual changes. The change set will show that the manual security group rules will be removed. However, the change set does not provide a way to preserve the changes. The rules would still be lost during the stack update unless you add the rules to the template."
-      }
     }
 ];
   
