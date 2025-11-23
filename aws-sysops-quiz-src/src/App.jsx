@@ -2437,6 +2437,19 @@ Where should you place the NAT Gateway?`,
     {
       id: 58,
       domain: "Question 58",
+      question: "A company uses AWS Organizations to manage access across multiple AWS accounts. A CloudOps engineer must configure a solution to allow developers in a development (dev) account to launch Amazon EC2 instances in a staging account. Which solution will meet this requirement?",
+      options: [
+        "Create an IAM policy in the dev account that allows EC2 instance launches. Attach the IAM policy to the developers' IAM user identities.",
+        "Create an IAM role in the dev account. Grant the staging account permission to assume the role.",
+        "Create an IAM role in the staging account. Grant the dev account permission to assume the role. Share the role Amazon Resource Name (ARN) with developers in the dev account.",
+        "Create a service control policy (SCP) in Organizations that allows EC2 instance launches in the staging account. Apply the SCP to the organizational unit (OU) that contains the dev account.",
+      ],
+      correct: 2,
+      explanation: "An IAM role is an IAM identity that has specific permissions. You must create the IAM role in the target account to allow cross-account access. You must grant permissions to the source account to assume the role. Then, source account users can use the role ARN to take on permissions temporarily when accessing resources. Developers in the dev account can assume the role temporarily to perform the required actions in the staging account. This solution meets the requirements and follows the principle of least privilege. Incorrect. You can use SCPs to manage permissions across an organization. SCPs are designed to restrict permissions, not to grant permissions. An SCP cannot provide permissions to developers in one account to launch instances in another account."
+    },
+    {
+      id: 59,
+      domain: "Question 59",
       question: "A CloudOps engineer discovers drift in an AWS CloudFormation stack. The CloudOps engineer discovers that critical security group inbound rules were manually added to meet urgent security requirements. The CloudOps engineer needs to update the stack with the new inbound rules while preserving the security configuration. Which solution will meet these requirements?",
       options: [
         "Import the current security group inbound rules configuration into the template by using CloudFormation drift detection results. Perform the stack update.",
@@ -2447,6 +2460,7 @@ Where should you place the NAT Gateway?`,
       correct: 1,
       explanation: "You can update the CloudFormation template to include all the desired resource configurations. You can add the manually created security rules to the template before you perform the update. This solution preserves the critical security requirements and maintains the benefits of template-based resource management. Why not change set? You can use change sets to preview how proposed changes to a stack would impact your running resources. A change set does not meet the requirement to preserve manual changes. The change set will show that the manual security group rules will be removed. However, the change set does not provide a way to preserve the changes. The rules would still be lost during the stack update unless you add the rules to the template."
       }
+    }
 ];
   
   // Helper to check if a question is multiple answer
