@@ -2357,7 +2357,7 @@ Where should you place the NAT Gateway?`,
       domain: 'Question 56',
       question: 'A company uses AWS Organizations to manage multiple AWS accounts. All Amazon RDS snapshots must be encrypted with an AWS Key Management Service (AWS KMS) key. A CloudOps engineer must implement a service control policy (SCP). The SCP must prevent the deletion of AWS KMS keys without impacting other administrative operations on the KMS keys. Which SCP will meet these requirements?',
       options: [
-        '''
+        `
            {
                 "Version": "2012-10-17",
                 "Statement": [
@@ -2371,8 +2371,8 @@ Where should you place the NAT Gateway?`,
                     }
                 ]
             }
-        ''',
-        '''
+        `,
+        `
            {
                 "Version": "2012-10-17",
                 "Statement": [
@@ -2386,7 +2386,7 @@ Where should you place the NAT Gateway?`,
                     }
                 ]
             }
-        ''',
+        `,
         '''
           {
               "Version": "2012-10-17",
@@ -2401,8 +2401,8 @@ Where should you place the NAT Gateway?`,
                   }
               ]
           }
-        ''',
-        '''
+        `,
+       `
           {
               "Version": "2012-10-17",
               "Statement": [
@@ -2416,7 +2416,7 @@ Where should you place the NAT Gateway?`,
                   }
               ]
           }
-        ''',
+        `,
       ],
       correct: 0,
       explanation: 'SCPs limit permissions in an organization. This SCP uses "Effect": "Deny" to explicitly prevent the specified actions. The SCP also targets the specific AWS KMS actions that relate to key deletion: "kms:ScheduleKeyDeletion" and "kms:Delete*". The wildcard in "kms:Delete*" covers all delete-related actions. The SCP also applies to all resources ("Resource": "*"). Therefore, this solution ensures comprehensive protection. This solution meets the requirement to prevent the deletion of KMS keys.',
