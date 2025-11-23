@@ -603,6 +603,10 @@ const cheatsheet = {
                   text: 'Maps to Skill 2.1.3: configure and manage scaling in managed databases such as RDS, Aurora, and DynamoDB.'
                 }
               ],
+              image: {
+                url: 'https://docs.aws.amazon.com/images/AmazonRDS/latest/AuroraUserGuide/images/aurora-backtrack-create.png',
+                alt: 'Aurora Backtrack'
+              },
               resources: [
                 { name: 'RDS Scaling', url: 'https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.html' },
                 { name: 'DynamoDB Scaling', url: 'https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html' }
