@@ -2583,6 +2583,19 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 1,
       explanation: "AWS Config is designed to assess resource configurations. AWS Config can invoke automated remediation actions. AWS Config rules can detect misconfigurations. You can use Automation documents to standardize remediation actions. AWS Config continuously evaluates resources against rules. Automation provides reliable, documented remediation steps. You can use Amazon SNS to notify the application team of completed remediations. Security Hub is a security findings service that aggregates and prioritizes security alerts from multiple AWS services. Security Hub cannot send findings directly to Amazon SNS. This solution would require Amazon EventBridge to route findings to other services. Additionally, using the same SNS topic for both the Lambda invocation and the email notifications could cause processing issues. CloudTrail records AWS API calls. CloudWatch provides monitoring and operational data in the form of logs and metrics. CloudTrail does not evaluate resource configurations continuously. This solution would detect misconfigurations through API calls only as the misconfigurations occur. This solution would not detect existing misconfigurations. CloudTrail records actions in an AWS account. S3 events can trigger Lambda functions. However, CloudTrail data events with S3 event triggers are inefficient for configuration management. This solution would generate excessive logs and require complex Lambda logic. This solution would detect changes only as the changes occur. This solution would not evaluate existing configurations."
+    },
+    {
+      id: 69,
+      domain: "Question 69",
+      question: "A company processes large volumes of data. The company stores the data in Amazon S3. The data is frequently accessed for the first 30 days. After the first 30 days, access patterns vary between objects. Objects must be retrieved immediately upon request. A CloudOps engineer must optimize storage costs. Which solution will meet these requirements in the MOST cost-effective way?",
+      options: [
+        "Enable the S3 bucket lifecycle policy configured check in AWS Trusted Advisor.",
+        "Configure all S3 buckets to use the S3 Intelligent-Tiering storage class as the default storage class for the objects.",
+        "Create an S3 Lifecycle policy that moves all objects from S3 Standard to S3 Standard-Infrequent Access (S3 Standard-IA) after 30 days.",
+        "Create an S3 Lifecycle policy that moves all objects from S3 Standard to S3 Glacier Flexible Retrieval after 30 days.",
+      ],
+      correct: 1,
+      explanation: "S3 Intelligent-Tiering automatically moves objects between frequent and infrequent access tiers based on actual access patterns. S3 Intelligent-Tiering is recommended for objects where access patterns are unpredictable or change over time. In the scenario, the objects are frequently accessed for the first 30 days. After 30 days, the access patterns vary based on the object. Therefore, S3 Intelligent-Tiering is a cost-effective way to transition objects."
     }
 ];
   
