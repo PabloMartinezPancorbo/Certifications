@@ -2421,6 +2421,19 @@ Where should you place the NAT Gateway?`,
       correct: 0,
       explanation: 'SCPs limit permissions in an organization. This SCP uses "Effect": "Deny" to explicitly prevent the specified actions. The SCP also targets the specific AWS KMS actions that relate to key deletion: "kms:ScheduleKeyDeletion" and "kms:Delete*". The wildcard in "kms:Delete*" covers all delete-related actions. The SCP also applies to all resources ("Resource": "*"). Therefore, this solution ensures comprehensive protection. This solution meets the requirement to prevent the deletion of KMS keys.',
     },
+    {
+      id: 57,
+      domain: "Question 57",
+      question: "A CloudOps engineer manages a fleet of Amazon EC2 Linux instances in a single AWS account. All instances have AWS Systems Manager Agent (SSM Agent) installed and proper IAM roles configured. The CloudOps engineer needs to quickly deploy a security fix by running a command. The security fix must install a package across all instances. The CloudOps engineer needs to execute the command and track the execution status for each instance. Which solution will meet these requirements?",
+      options: [
+        "Connect to each instance by using Systems Manager Session Manager. Manually run the command. Monitor the command output in each session.",
+        "Connect to each instance by using Systems Manager Session Manager. Manually run the command. Monitor the command output in each session.",
+        "Create a Systems Manager State Manager association with the command. Deploy the association to the account. Specify the instances as targets.",
+        "Use Systems Manager Fleet Manager to establish individual terminal sessions to each instance. Run the command. Monitor the command output in each terminal session.",
+      ],
+      correct: 2,
+      explanation: "Use Systems Manager Fleet Manager to establish individual terminal sessions to each instance. Run the command. Monitor the command output in each terminal session. Why not fleet manager? The Fleet Manager terminal feature requires you to establish individual connections to each instance. This solution is manual and time-consuming. This solution does not provide centralized execution status tracking. This solution would not meet the requirement to quickly deploy the security package across multiple instances. nd Stte mnger? State Manager is designed to maintain a consistent state over time. For example, State Manager can regularly apply specific software installations or configurations. You can run commands by using State Manager. However, this approach is not an appropriate tool for one-time command execution across multiple instances. Using State Manager requires more time to create a Systems Manager document and deploy the association."
+      }
 ];
   
   // Helper to check if a question is multiple answer
