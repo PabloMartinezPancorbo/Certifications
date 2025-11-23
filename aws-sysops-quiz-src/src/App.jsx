@@ -1639,7 +1639,7 @@ const cheatsheet = {
         'Check memory usage in EC2 console'
       ],
       correct: 1,
-      explanation: 'CloudWatch does not collect memory metrics by default. You must install the CloudWatch agent and configure it to collect memory utilization as a custom metric.'
+      explanation: 'CloudWatch does not collect memory metrics by default. You must install the CloudWatch agent and configure it to collect memory utilization as a custom metric. Enabling detailed monitoring in EC2 only increases the frequency of standard EC2 metrics (e.g., CPU, network) but does not provide memory utilization metrics. Using only the EC2 console to check memory usage is insufficient for operational monitoring because the console doesn’t surface memory metrics by default. While using AWS Systems Manager to query memory could work (if the agent is installed and configured), this is more manual and less efficient than the full automated CloudWatch Agent + metrics + alarms path.'
     },
     {
       id: 2,
@@ -1652,7 +1652,7 @@ const cheatsheet = {
         'Take manual snapshots every 5 minutes'
       ],
       correct: 1,
-      explanation: 'Multi-AZ provides synchronous replication with automatic failover, meeting the 5-minute RPO and 1-hour RTO requirements. Automated backups alone cannot achieve a 5-minute RPO.'
+      explanation: 'Multi-AZ provides synchronous replication with automatic failover, meeting the 5-minute RPO (near zero data loss) and 1-hour RTO requirements (typically completes in minute). Automated backups alone cannot achieve a 5-minute RPO. Automated backups with a 5-minute window: While backups may run frequently, recovery would involve a restore process which likely exceeds the 1 hour RTO and risk data loss. Read replicas in multiple regions: These are typically asynchronous, so the RPO might exceed 5 minutes and failover time may exceed 1 hour. Manual snapshots every 5 minutes: This is operationally heavy, error-prone, and restore time likely exceeds the 1 hour RTO.'
     },
     {
       id: 3,
