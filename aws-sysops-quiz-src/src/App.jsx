@@ -2351,7 +2351,76 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 2,
     explanation: "Image Builder uses the SSM Agent to manage the build instance and to run build components. Additionally, the SSM Agent can collect logs. If the SSM Agent is not running, is unresponsive because of network issues, or is misconfigured, then the pipeline will hang during a build step. This issue will eventually lead to a timeout error as Image Builder waits for a response."
-  },
+    },
+    {
+      id: 56,
+      domain: 'Question 56',
+      question: 'A company uses AWS Organizations to manage multiple AWS accounts. All Amazon RDS snapshots must be encrypted with an AWS Key Management Service (AWS KMS) key. A CloudOps engineer must implement a service control policy (SCP). The SCP must prevent the deletion of AWS KMS keys without impacting other administrative operations on the KMS keys. Which SCP will meet these requirements?',
+      options: [
+        '''
+           {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Deny",
+                        "Action": [
+                            "kms:ScheduleKeyDeletion",
+                            "kms:Delete*"
+                        ],
+                        "Resource": "*"
+                    }
+                ]
+            }
+        ''',
+        '''
+           {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Deny",
+                        "NotAction": [
+                            "kms:ScheduleKeyDeletion",
+                            "kms:Delete*"
+                        ],
+                        "Resource": "*"
+                    }
+                ]
+            }
+        ''',
+        '''
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "NotAction": [
+                          "kms:ScheduleKeyDeletion",
+                          "kms:Delete*"
+                      ],
+                      "Resource": "*"
+                  }
+              ]
+          }
+        ''',
+        '''
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Deny",
+                      "Action": [
+                          "kms:ScheduleKeyDeletion",
+                          "kms:*"
+                      ],
+                      "Resource": "*"
+                  }
+              ]
+          }
+        ''',
+      ],
+      correct: 0,
+      explanation: 'SCPs limit permissions in an organization. This SCP uses "Effect": "Deny" to explicitly prevent the specified actions. The SCP also targets the specific AWS KMS actions that relate to key deletion: "kms:ScheduleKeyDeletion" and "kms:Delete*". The wildcard in "kms:Delete*" covers all delete-related actions. The SCP also applies to all resources ("Resource": "*"). Therefore, this solution ensures comprehensive protection. This solution meets the requirement to prevent the deletion of KMS keys.',
+    },
 ];
   
   // Helper to check if a question is multiple answer
