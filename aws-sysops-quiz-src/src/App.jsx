@@ -2463,6 +2463,19 @@ Where should you place the NAT Gateway?`,
     {
       id: 60,
       domain: "Question 60",
+      question: "A company has an increasing number of workloads that run on AWS. The workloads include on-premises infrastructure. The number of VPCs continues to increase within a single AWS Region. Each time a new VPC is created, the new VPC needs to be peered with several other VPCs. Additionally, the new VPC needs to be attached to the on-premises AWS VPN. Which solution will meet these requirements in the MOST operationally efficient way?",
+      options: [
+        "Replace the peering connection with an AWS Transit Gateway. Attach the VPCs and VPN connections to the Transit Gateway.",
+        "Supplement the peering connection by using AWS PrivateLink endpoints in all Amazon VPCs.",
+        "Replace the peering connection with an AWS Site-to-Site VPN connection that uses virtual private gateways to connect all the VPNs.",
+        "Supplement the peering connection with an AWS Direct Connect connection with a virtual interface for each VPC.",
+      ],
+      correct: 0,
+      explanation: "You can use Transit Gateway to interconnect VPCs and on-premises networks. Transit Gateway acts as a central hub to route traffic between VPCs, on-premises environments, and other AWS services. Transit Gateway eliminates the need for complex peering connections. You can attach VPCs and VPN connections to a Transit Gateway. Then, you can centralize the network architecture and reduce operational overhead to manage and scale as the workload grows."
+    },
+    {
+      id: 61,
+      domain: "Question 61",
       question: "A CloudOps engineer discovers drift in an AWS CloudFormation stack. The CloudOps engineer discovers that critical security group inbound rules were manually added to meet urgent security requirements. The CloudOps engineer needs to update the stack with the new inbound rules while preserving the security configuration. Which solution will meet these requirements?",
       options: [
         "Import the current security group inbound rules configuration into the template by using CloudFormation drift detection results. Perform the stack update.",
