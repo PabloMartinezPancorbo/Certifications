@@ -2387,7 +2387,7 @@ Where should you place the NAT Gateway?`,
                 ]
             }
         `,
-        '''
+        `
           {
               "Version": "2012-10-17",
               "Statement": [
