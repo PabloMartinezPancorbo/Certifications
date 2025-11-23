@@ -2543,6 +2543,19 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 0,
       explanation: "Private hosted zones in Route 53 would not enable the resolution of on-premises domain names. Private hosted zones are for DNS resolution within VPCs. Private hosted zones cannot automatically sync with or replace on-premises DNS records. This approach does not use the Resolver endpoints for hybrid DNS resolution. Why not Dynamic Host Configuration Protocol (DHCP)? Network devices in your VPC use DHCP. You can use DHCP options sets to configure DNS settings for VPCs. However, DHCP options sets cannot directly forward queries through Resolver endpoints. This approach would bypass the Route 53 Resolver infrastructure. This approach could lead to DNS resolution issues in a hybrid environment. You can use DHCP option sets to control the following aspects of the network configuration in your virtual network: 1/ The DNS servers, domain names, or Network Time Protocol (NTP) servers used by the devices in your VPC. 2/ Whether DNS resolution is enabled in your VPC. Why not option C? This approach reverses the flow of DNS queries. You would use inbound endpoints to resolve AWS resource names from on premises. You would not use inbound endpoints to resolve on-premises domain names from AWS. For VPC resources to resolve on-premises domain names, you need outbound endpoints with Resolver rules. Why not Option D? Private hosted zones in Route 53 would not enable the resolution of on-premises domain names. Private hosted zones are for DNS resolution within VPCs. Private hosted zones cannot automatically sync with or replace on-premises DNS records. This approach does not use the Resolver endpoints for hybrid DNS resolution."
+    },
+    {
+      id: 66,
+      domain: "Question 66",
+      question: "A CloudOps engineer must deploy a node group in an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The cluster runs three Kubernetes workloads. Each workload is configured to run on its own node. The three workloads communicate with each other frequently. The CloudOps engineer must create an Amazon EC2 launch template that can create the dedicated node group for the three nodes. Which configuration in the EC2 launch template will provide communication with the LOWEST latency?",
+      options: [
+        "Specify a single subnet.",
+        "Use Amazon Elastic Block Store (Amazon EBS) optimized instances.",
+        "Set the dedicated tenancy.",
+        "Include a cluster placement group.",
+      ],
+      correct: 3,
+      explanation: "A cluster placement group is a logical grouping of instances in a single Availability Zone. A cluster placement group provides low-latency network performance. The cluster placement group will put the instances close together in the same Availability Zone. This configuration minimizes latency for node-to-node communication."
     }
 ];
   
