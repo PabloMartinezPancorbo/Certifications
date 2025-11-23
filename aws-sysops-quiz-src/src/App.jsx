@@ -2485,6 +2485,19 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 1,
       explanation: "You can update the CloudFormation template to include all the desired resource configurations. You can add the manually created security rules to the template before you perform the update. This solution preserves the critical security requirements and maintains the benefits of template-based resource management. Why not change set? You can use change sets to preview how proposed changes to a stack would impact your running resources. A change set does not meet the requirement to preserve manual changes. The change set will show that the manual security group rules will be removed. However, the change set does not provide a way to preserve the changes. The rules would still be lost during the stack update unless you add the rules to the template."
+    },
+    {
+      id: 62,
+      domain: "Question 62",
+      question: "A company uses AWS Systems Manager to manage its Amazon EC2 instances. The company wants to automatically stop and restart any instance when an EC2 instance retirement event is scheduled. Which solution will meet this requirement?",
+      options: [
+        "Create an Amazon EventBridge rule that invokes a Systems Manager document to stop and restart the instance in response to an AWS Health event.",
+        "Create an Amazon CloudWatch alarm that invokes a Systems Manager document to stop and restart the instance in response to an AWS Trusted Advisor event.",
+        "Use Amazon CloudWatch Synthetics to create a canary to monitor for an AWS Health event and automatically stop and restart the instance.",
+        "Use Amazon CloudWatch Application Signals to monitor for an AWS Trusted Advisor event and automatically send a signal to stop and restart the instance.",
+      ],
+      correct: 0,
+      explanation: " AWS Health sends out events when an instance is scheduled for retirement. You can configure an EventBridge rule to watch for the event and invoke a Systems Manager document to stop and restart the affected instance. Why not CloudWatch Synthetics upon AWS Health event?  A canary is a script that you can create in CloudWatch Synthetics. You can use a canary to monitor endpoints and APIs. Canaries can mimic a customer's experience when they use the API or endpoint. Canaries can emit events to EventBridge. However, canaries run on a schedule and cannot receive events from EventBridge to take action based on those events. Why not CloudWatch Alarms? You can use CloudWatch alarms to monitor specific metrics that relate to the performance of your services or systems. CloudWatch alarms do not monitor AWS Health events. And CloudWatch Application Signals? You can use CloudWatch Application Signals to monitor the health and performance of an application. CloudWatch Application Signals are not integrated with AWS Health. CloudWatch Application Signals cannot respond to events from AWS Health."
     }
 ];
   
