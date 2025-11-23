@@ -2427,7 +2427,7 @@ Where should you place the NAT Gateway?`,
       question: "A CloudOps engineer manages a fleet of Amazon EC2 Linux instances in a single AWS account. All instances have AWS Systems Manager Agent (SSM Agent) installed and proper IAM roles configured. The CloudOps engineer needs to quickly deploy a security fix by running a command. The security fix must install a package across all instances. The CloudOps engineer needs to execute the command and track the execution status for each instance. Which solution will meet these requirements?",
       options: [
         "Connect to each instance by using Systems Manager Session Manager. Manually run the command. Monitor the command output in each session.",
-        "Connect to each instance by using Systems Manager Session Manager. Manually run the command. Monitor the command output in each session.",
+        "Use Systems Manager Run Command to run the command. Track the execution status and output for each instance in the Systems Manager console.",
         "Create a Systems Manager State Manager association with the command. Deploy the association to the account. Specify the instances as targets.",
         "Use Systems Manager Fleet Manager to establish individual terminal sessions to each instance. Run the command. Monitor the command output in each terminal session.",
       ],
