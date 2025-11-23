@@ -2556,6 +2556,20 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 3,
       explanation: "A cluster placement group is a logical grouping of instances in a single Availability Zone. A cluster placement group provides low-latency network performance. The cluster placement group will put the instances close together in the same Availability Zone. This configuration minimizes latency for node-to-node communication."
+    },
+    {
+      id: 67,
+      domain: "Question 67",
+      question: "A company runs a website. Users of the website sometimes receive HTTP 404 errors when trying to access the website. The company's infrastructure includes several Amazon EC2 instances. Each instance sends logs to a consolidated log group in Amazon CloudWatch Logs. A CloudOps engineer needs to create an alert to indicate when the HTTP 404 errors pass a certain threshold. Which combination of steps will meet these requirements? (Select TWO.)",
+      options: [
+        "Configure a log stream with log file compression.",
+        "Configure CloudWatch Logs Insights to generate metrics on HTTP 404 errors.",
+        "Create metric filters with a filter pattern that identifies the HTTP 404 errors.",
+        "Create a CloudWatch alarm that is based on the count of HTTP 404 errors.",
+        "Create an Amazon EventBridge event that is based on the CloudWatch Logs Insights threshold.",
+      ],
+      correct: [2,3],
+      explanation: "First: You can use metric filters to extract specific data from log events and convert the extracted data into CloudWatch metrics. You can create a filter pattern that identifies HTTP 404 errors in the consolidated log group. This step quantifies the occurrence of HTTP 404 errors across all EC2 instances. You can create a count of HTTP 404 errors and exclude other HTTP 4xx errors with a filter pattern on HTTP 404 errors. Second: After you establish the metric for HTTP 404 errors, you can create a CloudWatch alarm based on the metric. You can set the alarm to invoke when the count of HTTP 404 errors exceeds the desired threshold. When the alarm is invoked, the alarm can send a notification. You can set an alarm to notify when the HTTP 404 filter metric exceeds a threshold. To meet the requirements, you first need to create metric filters to extract data from logs, and then create CloudWatch alarms based on the metrics. Why not CloudWatch Ingights? You can use CloudWatch Logs Insights to search and analyze log file data. However, CloudWatch Logs Insights does not generate metrics by itself. You need to create metric filters to extract metrics from the log data."
     }
 ];
   
