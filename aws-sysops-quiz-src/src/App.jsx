@@ -738,8 +738,8 @@ const cheatsheet = {
                 {
                   name: 'Exam Mapping',
                   text: 'Maps to Skill 2.3.2: choose a restore method (snapshot restore, PITR, backtrack, DR Region failover) that meets the stated RTO, RPO, and cost requirements.'
-                }
-              ],
+                },
+                ],
               image1: {
                 url: 'https://docs.aws.amazon.com/images/AmazonRDS/latest/AuroraUserGuide/images/aurora-backtrack-create.png',
                 alt: 'Configuring Aurora Backtrack'
