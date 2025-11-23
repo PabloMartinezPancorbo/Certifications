@@ -2596,6 +2596,19 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 1,
       explanation: "S3 Intelligent-Tiering automatically moves objects between frequent and infrequent access tiers based on actual access patterns. S3 Intelligent-Tiering is recommended for objects where access patterns are unpredictable or change over time. In the scenario, the objects are frequently accessed for the first 30 days. After 30 days, the access patterns vary based on the object. Therefore, S3 Intelligent-Tiering is a cost-effective way to transition objects."
+    },
+    {
+      id: 70,
+      domain: "Question 70",
+      question: "A company is deploying a web application on Amazon EC2 instances. To handle spikes in traffic, the web application needs application-level caching of database query results and frequently accessed application data. Which solution will meet this requirement with the LEAST operational overhead?",
+      options: [
+        "Implement application-level caching by running Memcached on the EC2 instances.",
+        "Configure Amazon ElastiCache (Redis OSS) for the application.",
+        "Deploy Amazon API Gateway and configure caching at the API level.",
+        "Deploy an Amazon CloudFront distribution with a custom origin to cache application responses.",
+      ],
+      correct: 1,
+      explanation: "ElastiCache caches frequently accessed data to improve the performance of web applications. ElastiCache also provides in-memory caching that is scalable and helps handle spikes in traffic. ElastiCache handles the setup, management, monitoring, and scaling of the cache infrastructure. Therefore, this solution meets the requirements with the least operational overhead. Why not Memcached? Memcached is an object caching system. Running Memcached directly on EC2 instances requires additional operational overhead. You would need to install, configure, monitor, scale, and maintain the caching layer."
     }
 ];
   
