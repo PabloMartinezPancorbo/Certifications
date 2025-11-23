@@ -730,7 +730,7 @@ const cheatsheet = {
                   text: 'Recover a DynamoDB table to its state 10 minutes before a faulty batch job using PITR, then export or copy only the needed data.'
                 },
                 'Aurora supports fast cloning and Aurora MySQL supports backtrack to rewind data to a prior time without a full restore.',
-                'Backtracking "rewinds" the DB cluster to the time you specify. Backtracking is not a replacement for backing up your DB cluster so that you can restore it to a point in time.'
+                'Backtracking "rewinds" the DB cluster to the time you specify. Backtracking is not a replacement for backing up your DB cluster so that you can restore it to a point in time.',
                 {
                   name: 'Exam Pattern',
                   text: 'If a question mentions rolling back an Aurora MySQL database to a point a few hours ago up until 72 hours without creating a new cluster, the correct answer is Aurora Backtrack, not snapshot restore.'
@@ -739,8 +739,8 @@ const cheatsheet = {
                   name: 'Exam Mapping',
                   text: 'Maps to Skill 2.3.2: choose a restore method (snapshot restore, PITR, backtrack, DR Region failover) that meets the stated RTO, RPO, and cost requirements.'
                 },
-                ],
-              image1: {
+              ],
+              image: {
                 url: 'https://docs.aws.amazon.com/images/AmazonRDS/latest/AuroraUserGuide/images/aurora-backtrack-create.png',
                 alt: 'Configuring Aurora Backtrack'
               },
