@@ -3445,15 +3445,28 @@ const renderQuestion = (question) => {
 
   return (
     <div key={question.id} className="bg-white rounded-lg shadow-md p-6 mb-4">
-      <div className="flex items-start gap-3 mb-4">
-        <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
-          {question.domain}
-        </span>
-        <p className="text-gray-800 font-medium flex-1">{question.question}</p>
-        {multiple && (
-          <span className="text-xs bg-purple-100 text-purple-700 rounded px-2 py-0.5 ml-2 font-semibold">Select all that apply</span>
+      <div className="flex flex-col gap-2 mb-4">
+        {/* Domain Name Badge */}
+        {showAnswers[question.id] && (
+          <div className="flex items-center gap-2">
+            <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              {question.domainName}
+            </span>
+          </div>
         )}
+        
+        {/* Question Header */}
+        <div className="flex items-start gap-3">
+          <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+            {question.domain}
+          </span>
+          <p className="text-gray-800 font-medium flex-1">{question.question}</p>
+          {multiple && (
+            <span className="text-xs bg-purple-100 text-purple-700 rounded px-2 py-0.5 ml-2 font-semibold">Select all that apply</span>
+          )}
+        </div>
       </div>
+      
       <div className="space-y-2 mb-4">
         {question.options.map((option, idx) => {
           const checked = multiple ? selected.includes(idx) : selected === idx;
@@ -3549,7 +3562,6 @@ const renderQuestion = (question) => {
     </div>
   );
 };
-
 
   return (
     <div className="min-h-screen bg-gray-100">
