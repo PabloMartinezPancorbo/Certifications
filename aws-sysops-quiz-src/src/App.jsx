@@ -3129,13 +3129,43 @@ const renderQuestion = (question) => {
               
               const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
               
+              // Determine color scheme based on percentage
+              let bgGradient, borderColor, textColor, percentageClass;
+              if (percentage === 100) {
+                bgGradient = 'bg-gradient-to-r from-red-50 via-yellow-50 via-green-50 via-blue-50 to-purple-50';
+                borderColor = 'border-purple-400';
+                textColor = 'text-purple-600';
+                percentageClass = 'bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent';
+              } else if (percentage >= 95) {
+                bgGradient = 'bg-gradient-to-r from-green-50 to-emerald-50';
+                borderColor = 'border-green-200';
+                textColor = 'text-gray-700';
+                percentageClass = 'text-green-600';
+              } else if (percentage < 72) {
+                bgGradient = 'bg-gradient-to-r from-red-50 to-rose-50';
+                borderColor = 'border-red-200';
+                textColor = 'text-gray-700';
+                percentageClass = 'text-red-600';
+              } else {
+                bgGradient = 'bg-gradient-to-r from-blue-50 to-indigo-50';
+                borderColor = 'border-blue-200';
+                textColor = 'text-gray-700';
+                percentageClass = 'text-indigo-600';
+              }
+            
               return (
-                <div ref={scoreCardRef} className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6 border border-blue-200">
-                  <div className="text-center">
-                    <div className="text-6xl font-bold text-indigo-600 mb-2">
+                <div ref={scoreCardRef} className={`${bgGradient} rounded-lg shadow-md p-6 mb-6 border ${borderColor} relative`}>
+                  <div className="absolute top-4 right-4 opacity-20">
+                    <img 
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" 
+                      alt="AWS Logo" 
+                      className="h-12 w-auto"
+                    />
+                  </div>                  <div className="text-center">
+                    <div className={`text-6xl font-bold ${percentageClass} mb-2`}>
                       {percentage}%
                     </div>
-                    <div className="text-lg text-gray-700 mb-1">
+                    <div className={`text-lg ${textColor} mb-1`}>
                       {correctCount} correct out of {answeredQuestions} answered
                     </div>
                     <div className="text-sm text-gray-500">
@@ -3286,10 +3316,37 @@ const renderQuestion = (question) => {
         
         const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
         
+        // Determine color scheme based on percentage
+        let bgGradient, borderColor, percentageClass;
+        if (percentage === 100) {
+          bgGradient = 'bg-gradient-to-r from-red-50 via-yellow-50 via-green-50 via-blue-50 to-purple-50';
+          borderColor = 'border-purple-400';
+          percentageClass = 'bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent';
+        } else if (percentage >= 95) {
+          bgGradient = 'bg-gradient-to-r from-green-50 to-emerald-50';
+          borderColor = 'border-green-300';
+          percentageClass = 'text-green-600';
+        } else if (percentage < 72) {
+          bgGradient = 'bg-gradient-to-r from-red-50 to-rose-50';
+          borderColor = 'border-red-300';
+          percentageClass = 'text-red-600';
+        } else {
+          bgGradient = 'bg-gradient-to-r from-blue-50 to-indigo-50';
+          borderColor = 'border-indigo-300';
+          percentageClass = 'text-indigo-600';
+        }
+      
         return (
-          <div className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-lg p-4 border-2 border-indigo-300 z-50 animate-fade-in">
+          <div className={`fixed bottom-6 right-6 ${bgGradient} rounded-lg shadow-lg p-4 border-2 ${borderColor} z-50 animate-fade-in relative`}>
+            <div className="absolute top-2 right-2 opacity-20">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" 
+                alt="AWS Logo" 
+                className="h-6 w-auto"
+              />
+            </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-indigo-600 mb-1">
+              <div className={`text-3xl font-bold ${percentageClass} mb-1`}>
                 {percentage}%
               </div>
               <div className="text-xs text-gray-700">
