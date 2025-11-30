@@ -8,6 +8,9 @@ const AWSSysOpsExamApp = () => {
   const [showAnswers, setShowAnswers] = useState({});
   const [showFloatingScore, setShowFloatingScore] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationMessage, setCelebrationMessage] = useState('');
+  const [celebrationType, setCelebrationType] = useState('');
   const scoreCardRef = useRef(null);
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -34,6 +37,60 @@ const AWSSysOpsExamApp = () => {
       document.body.style.zoom = '100%';
     };
   }, []);
+  
+  // Check for completion and trigger celebration
+  useEffect(() => {
+    if (activeTab === 'practice' && practiceQuestions.length > 0) {
+      const totalQuestions = practiceQuestions.length;
+      const answeredQuestions = Object.keys(showAnswers).filter(id => showAnswers[id]).length;
+      
+      if (answeredQuestions === totalQuestions && answeredQuestions > 0) {
+        let correctCount = 0;
+        Object.keys(showAnswers).forEach(questionId => {
+          if (showAnswers[questionId]) {
+            const question = practiceQuestions.find(q => q.id === parseInt(questionId));
+            if (question) {
+              const isMultiple = Array.isArray(question.correct);
+              const selected = selectedAnswers[question.id];
+              
+              if (isMultiple) {
+                const selectedSet = new Set(selected || []);
+                const correctSet = new Set(question.correct);
+                if (selectedSet.size === correctSet.size && 
+                    [...selectedSet].every(x => correctSet.has(x))) {
+                  correctCount++;
+                }
+              } else {
+                if (selected === question.correct) {
+                  correctCount++;
+                }
+              }
+            }
+          }
+        });
+        
+        const percentage = Math.round((correctCount / answeredQuestions) * 100);
+        
+        // Trigger celebration based on score
+        if (percentage === 100) {
+          setCelebrationMessage('Perfect score! You are AWSome!');
+          setCelebrationType('perfect');
+          setShowCelebration(true);
+          setTimeout(() => setShowCelebration(false), 5000);
+        } else if (percentage >= 95) {
+          setCelebrationMessage(`${percentage}% correct! You are absolutely ready to take the exam!`);
+          setCelebrationType('excellent');
+          setShowCelebration(true);
+          setTimeout(() => setShowCelebration(false), 5000);
+        } else if (percentage >= 72) {
+          setCelebrationMessage(`You passed the practice test with ${percentage}% correct answers!`);
+          setCelebrationType('pass');
+          setShowCelebration(true);
+          setTimeout(() => setShowCelebration(false), 5000);
+        }
+      }
+    }
+  }, [showAnswers, selectedAnswers, activeTab]);
   
   // Scroll detection for floating score card
   useEffect(() => {
@@ -3440,6 +3497,56 @@ const renderQuestion = (question) => {
           </div>
         );
       })()}
+      
+      {/* Celebration Overlay */}
+      {showCelebration && (
+        <div className="fixed inset-0 z-[100] pointer-events-none">
+          {/* Confetti Animation */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute animate-confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: '-10%',
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`
+                }}
+              >
+                <div
+                  className={`w-3 h-3 ${
+                    celebrationType === 'perfect' 
+                      ? ['bg-red-500', 'bg-yellow-500', 'bg-green-500', 'bg-blue-500', 'bg-purple-500'][i % 5]
+                      : celebrationType === 'excellent'
+                      ? ['bg-green-500', 'bg-emerald-500', 'bg-teal-500'][i % 3]
+                      : ['bg-blue-500', 'bg-indigo-500', 'bg-cyan-500'][i % 3]
+                  }`}
+                  style={{
+                    transform: `rotate(${Math.random() * 360}deg)`
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          
+          {/* Celebration Message */}
+          <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-auto">
+            <div className={`text-4xl md:text-6xl font-bold mb-4 animate-bounce ${
+              celebrationType === 'perfect' 
+                ? 'bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent'
+                : celebrationType === 'excellent'
+                ? 'text-green-600'
+                : 'text-blue-600'
+            }`}>
+              {celebrationMessage}
+            </div>
+            <div className="text-2xl md:text-3xl">
+              {celebrationType === 'perfect' ? '🎉 🎊 ✨' : celebrationType === 'excellent' ? '🌟 💪 🚀' : '✅ 👏 📚'}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
