@@ -3082,6 +3082,56 @@ const renderQuestion = (question) => {
               <h2 className="text-2xl font-bold mb-2">Practice Questions</h2>
               <p className="text-gray-600">Test your knowledge with these exam-style questions covering all domains.</p>
             </div>
+            
+            {/* Score Tracker */}
+            {(() => {
+              const totalQuestions = practiceQuestions.length;
+              const answeredQuestions = Object.keys(showAnswers).filter(id => showAnswers[id]).length;
+              
+              let correctCount = 0;
+              Object.keys(showAnswers).forEach(questionId => {
+                if (showAnswers[questionId]) {
+                  const question = practiceQuestions.find(q => q.id === parseInt(questionId));
+                  if (question) {
+                    const isMultiple = Array.isArray(question.correct);
+                    const selected = selectedAnswers[question.id];
+                    
+                    if (isMultiple) {
+                      const selectedSet = new Set(selected || []);
+                      const correctSet = new Set(question.correct);
+                      if (selectedSet.size === correctSet.size && 
+                          [...selectedSet].every(x => correctSet.has(x))) {
+                        correctCount++;
+                      }
+                    } else {
+                      if (selected === question.correct) {
+                        correctCount++;
+                      }
+                    }
+                  }
+                }
+              });
+              
+              const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
+              
+              return (
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6 border border-blue-200">
+                  <div className="text-center">
+                    <div className="text-6xl font-bold text-indigo-600 mb-2">
+                      {percentage}%
+                    </div>
+                    <div className="text-lg text-gray-700 mb-1">
+                      {correctCount} correct out of {answeredQuestions} answered
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {answeredQuestions} / {totalQuestions} questions completed
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+            
+            
             {practiceQuestions.map(question => renderQuestion(question))}
           </div>
         )}
