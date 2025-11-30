@@ -1597,7 +1597,7 @@ const cheatsheet = {
           title: 'VPC',
           content: [
             {
-              topic: 'Subnets & Routing',
+              topic: 'VPC Fundamentals, Subnets & Routing',
               details: [
                 { name: 'VPC', text: "A secure, isolated, private network hosted on a public cloud, closely resembles a traditional network that you would operate in your own data center. After you create a VPC, you can add subnets. Each VPC is confined to a single region." },
                 { name: 'Subnet', text: "A range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC. Each subnet in a VPC is confined to a single AZ." },
@@ -1665,6 +1665,77 @@ const cheatsheet = {
                 { name: 'VPC Connectivity', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/extend-intro.html' }
               ]
             }
+          ]
+        },
+        {
+          title: 'Secure Instance Access & Management',
+          content: [
+            {
+              topic: 'EC2 Instance Connect',
+              details: [
+                'Browser-based SSH access to EC2 Linux instances',
+                'No need to manage SSH keys',
+                'Uses IAM permissions for authentication',
+                'Temporary SSH key pushed to instance',
+                'Audit trail in CloudTrail',
+                {
+                  name: 'Requirements',
+                  text: 'EC2 Instance Connect package installed (pre-installed on Amazon Linux 2 and Ubuntu). Instance has public IP or reachable from console. Security group allows SSH (port 22) from EC2 Instance Connect service IP ranges. IAM permissions: ec2-instance-connect:SendSSHPublicKey.'
+                },
+                {
+                  name: 'How It Works',
+                  text: 'User initiates connection from console or CLI. Temporary SSH public key generated. Key pushed to instance via EC2 Instance Connect API. Key valid for 60 seconds. User connects via SSH. CloudTrail logs connection attempts.'
+                },
+                {
+                  name: 'Security Benefits',
+                  text: 'No long-lived SSH keys to manage. IAM-based access control. Audit trail for all connections. Keys automatically expire. No bastion hosts needed. No SSH key distribution.'
+                },
+                {
+                  name: 'Limitations',
+                  text: 'Linux instances only. Requires internet connectivity or reachable path. Requires EC2 Instance Connect package. Must allow inbound SSH from EC2 Instance Connect IPs.'
+                },
+                {
+                  name: 'CLI Usage',
+                  text: 'Use `aws ec2-instance-connect send-ssh-public-key` to push temporary key. Then use standard SSH client. Example: aws ec2-instance-connect send-ssh-public-key --instance-id i-xxxxx --instance-os-user ec2-user --ssh-public-key file://my_key.pub'
+                },
+              ],
+              resources: [
+                { name: 'EC2 Instance Connect', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-methods.html' }
+              ]
+            },
+            {
+              topic: 'Systems Manager Session Manager (Reviewed)',
+              details: [
+                'Browser, CLI, or SDK-based shell access',
+                'No inbound ports, no bastion hosts, no SSH keys',
+                'Works with EC2, on-premises, and hybrid instances',
+                'Supports Windows and Linux',
+                'Full audit and compliance logging',
+                {
+                  name: 'Requirements',
+                  text: 'SSM Agent installed and running. IAM role attached to instance with AmazonSSMManagedInstanceCore policy. Internet access or VPC endpoints for SSM. Security group does NOT need inbound rules.'
+                },
+                {
+                  name: 'Session Logging',
+                  text: 'S3: Complete session transcripts and output. CloudWatch Logs: Real-time session activity. Both: For compliance and forensics. Contains commands, output, timestamps.'
+                },
+                {
+                  name: 'Advanced Features',
+                  text: 'Port forwarding: Tunnel to applications. SSH tunneling: Use native SSH client. Run As: Execute commands as specific user. Session history: Track all sessions. Idle timeout: Automatically disconnect inactive sessions.'
+                },
+                {
+                  name: 'Access Control',
+                  text: 'IAM policies control who can start sessions. Tag-based policies for granular access. Require specific IAM conditions (IP, MFA). Session document for additional restrictions.'
+                },
+                {
+                  name: 'Comparison with Instance Connect',
+                  text: 'Instance Connect: SSH-based, public IP required, Linux only. Session Manager: Proprietary protocol, no public IP needed, Windows and Linux, more features, better logging.'
+                },
+              ],
+              resources: [
+                { name: 'Session Manager', url: 'https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html' }
+              ]
+            },
           ]
         },
         {
@@ -1743,6 +1814,338 @@ const cheatsheet = {
               resources: [
                 { name: 'Target Groups', url: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html' }
               ]
+            }
+          ]
+        },
+            {
+              topic: 'AWS Network Firewall',
+              details: [
+                'Managed stateful firewall for VPC',
+                'Intrusion prevention and detection',
+                'Layer 3-7 filtering',
+                'Scales automatically',
+                'Deploy at VPC level',
+                {
+                  name: 'Key Features',
+                  text: 'Stateful inspection: Track connections. Protocol detection: Identify protocols regardless of port. Domain filtering: Block by domain name (e.g., *.malicious.com). IPS: Suricata-compatible rules. TLS inspection: Decrypt and inspect HTTPS traffic.'
+                },
+                {
+                  name: 'Rule Groups',
+                  text: 'Stateless rule groups: 5-tuple filtering (protocol, source/dest IP/port). Stateful rule groups: Domain lists, Suricata rules, 5-tuple rules. AWS managed rule groups: Threat signatures. Custom rule groups: Your own rules.'
+                },
+                {
+                  name: 'Deployment',
+                  text: 'Create firewall in VPC. Deploy firewall endpoint in each AZ. Update route tables to send traffic through firewall. Configure firewall policy with rule groups. Enable logging (S3, CloudWatch, Kinesis).'
+                },
+                {
+                  name: 'Logging',
+                  text: 'Alert logs: Rule matches and actions. Flow logs: Permitted/denied connections. Destinations: S3, CloudWatch Logs, Kinesis Data Firehose. Analysis with Athena or CloudWatch Insights.'
+                },
+                {
+                  name: 'Use Cases',
+                  text: 'Centralized egress filtering (outbound internet). Intrusion prevention system (IPS). Malware protection. Compliance requirements (PCI-DSS, HIPAA). Advanced threat detection. URL filtering.'
+                },
+                {
+                  name: 'Network Firewall vs Security Groups vs NACLs',
+                  text: 'Security Groups: Instance level, stateful, basic. NACLs: Subnet level, stateless, basic. Network Firewall: VPC level, stateful, advanced IPS/IDS, domain filtering, TLS inspection.'
+                },
+                {
+                  name: 'Architecture Pattern',
+                  text: 'Inspection VPC with Network Firewall. Transit Gateway connects workload VPCs. All traffic routed through inspection VPC. Centralized security and logging. Single pane of glass management.'
+                },
+              ],
+              resources: [
+                { name: 'Network Firewall', url: 'https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html' }
+              ]
+            },
+            {
+              topic: 'Route 53 Resolver DNS Firewall',
+              details: [
+                'DNS query filtering at VPC level',
+                'Block malicious domains',
+                'Prevent DNS exfiltration',
+                'AWS managed and custom domain lists',
+                {
+                  name: 'Key Components',
+                  text: 'Rule Groups: Collections of filtering rules. Domain Lists: Lists of domains to block/allow (AWS managed or custom). Rules: Define action for domain list matches. Query Logging: Log all DNS queries from VPC.'
+                },
+                {
+                  name: 'Rule Actions',
+                  text: 'Allow: Permit DNS resolution. Block: Return NXDOMAIN response. Alert: Allow but log for monitoring. Override: Custom response (e.g., redirect to walled garden).'
+                },
+                {
+                  name: 'AWS Managed Domain Lists',
+                  text: 'Malware domains: Known malicious domains. Botnet C&C: Command and control servers. Regularly updated by AWS threat intelligence. Ready to use out-of-the-box.'
+                },
+                {
+                  name: 'Custom Domain Lists',
+                  text: 'Block specific domains (e.g., social media). Block domains by pattern (*.gambling.com). Whitelist trusted domains. Up to 1,000 domains per list.'
+                },
+                {
+                  name: 'Query Logging',
+                  text: 'CloudWatch Logs: Real-time analysis. S3: Long-term storage. Kinesis Data Firehose: Stream processing. Contains: Query name, type, source IP, response code, firewall action.'
+                },
+                {
+                  name: 'Configuration Steps',
+                  text: 'Create domain lists (AWS managed or custom). Create rule group with rules. Associate rule group with VPCs. Configure priority for rule groups. Enable query logging (optional). Monitor blocked queries.'
+                },
+                {
+                  name: 'Use Cases',
+                  text: 'Block malware domains. Prevent data exfiltration via DNS tunneling. Enforce acceptable use policies. Block phishing sites. Compliance requirements. Parental controls.'
+                },
+                {
+                  name: 'Monitoring & Analysis',
+                  text: 'Query logs in CloudWatch Insights. Identify suspicious query patterns. Track blocked domains. Alert on spikes in blocked queries. Integration with SIEM tools.'
+                },
+                {
+                  name: 'Best Practices',
+                  text: 'Start with AWS managed lists. Enable query logging. Regular review of logs. Update custom lists based on threats. Test in Alert mode first. Whitelist false positives.'
+                },
+                {
+                  name: 'Exam Scenarios',
+                  text: 'Block known malware domains → Use AWS managed malware domain list. Prevent data exfiltration → Block suspicious DNS queries with custom lists. Monitor DNS queries → Enable query logging. Enforce web filtering → Custom domain lists with Block action.'
+                },
+              ],
+              resources: [
+                { name: 'Route 53 Resolver DNS Firewall', url: 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-dns-firewall.html' }
+              ]
+            },
+        {
+          title: 'VPN & Hybrid Connectivity',
+          content: [
+            {
+              topic: 'AWS Site-to-Site VPN',
+              details: [
+                { name: 'Site-to-Site VPN Overview', text: 'IPsec encrypted tunnel connection between on-premises network and AWS VPC. Uses internet for connectivity. Quick to set up (minutes). Redundant tunnels for high availability.' },
+                'Two VPN tunnels per connection for redundancy',
+                'Up to 1.25 Gbps per tunnel',
+                'Supports static routing or dynamic routing (BGP)',
+                'Charged per hour and data transfer',
+                {
+                  name: 'Components',
+                  text: 'Virtual Private Gateway (VGW): AWS side of VPN. Customer Gateway: On-premises device or software. Customer Gateway Device: Physical or software router on-premises. VPN Connection: The actual IPsec connection.'
+                },
+                {
+                  name: 'Configuration Steps',
+                  text: 'Create Customer Gateway (specify IP and BGP ASN). Create Virtual Private Gateway and attach to VPC. Create VPN Connection. Download configuration file. Configure customer gateway device. Update route tables. Enable route propagation (for dynamic routing).'
+                },
+                {
+                  name: 'Static vs Dynamic Routing',
+                  text: 'Static Routing: Manually specify routes on both sides. Simple but less flexible. Dynamic Routing (BGP): Routes automatically exchanged. Preferred for production. Supports failover between tunnels. Uses BGP ASN (Amazon default: 64512).'
+                },
+                {
+                  name: 'High Availability',
+                  text: 'Each VPN connection has two tunnels in different AZs. Configure both tunnels on customer side. Use BGP for automatic failover. Consider multiple VPN connections for redundancy.'
+                },
+                {
+                  name: 'Accelerated VPN',
+                  text: 'Uses AWS Global Accelerator for improved performance. Routes through AWS global network instead of public internet. Better performance for remote locations. Additional cost.'
+                },
+              ],
+              resources: [
+                { name: 'Site-to-Site VPN', url: 'https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html' }
+              ]
+            },
+            {
+              topic: 'AWS Client VPN',
+              details: [
+                'Managed OpenVPN-based service',
+                'Remote access for users to AWS and on-premises',
+                'Supports Active Directory, SAML, certificate-based auth',
+                'Split-tunnel or full-tunnel mode',
+                {
+                  name: 'Split-Tunnel Mode',
+                  text: 'Only AWS traffic routes through VPN. Internet traffic goes directly to internet. Lower bandwidth usage. Better performance for internet access. Security consideration: Users access internet without VPN protection.'
+                },
+                {
+                  name: 'Full-Tunnel Mode',
+                  text: 'All traffic routes through VPN. Complete traffic inspection possible. Higher bandwidth usage. Better security posture. Users internet access goes through AWS.'
+                },
+                {
+                  name: 'Configuration Steps',
+                  text: 'Create server certificate and import to ACM. Create Client VPN endpoint. Associate target networks (subnets). Add authorization rules. Configure authentication. Create client configuration file. Distribute to users.'
+                },
+                {
+                  name: 'Authentication Methods',
+                  text: 'Mutual authentication (certificate-based). Active Directory. SAML 2.0 (Okta, Azure AD). Multi-factor authentication support.'
+                },
+                {
+                  name: 'Use Cases',
+                  text: 'Remote employee access to AWS resources. Secure access to on-premises via VPN. Temporary contractor access. Zero trust network access.'
+                },
+              ],
+              resources: [
+                { name: 'Client VPN', url: 'https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/what-is.html' }
+              ]
+            },
+            {
+              topic: 'AWS Direct Connect',
+              details: [
+                { name: 'Direct Connect Overview', text: 'Dedicated private connection from on-premises to AWS. Does not use internet. Consistent network performance. Lower latency than VPN. Higher bandwidth (1 Gbps, 10 Gbps, 100 Gbps).' },
+                'Requires physical connection at Direct Connect location',
+                'Takes weeks to provision (not instant like VPN)',
+                'More expensive than VPN',
+                'Better for large data transfers and consistent performance',
+                {
+                  name: 'Virtual Interfaces (VIF)',
+                  text: 'Private VIF: Access VPC resources using private IPs. Connect to Virtual Private Gateway. Public VIF: Access AWS public services (S3, DynamoDB) without internet. Transit VIF: Connect to Transit Gateway.'
+                },
+                {
+                  name: 'Direct Connect Gateway',
+                  text: 'Connect to multiple VPCs across regions. Single Direct Connect can access VPCs globally. Simplifies multi-region architecture. Requires private VIF.'
+                },
+                {
+                  name: 'High Availability',
+                  text: 'Provision two Direct Connect connections at different locations. Use VPN as backup (hybrid approach). Configure BGP for automatic failover. Monitor with CloudWatch.'
+                },
+                {
+                  name: 'Direct Connect + VPN',
+                  text: 'IPsec VPN over Direct Connect for encryption. Private VIF + VPN endpoint. Combines Direct Connect performance with VPN security. Use case: Regulatory requirements for encryption.'
+                },
+                {
+                  name: 'Use Cases',
+                  text: 'Large-scale data transfer (backups, data migration). Hybrid cloud with consistent performance. Real-time data feeds. Regulatory compliance. Cost reduction (cheaper than internet transfer at scale).'
+                },
+              ],
+              resources: [
+                { name: 'Direct Connect', url: 'https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html' }
+              ]
+            },
+        {
+          title: 'VPC Endpoints & PrivateLink',
+          content: [
+            {
+              topic: 'VPC Endpoints Overview',
+              details: [
+                { name: 'VPC Endpoints', text: 'Private AWS access - Interface Endpoints enable connectivity to a wide range of services, while Gateway Endpoints are specifically designed for routing traffic to Amazon S3 and DynamoDB.' },
+                'Keep traffic within AWS network',
+                'No internet gateway, NAT device, VPN, or Direct Connect required',
+                'Powered by AWS PrivateLink',
+                'Enhanced security and lower latency',
+                'Two types: Gateway endpoints and Interface endpoints',
+              ],
+              resources: [
+                { name: 'VPC Endpoints', url: 'https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html' }
+              ]
+            },
+            {
+              topic: 'Gateway Endpoints (S3 & DynamoDB)',
+              details: [
+                { name: 'Gateway VPC Endpoint', text: 'A gateway VPC endpoint for Amazon S3 provides direct private connectivity between your VPC and Amazon S3. This solution eliminates data transfer costs. Gateway endpoints are free to use. Gateway endpoints allow EC2 instances in private subnets to access Amazon S3 without using the internet or incurring data processing charges.' },
+                'Free to use - no hourly or data processing charges',
+                'Supports only S3 and DynamoDB',
+                'Specified in route tables as a target',
+                'Regional service - cannot access resources in other regions',
+                'Endpoint policies control access',
+                {
+                  name: 'Configuration Steps',
+                  text: 'Create gateway endpoint for S3 or DynamoDB. Select VPC. Select route tables (private subnets). Configure endpoint policy (optional). Route table automatically updated with endpoint as target.'
+                },
+                {
+                  name: 'Use Cases',
+                  text: 'Access S3 from private subnets without NAT Gateway costs. Restrict S3 access to specific VPC. DynamoDB access without internet. Cost optimization for data-intensive workloads.'
+                },
+              ],
+              resources: [
+                { name: 'Gateway Endpoints', url: 'https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html' }
+              ]
+            },
+            {
+              topic: 'Interface Endpoints (AWS PrivateLink)',
+              details: [
+                'Supports most AWS services (EC2, SNS, SQS, Kinesis, CloudWatch, etc.)',
+                'Creates ENI with private IP in your subnet',
+                'Charged per hour per endpoint + data processed',
+                'Requires security groups',
+                'Supports endpoint policies',
+                'Private DNS enabled by default',
+                {
+                  name: 'Configuration',
+                  text: 'Create interface endpoint. Select service (e.g., com.amazonaws.region.ec2). Select VPC and subnets (one ENI per AZ for HA). Configure security groups. Enable private DNS (recommended).'
+                },
+                {
+                  name: 'Private DNS',
+                  text: 'When enabled, creates private hosted zone. AWS service URLs resolve to endpoint private IPs. No application code changes needed. Standard AWS SDK/CLI calls work automatically.'
+                },
+                {
+                  name: 'Security Groups',
+                  text: 'Control access to endpoint ENIs. Allow traffic on port 443 (HTTPS) from VPC CIDR or specific security groups. Endpoint policies provide additional service-level access control.'
+                },
+              ],
+              resources: [
+                { name: 'Interface Endpoints', url: 'https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html' }
+              ]
+            },
+            {
+              topic: 'AWS PrivateLink (Endpoint Services)',
+              details: [
+                'Share your services with other VPCs',
+                'Network Load Balancer required',
+                'Service consumers create interface endpoints',
+                'No VPC peering or internet gateway needed',
+                'Works across accounts and regions',
+                {
+                  name: 'Service Provider Setup',
+                  text: 'Create Network Load Balancer. Create VPC endpoint service. Configure acceptance settings (auto-accept or manual). Share service name with consumers. Optionally require specific principals (IAM).'
+                },
+                {
+                  name: 'Service Consumer Setup',
+                  text: 'Create interface endpoint using service name. Select subnets (one ENI per AZ). Configure security groups. Wait for connection acceptance (if manual). Access service via endpoint DNS.'
+                },
+                {
+                  name: 'Use Cases',
+                  text: 'SaaS applications. Shared services across accounts. Vendor/partner access. Microservices architecture. Hybrid cloud connectivity.'
+                },
+              ],
+              resources: [
+                { name: 'AWS PrivateLink', url: 'https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html' }
+              ]
+            },
+            {
+              topic: 'VPC Peering',
+              details: [
+                { name: 'VPC Peering', text: 'A VPC peering connection is a **networking connection between two VPCs** that enables you to route traffic between them using private IPv4 addresses or IPv6 addresses. Instances in either VPC can communicate with each other as if they are within the same network. You can create a VPC peering connection between your own VPCs, or with a VPC in another AWS account. The VPCs can be in different Regions (also known as an inter-Region VPC peering connection).' },
+                'One-to-one connection between VPCs',
+                'No transitive peering - must create direct connections',
+                'Non-overlapping CIDR blocks required',
+                'Update route tables in both VPCs',
+                'Update security groups to allow traffic',
+                'Inter-region peering supported',
+                {
+                  name: 'Configuration Steps',
+                  text: 'Create peering connection (requester). Accept peering connection (accepter). Update route tables in both VPCs. Update security groups/NACLs. Test connectivity.'
+                },
+                {
+                  name: 'Limitations',
+                  text: 'No transitive routing. No edge-to-edge routing (on-premises to peered VPC via VPN). No overlapping CIDR blocks. Maximum 125 peering connections per VPC.'
+                },
+                {
+                  name: 'VPC Peering vs Transit Gateway',
+                  text: 'VPC Peering: Simple, low-latency, one-to-one, no additional cost (only data transfer). Transit Gateway: Hub-and-spoke, transitive routing, centralized management, additional hourly charge. Use peering for few VPCs, Transit Gateway for many VPCs or complex topologies.'
+                },
+              ],
+              resources: [
+                { name: 'VPC Peering', url: 'https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html' }
+              ]
+            },
+            {
+              topic: 'CIDR Block Planning & Subnets',
+              details: [
+                'CIDR blocks: /16 to /28 for VPCs',
+                'Public subnet: Has a route to an Internet Gateway (IGW) in its route table',
+                'Private subnet: Has a route to a NAT Gateway/Instance for outbound internet access',
+                'Route table priority: Most specific route wins (longest prefix match)',
+                'Local route: Automatically created for VPC CIDR, cannot be deleted',
+                'VPC Peering: No transitive routing - must create direct peering connections',
+                {
+                  name: 'CIDR Planning Best Practices',
+                  text: 'Avoid overlapping CIDR blocks between VPCs. Plan for future growth. Use /24 or larger subnets. Reserve space for additional subnets. Consider hybrid connectivity requirements.'
+                },
+              ],
+              image: {
+                url: 'https://d2908q01vomqb2.cloudfront.net/77de68daecd823babbb58edb1c8e14d7106e83bb/2021/06/15/VPC-Network-Engineers-Part-1-1.png',
+                alt: 'AWS VPCs and Subnets'
+              }
             }
           ]
         },
