@@ -48,7 +48,7 @@ const AWSSysOpsExamApp = () => {
         let correctCount = 0;
         Object.keys(showAnswers).forEach(questionId => {
           if (showAnswers[questionId]) {
-            const question = practiceQuestions.find(q => q.id === parseInt(questionId));
+            const question = uestions.find(q => q.id === parseInt(questionId));
             if (question) {
               const isMultiple = Array.isArray(question.correct);
               const selected = selectedAnswers[question.id];
@@ -160,64 +160,6 @@ function assignDomainNames(questions) {
       domainName: 'Deployment, Provisioning, and Automation'
     };
   });
-}
-
-// Use the function to update your questions
-practiceQuestions = assignDomainNames(practiceQuestions);
-  
-const calculateDomainStats = () => {
-  const stats = {};
-  
-  examDomains.forEach(domain => {
-    stats[domain.name] = {
-      total: 0,
-      answered: 0,
-      correct: 0,
-      percentage: 0
-    };
-  });
-
-  practiceQuestions.forEach(question => {
-    const domainName = question.domainName; // Changed from question.domain
-    if (stats[domainName]) {
-      stats[domainName].total++;
-      
-      if (showAnswers[question.id]) {
-        stats[domainName].answered++;
-        
-        const isMultiple = Array.isArray(question.correct);
-        const selected = selectedAnswers[question.id];
-        
-        if (isMultiple) {
-          const selectedSet = new Set(selected || []);
-          const correctSet = new Set(question.correct);
-          if (selectedSet.size === correctSet.size && 
-              [...selectedSet].every(x => correctSet.has(x))) {
-            stats[domainName].correct++;
-          }
-        } else {
-          if (selected === question.correct) {
-            stats[domainName].correct++;
-          }
-        }
-      }
-    }
-  });
-
-  // Calculate percentages
-  Object.keys(stats).forEach(domain => {
-    if (stats[domain].answered > 0) {
-      stats[domain].percentage = Math.round((stats[domain].correct / stats[domain].answered) * 100);
-    }
-  });
-
-  return stats;
-};
-
-const getDomainColor = (percentage) => {
-  if (percentage >= 95) return 'text-green-600';
-  if (percentage >= 72) return 'text-blue-600';
-  return 'text-red-600';
 }
   
 const cheatsheet = {
@@ -1835,7 +1777,7 @@ const cheatsheet = {
     }
   };
 
-  const practiceQuestions = [
+  let practiceQuestions = [
     {
       id: 1,
       domain: 'Question 1',
@@ -3213,6 +3155,65 @@ Where should you place the NAT Gateway?`,
       explanation: "Correct. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. This action will terminate all the existing instances and launch a new set of instances after installing the required packages. Learn more about how to run commands when launching an EC2 instance with user data input. Learn more about CloudFormation stack updates for EC2 instances. Why not A? Incorrect. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. The instances will not reboot. Instead, the instances will terminate. Why not B? Incorrect. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. The instances will not continue to run. Instead, the instances will terminate. Why not C? Incorrect. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. The instances will not stop. Instead, the instances will terminate."
     }
 ];
+
+
+// Use the function to update your questions
+practiceQuestions = assignDomainNames(practiceQuestions);
+  
+const calculateDomainStats = () => {
+  const stats = {};
+  
+  examDomains.forEach(domain => {
+    stats[domain.name] = {
+      total: 0,
+      answered: 0,
+      correct: 0,
+      percentage: 0
+    };
+  });
+
+  practiceQuestions.forEach(question => {
+    const domainName = question.domainName; // Changed from question.domain
+    if (stats[domainName]) {
+      stats[domainName].total++;
+      
+      if (showAnswers[question.id]) {
+        stats[domainName].answered++;
+        
+        const isMultiple = Array.isArray(question.correct);
+        const selected = selectedAnswers[question.id];
+        
+        if (isMultiple) {
+          const selectedSet = new Set(selected || []);
+          const correctSet = new Set(question.correct);
+          if (selectedSet.size === correctSet.size && 
+              [...selectedSet].every(x => correctSet.has(x))) {
+            stats[domainName].correct++;
+          }
+        } else {
+          if (selected === question.correct) {
+            stats[domainName].correct++;
+          }
+        }
+      }
+    }
+  });
+
+  // Calculate percentages
+  Object.keys(stats).forEach(domain => {
+    if (stats[domain].answered > 0) {
+      stats[domain].percentage = Math.round((stats[domain].correct / stats[domain].answered) * 100);
+    }
+  });
+
+  return stats;
+};
+
+const getDomainColor = (percentage) => {
+  if (percentage >= 95) return 'text-green-600';
+  if (percentage >= 72) return 'text-blue-600';
+  return 'text-red-600';
+}
   
   // Helper to check if a question is multiple answer
 const isMultipleAnswer = (question) => Array.isArray(question.correct);
