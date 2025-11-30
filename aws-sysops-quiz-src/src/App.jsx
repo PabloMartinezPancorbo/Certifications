@@ -635,12 +635,12 @@ const cheatsheet = {
             ],
             resources: [
               { name: 'EBS Optimization', url: 'https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html' }
-            ]
-          }
-        ]
-      }
-    ]
-  },
+              ]
+            }
+          ]
+        }
+      ]
+    },
     reliability: {
       title: 'Domain 2: Reliability and Business Continuity (22%)',
       sections: [
