@@ -7,6 +7,7 @@ const AWSSysOpsExamApp = () => {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [showAnswers, setShowAnswers] = useState({});
   const [showFloatingScore, setShowFloatingScore] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const scoreCardRef = useRef(null);
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -15,6 +16,25 @@ const AWSSysOpsExamApp = () => {
     }));
   };
 
+  // Mobile device detection
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+      setIsMobile(isMobileDevice);
+      
+      if (isMobileDevice) {
+        document.body.style.zoom = '140%';
+      }
+    };
+    
+    checkMobile();
+    
+    return () => {
+      document.body.style.zoom = '100%';
+    };
+  }, []);
+  
   // Scroll detection for floating score card
   useEffect(() => {
     const handleScroll = () => {
