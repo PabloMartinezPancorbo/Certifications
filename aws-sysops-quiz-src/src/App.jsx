@@ -120,6 +120,51 @@ const AWSSysOpsExamApp = () => {
     { name: 'Networking and Content Delivery', weight: '18%' }
 ]
 
+
+function assignDomainNames(questions) {
+  // Create regex patterns for each domain
+  const domainPatterns = {
+    'Monitoring, Logging, Analysis, Remediation, and Performance Optimization': 
+      /(monitor|CloudWatch|metrics|logging|performance|optimization|Systems Manager|SSM|remediation|EventBridge|analysis)/i,
+    
+    'Reliability and Business Continuity': 
+      /(backup|restore|recovery|RTO|RPO|disaster|availability|failover|Multi-AZ|replication|Aurora|reliability)/i,
+    
+    'Deployment, Provisioning, and Automation': 
+      /(CloudFormation|deployment|provisioning|automation|AMI|Image Builder|container|ECS|stack|template)/i,
+    
+    'Security and Compliance': 
+      /(security|compliance|IAM|encryption|KMS|certificate|policy|permission|role|secret|authentication|authorization)/i,
+    
+    'Networking and Content Delivery': 
+      /(VPC|subnet|routing|gateway|NAT|network|CloudFront|Route 53|load balancer|ALB|NLB|peering|traffic)/i
+  };
+
+  return questions.map(question => {
+    // Combine question and options into a searchable string
+    const searchText = `${question.question} ${question.options.join(' ')}`;
+
+    // Find matching domain based on patterns
+    for (const [domainName, pattern] of Object.entries(domainPatterns)) {
+      if (pattern.test(searchText)) {
+        return {
+          ...question,
+          domainName: domainName
+        };
+      }
+    }
+
+    // Default to Deployment domain if no pattern matches
+    return {
+      ...question,
+      domainName: 'Deployment, Provisioning, and Automation'
+    };
+  });
+}
+
+// Use the function to update your questions
+practiceQuestions = assignDomainNames(practiceQuestions);
+  
     // Calculate domain statistics
   const calculateDomainStats = () => {
     const stats = {};
@@ -1795,6 +1840,7 @@ const cheatsheet = {
     {
       id: 1,
       domain: 'Question 1',
+      domainName: examDomains[0].name,
       question: 'A SysOps administrator needs to monitor memory utilization on Amazon EC2 instances. What is the MOST efficient way to accomplish this?',
       options: [
         'Enable detailed monitoring in EC2',
@@ -3739,12 +3785,74 @@ const renderQuestion = (question) => {
                 </div>
               );
             })()}
-            
+
+          
+            {/* Domain Statistics */}
+            {activeTab === 'practice' && (
+              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h3 className="text-lg font-semibold mb-4">Performance by Domain</h3>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {examDomains.map((domain) => {
+                    const stats = calculateDomainStats();
+                    const domainStat = stats[domain.name];
+                    const hasAnswered = domainStat.answered > 0;
+                    
+                    return (
+                      <div 
+                        key={domain.name} 
+                        className="border rounded-lg p-4 bg-gray-50"
+                      >
+                        <div className="font-medium text-gray-800 mb-2">
+                          {domain.shortName}
+                          <span className="text-sm text-gray-500 ml-2">
+                            ({domain.weight})
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm text-gray-600">
+                            {domainStat.answered}/{domainStat.total} answered
+                          </span>
+                          {hasAnswered && (
+                            <span 
+                              className={`font-semibold ${getDomainColor(domainStat.percentage)}`}
+                            >
+                              {domainStat.percentage}%
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div
+                            className={`h-2.5 rounded-full ${
+                              hasAnswered 
+                                ? domainStat.percentage >= 72
+                                  ? 'bg-green-600'
+                                  : 'bg-red-600'
+                                : 'bg-gray-400'
+                            }`}
+                            style={{
+                              width: `${hasAnswered ? domainStat.percentage : 0}%`
+                            }}
+                          />
+                        </div>
+                        
+                        {hasAnswered && (
+                          <div className="text-xs text-gray-500 mt-2">
+                            {domainStat.correct}/{domainStat.answered} correct
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             
             {practiceQuestions.map(question => renderQuestion(question))}
           </div>
         )}
-        
+                    
         {activeTab === 'resources' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">
