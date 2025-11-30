@@ -3785,7 +3785,6 @@ const renderQuestion = (question) => {
                 </div>
               );
             })()}
-
           
             {/* Domain Statistics */}
             {activeTab === 'practice' && (
@@ -3802,8 +3801,8 @@ const renderQuestion = (question) => {
                         key={domain.name} 
                         className="border rounded-lg p-4 bg-gray-50"
                       >
-                        <div className="font-medium text-gray-800 mb-2">
-                          {domain.domainName}
+                        <div className="font-medium text-gray-800 mb-2 text-sm">
+                          {domain.name}
                           <span className="text-sm text-gray-500 ml-2">
                             ({domain.weight})
                           </span>
