@@ -3293,8 +3293,7 @@ const renderQuestion = (question) => {
       </div>
       
       {/* Floating Score Card */}
-      {showFloatingScore && activeTab === 'practice' && (
-        (() => {
+      {showFloatingScore && activeTab === 'practice' && (() => {
         const totalQuestions = practiceQuestions.length;
         const answeredQuestions = Object.keys(showAnswers).filter(id => showAnswers[id]).length;
         
@@ -3345,7 +3344,7 @@ const renderQuestion = (question) => {
         }
       
         return (
-          <div className={`fixed bottom-6 right-6 ${bgGradient} rounded-lg shadow-lg p-4 border-2 ${borderColor} z-50 relative min-w-[140px]`}>
+          <div className={`fixed bottom-6 right-6 ${bgGradient} rounded-lg shadow-lg p-4 border-2 ${borderColor} z-50 min-w-[140px]`} style={{ position: 'fixed' }}>
             <div className="absolute top-2 right-2 opacity-20">
               <img 
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" 
@@ -3366,8 +3365,7 @@ const renderQuestion = (question) => {
             </div>
           </div>
         );
-        })()
-      )}
+      })()}
     </div>
   );
 };
