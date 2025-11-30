@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronRight, ExternalLink, CheckCircle, XCircle, AlertCircle, BookOpen, FileText, Target, Brain } from 'lucide-react';
 
 const AWSSysOpsExamApp = () => {
@@ -6,6 +6,8 @@ const AWSSysOpsExamApp = () => {
   const [expandedSections, setExpandedSections] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [showAnswers, setShowAnswers] = useState({});
+  const [showFloatingScore, setShowFloatingScore] = useState(false);
+  const scoreCardRef = useRef(null);
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -13,6 +15,19 @@ const AWSSysOpsExamApp = () => {
     }));
   };
 
+  // Scroll detection for floating score card
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scoreCardRef.current && activeTab === 'practice') {
+        const rect = scoreCardRef.current.getBoundingClientRect();
+        setShowFloatingScore(rect.bottom < 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeTab]);
+  
   const examDomains = [
     { name: 'Monitoring, Logging, Analysis, Remediation, and Performance Optimization', weight: '22%' },
     { name: 'Reliability and Business Continuity', weight: '22%' },
@@ -3115,7 +3130,7 @@ const renderQuestion = (question) => {
               const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
               
               return (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6 border border-blue-200">
+                <div ref={scoreCardRef} className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6 border border-blue-200">
                   <div className="text-center">
                     <div className="text-6xl font-bold text-indigo-600 mb-2">
                       {percentage}%
@@ -3239,6 +3254,54 @@ const renderQuestion = (question) => {
           </div>
         )}
       </div>
+      
+      {/* Floating Score Card */}
+      {showFloatingScore && activeTab === 'practice' && (() => {
+        const totalQuestions = practiceQuestions.length;
+        const answeredQuestions = Object.keys(showAnswers).filter(id => showAnswers[id]).length;
+        
+        let correctCount = 0;
+        Object.keys(showAnswers).forEach(questionId => {
+          if (showAnswers[questionId]) {
+            const question = practiceQuestions.find(q => q.id === parseInt(questionId));
+            if (question) {
+              const isMultiple = Array.isArray(question.correct);
+              const selected = selectedAnswers[question.id];
+              
+              if (isMultiple) {
+                const selectedSet = new Set(selected || []);
+                const correctSet = new Set(question.correct);
+                if (selectedSet.size === correctSet.size && 
+                    [...selectedSet].every(x => correctSet.has(x))) {
+                  correctCount++;
+                }
+              } else {
+                if (selected === question.correct) {
+                  correctCount++;
+                }
+              }
+            }
+          }
+        });
+        
+        const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
+        
+        return (
+          <div className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-lg p-4 border-2 border-indigo-300 z-50 animate-fade-in">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-indigo-600 mb-1">
+                {percentage}%
+              </div>
+              <div className="text-xs text-gray-700">
+                {correctCount}/{answeredQuestions} correct
+              </div>
+              <div className="text-xs text-gray-500">
+                {answeredQuestions}/{totalQuestions} done
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
