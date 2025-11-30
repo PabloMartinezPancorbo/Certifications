@@ -3344,19 +3344,19 @@ const renderQuestion = (question) => {
         }
       
         return (
-          <div className={`fixed bottom-6 right-6 ${bgGradient} rounded-lg shadow-lg p-4 border-2 ${borderColor} z-50 min-w-[140px]`} style={{ position: 'fixed' }}>
+          <div className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 ${bgGradient} rounded-lg shadow-lg p-5 md:p-4 border-2 ${borderColor} z-50 min-w-[180px] md:min-w-[140px]`} style={{ position: 'fixed' }}>
             <div className="absolute top-2 right-2 opacity-20">
               <img 
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" 
                 alt="AWS Logo" 
-                className="h-6 w-auto"
+                className="h-8 md:h-6 w-auto"
               />
             </div>
             <div className="text-center">
-              <div className={`text-3xl font-bold ${percentageClass} mb-1`}>
+              <div className={`text-4xl md:text-3xl font-bold ${percentageClass} mb-1`}>
                 {percentage}%
               </div>
-              <div className="text-xs text-gray-700">
+              <div className="text-sm md:text-xs text-gray-700">
                 {correctCount}/{answeredQuestions} correct
               </div>
               <div className="text-xs text-gray-500">
