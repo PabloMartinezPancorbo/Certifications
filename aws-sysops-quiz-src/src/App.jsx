@@ -165,61 +165,60 @@ function assignDomainNames(questions) {
 // Use the function to update your questions
 practiceQuestions = assignDomainNames(practiceQuestions);
   
-    // Calculate domain statistics
-  const calculateDomainStats = () => {
-    const stats = {};
-    
-    examDomains.forEach(domain => {
-      stats[domain.name] = {
-        total: 0,
-        answered: 0,
-        correct: 0,
-        percentage: 0
-      };
-    });
+const calculateDomainStats = () => {
+  const stats = {};
+  
+  examDomains.forEach(domain => {
+    stats[domain.name] = {
+      total: 0,
+      answered: 0,
+      correct: 0,
+      percentage: 0
+    };
+  });
 
-    practiceQuestions.forEach(question => {
-      const domainName = question.domain;
-      if (stats[domainName]) {
-        stats[domainName].total++;
+  practiceQuestions.forEach(question => {
+    const domainName = question.domainName; // Changed from question.domain
+    if (stats[domainName]) {
+      stats[domainName].total++;
+      
+      if (showAnswers[question.id]) {
+        stats[domainName].answered++;
         
-        if (showAnswers[question.id]) {
-          stats[domainName].answered++;
-          
-          const isMultiple = Array.isArray(question.correct);
-          const selected = selectedAnswers[question.id];
-          
-          if (isMultiple) {
-            const selectedSet = new Set(selected || []);
-            const correctSet = new Set(question.correct);
-            if (selectedSet.size === correctSet.size && 
-                [...selectedSet].every(x => correctSet.has(x))) {
-              stats[domainName].correct++;
-            }
-          } else {
-            if (selected === question.correct) {
-              stats[domainName].correct++;
-            }
+        const isMultiple = Array.isArray(question.correct);
+        const selected = selectedAnswers[question.id];
+        
+        if (isMultiple) {
+          const selectedSet = new Set(selected || []);
+          const correctSet = new Set(question.correct);
+          if (selectedSet.size === correctSet.size && 
+              [...selectedSet].every(x => correctSet.has(x))) {
+            stats[domainName].correct++;
+          }
+        } else {
+          if (selected === question.correct) {
+            stats[domainName].correct++;
           }
         }
       }
-    });
+    }
+  });
 
-    // Calculate percentages
-    Object.keys(stats).forEach(domain => {
-      if (stats[domain].answered > 0) {
-        stats[domain].percentage = Math.round((stats[domain].correct / stats[domain].answered) * 100);
-      }
-    });
+  // Calculate percentages
+  Object.keys(stats).forEach(domain => {
+    if (stats[domain].answered > 0) {
+      stats[domain].percentage = Math.round((stats[domain].correct / stats[domain].answered) * 100);
+    }
+  });
 
-    return stats;
-  };
+  return stats;
+};
 
-  const getDomainColor = (percentage) => {
-    if (percentage >= 95) return 'text-green-600';
-    if (percentage >= 72) return 'text-blue-600';
-    return 'text-red-600';
-  }
+const getDomainColor = (percentage) => {
+  if (percentage >= 95) return 'text-green-600';
+  if (percentage >= 72) return 'text-blue-600';
+  return 'text-red-600';
+}
   
 const cheatsheet = {
   monitoring: {
@@ -3803,7 +3802,7 @@ const renderQuestion = (question) => {
                         className="border rounded-lg p-4 bg-gray-50"
                       >
                         <div className="font-medium text-gray-800 mb-2">
-                          {domain.shortName}
+                          {domain.domainName}
                           <span className="text-sm text-gray-500 ml-2">
                             ({domain.weight})
                           </span>
