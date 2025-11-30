@@ -120,6 +120,62 @@ const AWSSysOpsExamApp = () => {
     { name: 'Networking and Content Delivery', weight: '18%' }
 ]
 
+    // Calculate domain statistics
+  const calculateDomainStats = () => {
+    const stats = {};
+    
+    examDomains.forEach(domain => {
+      stats[domain.name] = {
+        total: 0,
+        answered: 0,
+        correct: 0,
+        percentage: 0
+      };
+    });
+
+    practiceQuestions.forEach(question => {
+      const domainName = question.domain;
+      if (stats[domainName]) {
+        stats[domainName].total++;
+        
+        if (showAnswers[question.id]) {
+          stats[domainName].answered++;
+          
+          const isMultiple = Array.isArray(question.correct);
+          const selected = selectedAnswers[question.id];
+          
+          if (isMultiple) {
+            const selectedSet = new Set(selected || []);
+            const correctSet = new Set(question.correct);
+            if (selectedSet.size === correctSet.size && 
+                [...selectedSet].every(x => correctSet.has(x))) {
+              stats[domainName].correct++;
+            }
+          } else {
+            if (selected === question.correct) {
+              stats[domainName].correct++;
+            }
+          }
+        }
+      }
+    });
+
+    // Calculate percentages
+    Object.keys(stats).forEach(domain => {
+      if (stats[domain].answered > 0) {
+        stats[domain].percentage = Math.round((stats[domain].correct / stats[domain].answered) * 100);
+      }
+    });
+
+    return stats;
+  };
+
+  const getDomainColor = (percentage) => {
+    if (percentage >= 95) return 'text-green-600';
+    if (percentage >= 72) return 'text-blue-600';
+    return 'text-red-600';
+  }
+  
 const cheatsheet = {
   monitoring: {
     title: 'Domain 1: Monitoring, Logging, Analysis, Remediation, and Performance Optimization (22%)',
@@ -1738,7 +1794,7 @@ const cheatsheet = {
   const practiceQuestions = [
     {
       id: 1,
-      _questiontext: 'Question 1',
+      domain: 'Question 1',
       question: 'A SysOps administrator needs to monitor memory utilization on Amazon EC2 instances. What is the MOST efficient way to accomplish this?',
       options: [
         'Enable detailed monitoring in EC2',
@@ -1751,7 +1807,7 @@ const cheatsheet = {
     },
     {
       id: 2,
-      _questiontext: 'Question 2',
+      domain: 'Question 2',
       question: 'A company needs to ensure their RDS database can recover with minimal data loss. The RTO is 1 hour and RPO is 5 minutes. Which solution meets these requirements?',
       options: [
         'Enable automated backups with 5-minute backup window',
@@ -1764,7 +1820,7 @@ const cheatsheet = {
     },
     {
       id: 3,
-      _questiontext: 'Question 3',
+      domain: 'Question 3',
       question: 'A CloudFormation stack update fails and rolls back. How can the SysOps administrator identify what caused the failure?',
       options: [
         'Check CloudTrail for API calls',
@@ -1781,7 +1837,7 @@ const cheatsheet = {
     },
     {
       id: 4,
-      _questiontext: 'Question 4',
+      domain: 'Question 4',
       question: 'An EC2 instance needs to access S3 buckets but should not have long-term credentials. What is the BEST solution?',
       options: [
         'Store access keys in Parameter Store',
@@ -1794,7 +1850,7 @@ const cheatsheet = {
     },
     {
       id: 5,
-      _questiontext: 'Question 5',
+      domain: 'Question 5',
       question: 'A web application in a private subnet needs to download updates from the internet. What should be configured?',
       options: [
         'Internet Gateway',
@@ -1807,7 +1863,7 @@ const cheatsheet = {
     },
     {
       id: 6,
-      _questiontext: 'Question 6',
+      domain: 'Question 6',
       question: 'A company runs batch processing jobs that can be interrupted. Which EC2 purchasing option provides the MOST cost savings?',
       options: [
         'On-Demand Instances',
@@ -1820,7 +1876,7 @@ const cheatsheet = {
     },
     {
       id: 7,
-      _questiontext: 'Question 7',
+      domain: 'Question 7',
       question: 'An administrator needs to automatically restart an EC2 instance when it fails system status checks. What should be configured?',
       options: [
         'CloudWatch alarm with EC2 recover action',
@@ -1833,7 +1889,7 @@ const cheatsheet = {
     },
     {
       id: 8,
-      _questiontext: 'Question 8',
+      domain: 'Question 8',
       question: 'Which AWS service should be used to detect and alert on changes to security group rules?',
       options: [
         'AWS Shield',
@@ -1846,7 +1902,7 @@ const cheatsheet = {
     },
     {
       id: 9,
-      _questiontext: 'Question 9',
+      domain: 'Question 9',
       question: `A financial start-up has recently adopted a hybrid cloud infrastructure with AWS Cloud. They are planning to migrate their online payments system that supports an IPv6 address and uses an Oracle database in a RAC configuration. As the AWS Consultant, you have to make sure that the application can initiate outgoing traffic to the Internet but blocks any incoming connection from the Internet.
 
 Which of the following options would you do to properly migrate the application to AWS?`,
@@ -1865,7 +1921,7 @@ IPv6 addresses are globally unique, and are therefore public by default. If you 
     },
     {
       id: 10,
-      _questiontext: 'Question 10',
+      domain: 'Question 10',
       question: `You are designing a VPC with both public and private subnets. EC2 instances in the private subnets must download security updates from the internet.
 Where should you place the NAT Gateway?`,
       options: [
@@ -1879,7 +1935,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 11,
-      _questiontext: 'Question 11',
+      domain: 'Question 11',
       question: 'Where must a NAT Gateway be placed to provide internet access for instances in private subnets?',
   options: [
     'In any subnet with a route to a VGW',
@@ -1892,7 +1948,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 12,
-  _questiontext: 'Question 12',
+  domain: 'Question 12',
   question: 'Private EC2 instances must access Amazon S3 without traversing the internet and without paying NAT data processing costs. What is the BEST solution?',
   options: [
     'Use a NAT Gateway in a public subnet',
@@ -1905,7 +1961,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 13,
-  _questiontext: 'Question 13',
+  domain: 'Question 13',
   question: 'Which statement about Private NAT Gateways is TRUE?',
   options: [
     'They provide outbound internet access for private subnets',
@@ -1918,7 +1974,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 14,
-  _questiontext: 'Question 14',
+  domain: 'Question 14',
   question: 'Private instances must reach AWS public service endpoints (e.g., sts.amazonaws.com) and third-party SaaS APIs. No VPC Endpoints are in use. What enables this?',
   options: [
     'Transit Gateway',
@@ -1931,7 +1987,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 15,
-  _questiontext: 'Question 15',
+  domain: 'Question 15',
   question: 'Which AWS service is designed to block application-layer injection attacks such as SQLi and XSS?',
   options: [
     'AWS Shield Advanced',
@@ -1944,7 +2000,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 16,
-  _questiontext: 'Question 16',
+  domain: 'Question 16',
   question: 'Where can you attach AWS WAF to protect your application?',
   options: [
     'EC2 security groups and NACLs',
@@ -1957,7 +2013,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 17,
-  _questiontext: 'Question 17',
+  domain: 'Question 17',
   question: 'Which statement best defines RTO (Recovery Time Objective)?',
   options: [
     'The maximum acceptable data loss measured in time',
@@ -1970,7 +2026,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 18,
-  _questiontext: 'Question 18',
+  domain: 'Question 18',
   question: 'Which statement best defines RPO (Recovery Point Objective)?',
   options: [
     'The maximum acceptable data loss measured in time',
@@ -1983,7 +2039,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 19,
-  _questiontext: 'Question 19',
+  domain: 'Question 19',
   question: 'You need your RDS MySQL database state from exactly 7 days ago. What should you use?',
   options: [
     'Restore from a manual snapshot only',
@@ -1996,7 +2052,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 20,
-  _questiontext: 'Question 20',
+  domain: 'Question 20',
   question: 'You dropped a table 3 hours ago in Amazon Aurora MySQL and need the fastest recovery without creating a new instance. What feature helps?',
   options: [
     'RDS Point-in-Time Restore',
@@ -2009,7 +2065,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 21,
-  _questiontext: 'Question 21',
+  domain: 'Question 21',
   question: 'Instances in a private subnet cannot reach the internet despite a NAT Gateway existing. What is the MOST likely cause?',
   options: [
     'The private subnet route table sends 0.0.0.0/0 to the Internet Gateway',
@@ -2022,7 +2078,7 @@ Where should you place the NAT Gateway?`,
 },
 {
   id: 22,
-  _questiontext: 'Question 22',
+  domain: 'Question 22',
   question: 'Your IPv6-enabled private subnet should reach the internet but must block inbound IPv6 connections from the internet. What should you use?',
   options: [
     'NAT Gateway',
@@ -2035,7 +2091,7 @@ Where should you place the NAT Gateway?`,
 },
   {
     id: 23,
-    _questiontext: 'Question 23',
+    domain: 'Question 23',
     question: 'A financial start-up has recently adopted a hybrid cloud infrastructure with AWS Cloud. They are planning to migrate their online payments system that supports an IPv6 address and uses an Oracle database. Which of the following options would you do to properly migrate the application to AWS?',
     options: [
       'Migrate the Oracle database to an EC2 instance. Launch an EC2 instance to host the application and then set up a NAT Instance.',
@@ -2048,7 +2104,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 24,
-    _questiontext: 'Question 24',
+    domain: 'Question 24',
     question: 'A SysOps Administrator needs to create a CloudFormation template that should automatically rollback in the event that the entire stack failed to launch. The application stack requires the signal of successful creation from the resources. What should you configure?',
     options: [
       'In the ResourceSignal parameter of the Conditions resource attribute, add a Timeout property with a value of 2 hours.',
@@ -2061,7 +2117,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 25,
-    _questiontext: 'Question 25',
+    domain: 'Question 25',
     question: 'A company’s marketing website utilizes an RDS database instance to store transactional data. As the user visits grow, the IT department decides to implement a caching service for faster response times and higher availability. Which combination of actions should you take? (Select TWO)',
     options: [
       'Utilize Amazon ElastiCache for Redis data store to support the demands of the database.',
@@ -2075,7 +2131,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 26,
-    _questiontext: 'Question 26',
+    domain: 'Question 26',
     question: 'A leading national bank migrated its on-premises infrastructure to AWS. The SysOps Administrator noticed that the cache hit ratio of the CloudFront web distribution is less than 15%. What should be done to increase the cache hit ratio?',
     options: [
       'Set the Viewer Protocol Policy of your web distribution to only use HTTPS to serve media content.',
@@ -2089,7 +2145,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 27,
-    _questiontext: 'Question 27',
+    domain: 'Question 27',
     question: 'A company is deploying a web application on Amazon EC2 instances. To handle spikes in traffic, the web application needs application-level caching of database query results and frequently accessed data. What should you do?',
     options: [
       'Implement application-level caching by running Memcached on the EC2 instances.',
@@ -2102,7 +2158,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 28,
-    _questiontext: 'Question 28',
+    domain: 'Question 28',
     question: 'A company uses AWS Organizations with multiple AWS accounts across several organizational units (OUs). A CloudOps engineer must configure AWS Backup with centralized administration and a centralized backup vault. What should they do?',
     options: [
       'Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Create individual backup plans and vaults in each member account.',
@@ -2115,7 +2171,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 29,
-    _questiontext: 'Question 29',
+    domain: 'Question 29',
     question: 'A software company is running a containerized application on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The application must use a new feature that is available in the latest Kubernetes version. What is the recommended way to upgrade the cluster?',
     options: [
       'Create an Amazon CloudWatch dashboard that shows all relevant metrics for the cluster. Identify the current usage of CPU and memory. Use the Kubernetes release update to identify if the available resources are enough.',
@@ -2128,7 +2184,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 30,
-    _questiontext: 'Question 30',
+    domain: 'Question 30',
     question: 'A company has two Amazon EC2 instances. Instance A is in VPC A. Instance B is in VPC B. A CloudOps engineer correctly configured VPC peering between both VPCs. Instance A can ping instance B, but instance B cannot ping instance A. What is the most likely cause?',
     options: [
       'Attach an internet gateway to VPC B.',
@@ -2141,7 +2197,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 31,
-    _questiontext: 'Question 31',
+    domain: 'Question 31',
     question: 'A financial company runs a transaction processing system. The system uses an Amazon RDS for MySQL database with a Multi-AZ deployment. The company expects a seasonal spike in traffic and wants to automatically adjust database capacity based on demand. What should you do?',
     options: [
       'Migrate the database to Amazon Aurora Serverless v2.',
@@ -2154,7 +2210,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 32,
-    _questiontext: 'Question 32',
+    domain: 'Question 32',
     question: 'A company uses AWS Organizations. The company wants to simplify the management of resource deployments. A CloudOps engineer must deploy an AWS CloudFormation stack set. The stack set must automatically create the required IAM roles in target accounts. What is the best way to achieve this?',
     options: [
       'Use the self-managed permissions model for role creation and management across the organization.',
@@ -2167,7 +2223,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 33,
-    _questiontext: 'Question 33',
+    domain: 'Question 33',
     question: 'A CloudOps engineer must automate the creation of custom Amazon Machine Images (AMIs). The CloudOps engineer notices timeout errors on the EC2 Image Builder pipeline. What is the cause of the issue?',
     options: [
       'There are insufficient permissions granted to the Image Builder role that is configured in the pipeline.',
@@ -2180,7 +2236,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 34,
-    _questiontext: 'Question 34',
+    domain: 'Question 34',
     question: 'A company sends metrics and logs to a third-party vendor for long-term storage. Both the company and the third-party vendor use the AWS Cloud. Currently, the data is transmitted over the public internet. What should they do to securely transmit this data over the AWS network?',
     options: [
       "Create an interface VPC endpoint in the company's VPC. Associate the endpoint with the AWS PrivateLink service.",
@@ -2194,7 +2250,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 35,
-    _questiontext: 'Question 35',
+    domain: 'Question 35',
     question: 'A company runs a web application on an Auto Scaling group of Amazon EC2 instances behind an Application Load Balancer (ALB). Amazon CloudWatch metrics show high CPU utilization on the instances during peak hours. The high CPU utilization leads to an increased number of 503 errors. Which action will resolve high CPU utilization in the MOST cost-effective way?',
     options: [
       "Configure a target tracking scaling policy based on average CPU utilization.",
@@ -2207,7 +2263,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 36,
-    _questiontext: 'Question 36',
+    domain: 'Question 36',
     question: 'A company uses Amazon CloudWatch to monitor Amazon EC2 instances. The company uses AWS Systems Manager Automation to remediate findings for EC2 instances. The company wants to automatically run a custom runbook whenever a specific CloudWatch alarm is invoked. Which solution will meet this requirement with the LEAST operational overhead?',
     options: [
       "Create an Amazon EventBridge rule that matches the alarm state change event pattern for the specific CloudWatch alarm. Configure the rule to invoke the custom runbook as a target.",
@@ -2220,7 +2276,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 37,
-    _questiontext: 'Question 36',
+    domain: 'Question 36',
     question: 'A company is hosting applications on Amazon EC2 instances. The company stores data in Amazon RDS databases. The company wants to monitor key metrics and receive alarm notifications for the EC2 instances and RDS databases. Which solution will meet these requirements with the LEAST operational overhead?',
     options: [
       "Configure Amazon CloudWatch to monitor metrics for the EC2 instances and RDS databases. Create CloudWatch alarms that invoke based on metric thresholds for the EC2 instances and RDS databases.",
@@ -2233,7 +2289,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 38,
-    _questiontext: 'Question 38',
+    domain: 'Question 38',
     question: 'A company uses AWS CloudFormation StackSets to provision resources across multiple AWS accounts in AWS Organizations. The company wants to detect any manual changes to the resources that StackSets provisions. Which solution will meet these requirements with the LEAST operational effort?',
     options: [
       "Use AWS CloudTrail to monitor the changes that are made to the stacks.",
@@ -2246,7 +2302,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 39,
-    _questiontext: 'Networking and Content Delivery ',
+    domain: 'Networking and Content Delivery ',
     question: 'A CloudOps engineer must block inbound traffic from the internet to a VPC. The VPC has been configured with bidirectional internet access by using an attached internet gateway and NAT gateways in public subnets. Which solution will meet these requirements with the LEAST operational overhead?',
     options: [
       "Set VPC Block Public Access (BPA) to ingress-only mode.",
@@ -2259,7 +2315,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 40,
-    _questiontext: 'Question 40',
+    domain: 'Question 40',
     question: "A company wants to integrate an external continuous integration and continuous delivery (CI/CD) system with an AWS environment. The company wants to follow security best practices. The company uses its own identity provider (IdP) for authentication and authorization. The company wants a solution that provides short-lived credentials without managing an additional AWS service. The company wants to minimize changes to its existing identity management setup. Which configuration will meet these requirements?",
     options: [
       "Configure AWS IAM Identity Center. Configure synchronization between IAM Identity Center and the company's IdP by specifying the company's IdP as the identity source. Use the company's IdP to manage the identity of the CI/CD system.",
@@ -2272,7 +2328,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 41,
-    _questiontext: 'Question 41',
+    domain: 'Question 41',
     question: "A company uses services in multiple AWS accounts in an organization in AWS Organizations. To meet compliance requirements, a CloudOps engineer must ensure that services are not deployed outside of the `us-east-1` and `eu-central-1` AWS Regions. Which solution will meet this requirement with the LEAST operational effort?",
     options: [
       "Create a service control policy (SCP) that denies all actions when the requested Region is not `us-east-1` or `eu-central-1`.",
@@ -2285,7 +2341,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 42,
-    _questiontext: 'Question 42',
+    domain: 'Question 42',
     question: "A company needs to centralize the management of Amazon EC2 instances across multiple AWS accounts and AWS Regions. The company requires daily patching of critical security updates, weekly system health checks, and automated remediation of common issues. The solution must provide detailed logs of all the actions that are taken. The solution must support approval workflows for sensitive operations. Which solution will meet these requirements with the LEAST operational overhead?",
     options: [
       "Create AWS Lambda functions that are invoked by Amazon EventBridge rules to run scripts on the EC2 instances. Store logs in Amazon CloudWatch Logs. Implement AWS Step Functions for approval workflows.",
@@ -2298,7 +2354,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 43,
-    _questiontext: 'Question 43',
+    domain: 'Question 43',
     question: "A company in a highly regulated industry must encrypt all its Amazon Elastic Block Store (Amazon EBS) volumes. The company created an AWS Key Management Service (AWS KMS) key in a development account to encrypt the EBS volumes. The key is a customer managed key. The company has used the key several times to encrypt and decrypt volumes in the development account. Now, the company wants to use the same key to encrypt volumes in a quality assurance (QA) account. An IAM user in the QA account attempted to encrypt a volume in the development account by using the Amazon Resource Name (ARN) of the key. However, the IAM user receives an access denied error, and the volume cannot be encrypted. The IAM user in the QA account has attached a policy that was written correctly. Which action will allow the user in the QA account to encrypt volumes in the development account?",
     options: [
       "Add an IAM policy to the IAM user in the QA account. Configure the policy to explicitly allow the action kms:Encrypt to the specific ARN of the KMS key (resource) in the development account.",
@@ -2311,7 +2367,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 44,
-    _questiontext: "Question 44",
+    domain: "Question 44",
     question: "A CloudOps engineer needs to configure a deployment strategy that updates a containerized application. The application runs on Amazon Elastic Container Service (Amazon ECS) behind an Application Load Balancer (ALB). The deployment strategy must provide little to no downtime. Which deployment configuration of an ECS service will meet this requirement MOST cost-effectively?",
     options: [
       "Configure a linear deployment with two target groups.",
@@ -2324,7 +2380,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 45,
-    _questiontext: "Question 45",
+    domain: "Question 45",
     question: "A company hosts the domain example.com in Amazon Route 53. The company sends emails by using Amazon Simple Email Service (Amazon SES). Some recipients are not receiving the emails. A CloudOps engineer investigates the issue and identifies that some recipient servers are rejecting the emails. Which configuration in Route 53 will resolve the email delivery issue?",
     options: [
       "Add a mail exchange (MX) record that points to the IP addresses of the Amazon SES service.",
@@ -2337,7 +2393,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 46,
-    _questiontext: "Question 46",
+    domain: "Question 46",
     question: "A CloudOps engineer is troubleshooting an event-driven system that processes customer transactions. The system uses Amazon S3 Event Notifications to invoke AWS Lambda functions. The Lambda functions process transaction files and store the results in a downstream data storage service. The CloudOps engineer observes that transaction files that are uploaded to a specific folder in Amazon S3 are not being processed. Files that are uploaded to other folders are processing successfully. The Lambda function logs have no visible errors. Which step should the CloudOps engineer take to address this issue?",
     options: [
       "Verify that the Lambda function's execution role has the necessary permissions to access the S3 bucket. Modify the Lambda function code to implement retry logic with exponential backoff for failed operations.",
@@ -2350,7 +2406,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 47,
-    _questiontext: "Question 47",
+    domain: "Question 47",
     question: "A company deploys a web application to Amazon EC2 instances behind Auto Scaling groups across multiple AWS Regions. The company configures Amazon CloudWatch alarms to be invoked when the average CPU utilization of the EC2 instances exceeds 70% for 5 minutes. A CloudOps engineer needs to implement a solution to automatically scale out the Auto Scaling groups in each Region when the CPU alarms are invoked. Which solution will meet these requirements with the LEAST operational overhead?",
     options: [
       "Create an AWS Lambda function that is invoked by the CloudWatch alarms. Write the Lambda function to call the Auto Scaling group's Auto Scaling APIs to dynamically scale out the groups in each Region.",
@@ -2363,7 +2419,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 48,
-    _questiontext: "Question 48",
+    domain: "Question 48",
     question: "A company is designing an application that will be load balanced across multiple Availability Zones. The application consists of a web tier and an API tier. The web tier serves HTTP web requests. The API tier handles millions of requests. The web tier and API tier must be integrated with health checks. A CloudOps engineer must configure health checks for each tier to ensure high availability. Which solution will meet these requirements?",
     options: [
       "Configure Application Load Balancer (ALB) health checks for the web tier by using the HTTP path /index.html and status codes 200–399. Configure Network Load Balancer (NLB) health checks for the API tier by using TCP health checks on port 8080.",
@@ -2376,7 +2432,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 49,
-    _questiontext: "Question 49",
+    domain: "Question 49",
     question: "A company created a serverless application based on microservices that run on AWS Lambda functions. The application works as expected. However, the response times are higher than expected. A CloudOps engineer investigates Amazon CloudWatch Lambda Insights. The cause of the issue is that one of the Lambda functions spends extra time running during the initialization of the code. Which solution will resolve this issue with the LEAST development effort?",
     options: [
       "Configure reserved concurrency on the Lambda function.",
@@ -2389,7 +2445,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 50,
-    _questiontext: "Question 50",
+    domain: "Question 50",
     question: "A financial company runs a regulated web application. The company uses AWS CloudFormation to deploy the application. The application runs on Amazon EC2 instances behind an Application Load Balancer (ALB). The instances run in an Amazon EC2 Auto Scaling group. For compliance, the company must send a complete copy of all regulated data on the attached Amazon Elastic Block Store (Amazon EBS) volumes to an Amazon S3 bucket before an EC2 instance is terminated. In testing, some EC2 instances are terminated before the data can be completely copied. What can a CloudOps engineer do to resolve this problem in normal operating conditions?",
     options: [
       "Configure EC2 Auto Scaling lifecycle hooks to put the instances into a Terminating:Wait status before the instances are terminated. When the copy is complete, use the complete-lifecycle-action command.",
@@ -2402,7 +2458,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 51,
-    _questiontext: "Question 51",
+    domain: "Question 51",
     question: "A global company has an existing Amazon S3 bucket in the us-east-1 AWS Region that contains critical business documents. For compliance reasons, the company needs to replicate all new and modified objects to a bucket in the eu-west-1 Region. A CloudOps engineer must ensure that all future changes are replicated. Which solution will meet these requirements?",
     options: [
       "Enable versioning on the destination bucket. Configure a replication rule for both the source bucket and the destination bucket. Create an IAM role with the required permissions for S3 replication.",
@@ -2415,7 +2471,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 52,
-    _questiontext: "Question 52",
+    domain: "Question 52",
     question: "A medical company hosts an application on AWS. The company needs to be alerted if any logs in Amazon CloudWatch Logs contain protected health information (PHI). Which solution will meet this requirement?",
     options: [
       "Enable CloudWatch Logs data protection policies. Create a CloudWatch alarm that invokes based on the LogEventsWithFindings metric.",
@@ -2428,7 +2484,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 53,
-    _questiontext: "Question 53",
+    domain: "Question 53",
     question: "A company has two VPCs in the same AWS Region. One VPC is a production VPC with CIDR block 10.0.0.0/16. The other VPC is a management VPC with CIDR block 172.16.0.0/16. A CloudOps engineer configured a VPC peering connection between the two VPCs and accepted the peering request. All subnets use the default network ACL. However, the Amazon EC2 instances in the production VPC cannot communicate with the instances in the management VPC. Amazon CloudWatch metrics indicate no recorded logs of communication. How can the CloudOps engineer resolve this issue?",
     options: [
       "Update the security groups in both VPCs to allow cross-VPC traffic.",
@@ -2441,7 +2497,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 54,
-    _questiontext: "Question 54",
+    domain: "Question 54",
     question: "A company requires that all instances receive operating system (OS) patches within 7 days of release. The company uses AWS Systems Manager to manage Amazon EC2 instances. The EC2 instances run Windows Server OS across development, testing, and production environments. All instances have the Systems Manager Agent (SSM Agent) installed and proper IAM roles configured. A CloudOps engineer needs to implement an automated patching solution. The solution must ensure that production workloads are not disrupted during business hours. Which combination of steps should the CloudOps engineer take to implement this solution? (Select TWO.)",
     options: [
       "Create a patch baseline with an auto-approval delay of 7 days. Configure the patch baseline as the default for Windows Server.",
@@ -2455,7 +2511,7 @@ Where should you place the NAT Gateway?`,
   },
   {
     id: 55,
-    _questiontext: "Question 55",
+    domain: "Question 55",
     question: "A CloudOps engineer must automate the creation of custom Amazon Machine Images (AMIs). The CloudOps engineer notices timeout errors on the EC2 Image Builder pipeline. What is the cause of the timeout errors?",
     options: [
       "There are insufficient permissions granted to the Image Builder role that is configured in the pipeline.",
@@ -2468,7 +2524,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 56,
-      _questiontext: 'Question 56',
+      domain: 'Question 56',
       question: 'A company uses AWS Organizations to manage multiple AWS accounts. All Amazon RDS snapshots must be encrypted with an AWS Key Management Service (AWS KMS) key. A CloudOps engineer must implement a service control policy (SCP). The SCP must prevent the deletion of AWS KMS keys without impacting other administrative operations on the KMS keys. Which SCP will meet these requirements?',
       options: [
         `
@@ -2537,7 +2593,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 57,
-      _questiontext: "Question 57",
+      domain: "Question 57",
       question: "A CloudOps engineer manages a fleet of Amazon EC2 Linux instances in a single AWS account. All instances have AWS Systems Manager Agent (SSM Agent) installed and proper IAM roles configured. The CloudOps engineer needs to quickly deploy a security fix by running a command. The security fix must install a package across all instances. The CloudOps engineer needs to execute the command and track the execution status for each instance. Which solution will meet these requirements?",
       options: [
         "Connect to each instance by using Systems Manager Session Manager. Manually run the command. Monitor the command output in each session.",
@@ -2550,7 +2606,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 58,
-      _questiontext: "Question 58",
+      domain: "Question 58",
       question: "A company uses AWS Organizations to manage access across multiple AWS accounts. A CloudOps engineer must configure a solution to allow developers in a development (dev) account to launch Amazon EC2 instances in a staging account. Which solution will meet this requirement?",
       options: [
         "Create an IAM policy in the dev account that allows EC2 instance launches. Attach the IAM policy to the developers' IAM user identities.",
@@ -2563,7 +2619,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 59,
-      _questiontext: "Question 59",
+      domain: "Question 59",
       question: "A company operates in a multi-account AWS environment by using AWS Organizations. A CloudOps engineer discovers that developers across different member accounts are launching Amazon EC2 instances that are larger than necessary. The CloudOps engineer needs a solution to set limits and control EC2 instance types across all accounts. Which solution will meet these requirements with the LEAST operational overhead?",
       options: [
         "Create an AWS Service Catalog portfolio in the management account. Share the portfolio with member accounts. Use IAM policies to require developers to launch instances only through Service Catalog products.",
@@ -2576,7 +2632,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 60,
-      _questiontext: "Question 60",
+      domain: "Question 60",
       question: "A company has an increasing number of workloads that run on AWS. The workloads include on-premises infrastructure. The number of VPCs continues to increase within a single AWS Region. Each time a new VPC is created, the new VPC needs to be peered with several other VPCs. Additionally, the new VPC needs to be attached to the on-premises AWS VPN. Which solution will meet these requirements in the MOST operationally efficient way?",
       options: [
         "Replace the peering connection with an AWS Transit Gateway. Attach the VPCs and VPN connections to the Transit Gateway.",
@@ -2589,7 +2645,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 61,
-      _questiontext: "Question 61",
+      domain: "Question 61",
       question: "A CloudOps engineer discovers drift in an AWS CloudFormation stack. The CloudOps engineer discovers that critical security group inbound rules were manually added to meet urgent security requirements. The CloudOps engineer needs to update the stack with the new inbound rules while preserving the security configuration. Which solution will meet these requirements?",
       options: [
         "Import the current security group inbound rules configuration into the template by using CloudFormation drift detection results. Perform the stack update.",
@@ -2602,7 +2658,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 62,
-      _questiontext: "Question 62",
+      domain: "Question 62",
       question: "A company uses AWS Systems Manager to manage its Amazon EC2 instances. The company wants to automatically stop and restart any instance when an EC2 instance retirement event is scheduled. Which solution will meet this requirement?",
       options: [
         "Create an Amazon EventBridge rule that invokes a Systems Manager document to stop and restart the instance in response to an AWS Health event.",
@@ -2615,7 +2671,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 63,
-      _questiontext: "Question 63",
+      domain: "Question 63",
       question: "A robotics company is building an application that uses an Apache Cassandra cluster. The cluster runs on Amazon EC2 instances that will be deployed into a placement group. A CloudOps engineer must design for maximum resiliency of the compute layer. Which deployment strategy meets this requirement?",
       options: [
         "Deploy a partition placement group across a single Availability Zone.",
@@ -2628,7 +2684,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 64,
-      _questiontext: "Question 64",
+      domain: "Question 64",
       question: "A company uses AWS Organizations. The company must produce reports on the patch compliance status of Amazon EC2 instances. The company uses AWS Systems Manager for patch management. A CloudOps engineer must evaluate all EC2 instances across all the accounts of the organization. Which solution will meet these requirements?",
       options: [
         "Deploy Amazon Inspector across the organization by using delegated administration. Configure assessment rules to scan for missing patches and to generate compliance reports through Amazon Inspector findings.",
@@ -2641,7 +2697,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 65,
-      _questiontext: "Question 65",
+      domain: "Question 65",
       question: "A company has a hybrid cloud architecture with multiple VPCs and an on-premises data center. The company needs to configure Amazon Route 53 to allow resources in VPCs to resolve DNS queries for on-premises domain names. The company has already set up inbound and outbound Resolver endpoints. Which step is required to enable this DNS resolution?",
       options: [
         "Create Resolver rules to forward domain-specific DNS queries through the outbound endpoints to on-premises DNS servers.",
@@ -2654,7 +2710,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 66,
-      _questiontext: "Question 66",
+      domain: "Question 66",
       question: "A CloudOps engineer must deploy a node group in an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The cluster runs three Kubernetes workloads. Each workload is configured to run on its own node. The three workloads communicate with each other frequently. The CloudOps engineer must create an Amazon EC2 launch template that can create the dedicated node group for the three nodes. Which configuration in the EC2 launch template will provide communication with the LOWEST latency?",
       options: [
         "Specify a single subnet.",
@@ -2667,7 +2723,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 67,
-      _questiontext: "Question 67",
+      domain: "Question 67",
       question: "A company runs a website. Users of the website sometimes receive HTTP 404 errors when trying to access the website. The company's infrastructure includes several Amazon EC2 instances. Each instance sends logs to a consolidated log group in Amazon CloudWatch Logs. A CloudOps engineer needs to create an alert to indicate when the HTTP 404 errors pass a certain threshold. Which combination of steps will meet these requirements? (Select TWO.)",
       options: [
         "Configure a log stream with log file compression.",
@@ -2681,7 +2737,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 68,
-      _questiontext: "Question 68",
+      domain: "Question 68",
       question: "A company wants to resolve infrastructure and resource misconfiguration issues. The company wants to implement an automated resource remediation process. The solution must alert an application team when the infrastructure and resources have been remediated. Which solution will meet these requirements?",
       options: [
         "Configure AWS Security Hub to send findings to an Amazon Simple Notification Service (Amazon SNS) topic. Create an AWS Lambda function. Subscribe the function to the SNS topic to remediate resource misconfigurations. Use the same SNS topic to send email notifications to the application team.",
@@ -2694,7 +2750,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 69,
-      _questiontext: "Question 69",
+      domain: "Question 69",
       question: "A company processes large volumes of data. The company stores the data in Amazon S3. The data is frequently accessed for the first 30 days. After the first 30 days, access patterns vary between objects. Objects must be retrieved immediately upon request. A CloudOps engineer must optimize storage costs. Which solution will meet these requirements in the MOST cost-effective way?",
       options: [
         "Enable the S3 bucket lifecycle policy configured check in AWS Trusted Advisor.",
@@ -2707,7 +2763,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 70,
-      _questiontext: "Question 70",
+      domain: "Question 70",
       question: "A company is deploying a web application on Amazon EC2 instances. To handle spikes in traffic, the web application needs application-level caching of database query results and frequently accessed application data. Which solution will meet this requirement with the LEAST operational overhead?",
       options: [
         "Implement application-level caching by running Memcached on the EC2 instances.",
@@ -2720,7 +2776,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 71,
-      _questiontext: "Question 71",
+      domain: "Question 71",
       question: "A CloudOps engineer is installing Java and Python packages on several Amazon EC2 instances that have instance store root volumes. An EC2 Auto Scaling group created the instances. While checking the tags of the Auto Scaling group, the CloudOps engineer identifies that an AWS CloudFormation stack created the Auto Scaling group. The CloudOps engineer must modify the user data section of the EC2 resources. What will happen when the CloudOps engineer updates the user data section?",
       options: [
         "All the EC2 instances will reboot automatically.",
@@ -2733,7 +2789,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 72,
-      _questiontext: "Question 72",
+      domain: "Question 72",
       question: "A company uses AWS CloudFormation stacks to deploy and manage infrastructure for an application. The CloudOps engineer needs to apply a new tag to all resources that are part of the application stacks. The solution must maintain infrastructure as code (IaC) and ensure consistent deployment. Which solution will meet this requirement with the LEAST operational overhead?",
       options: [
         "Add the new tag to the application resources by using Tag Editor.",
@@ -2746,7 +2802,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 73,
-      _questiontext: "Question 73",
+      domain: "Question 73",
       question: "A company wants to connect an on-premises data center to an Amazon VPC. The company wants to use AWS Site-to-Site VPN and dynamic routing. The company's network team has provided the public IP address. A CloudOps engineer must complete the configuration. Which solution will meet these requirements with the LEAST operational overhead?",
       options: [
         "Use AWS Direct Connect and create a virtual interface. Associate the virtual interface to the VPC. Establish BGP between the virtual private gateway and the data center router.",
@@ -2759,7 +2815,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 74,
-      _questiontext: "Question 74",
+      domain: "Question 74",
       question: "A company deployed a new application that runs on Amazon EC2 instances. The company wants to verify that all common vulnerabilities and exposures are discovered throughout the application's lifespan. Which solution will meet these requirements?",
       options: [
         "Configure Amazon Inspector assessments to automatically scan the EC2 instances on a regular schedule and generate findings reports.",
@@ -2772,7 +2828,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 75,
-      _questiontext: "Question 75",
+      domain: "Question 75",
       question: "A CloudOps engineer created an API key programmatically in a third-party service. The CloudOps engineer needs to securely store the API key. The API key should be accessible only by an AWS Lambda function. The API key should expire after 6 months. Which solution will meet these requirements with the LEAST operational overhead?",
       options: [
         "Configure an encrypted AWS Systems Manager Parameter Store parameter with a TTL of 6 months. Grant the Lambda execution role access to the parameter.",
@@ -2785,7 +2841,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 76,
-      _questiontext: "Question 76",
+      domain: "Question 76",
       question: "A company is implementing a web application that will be accessible to the public. A CloudOps engineer needs to implement TLS encryption. The CloudOps engineer must use a publicly trusted certificate for traffic to an Application Load Balancer (ALB) for the application. Which solution will meet this requirement?",
       options: [
         "Configure the ALB with a security group that allows only HTTPS traffic on port 443.",
@@ -2798,7 +2854,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 77,
-      _questiontext: "Question 77",
+      domain: "Question 77",
       question: "A CloudOps engineer needs to encrypt data at rest for an Amazon Aurora database cluster. Which solution will meet this requirement?",
       options: [
         "Create an Amazon Elastic Block Store (Amazon EBS) volume. Enable encryption for the volume by using an AWS Key Management Service (AWS KMS) customer managed key. Attach the volume to the database instances.",
@@ -2811,7 +2867,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 78,
-      _questiontext: "Question 78",
+      domain: "Question 78",
       question: "A company uses AWS Backup Audit Manager to generate backup compliance reports to meet regulatory requirements. The company runs a backup job. The company stores backup and compliance reports in an Amazon S3 bucket. The company wants to automate the delivery of the AWS Backup Audit Manager reports to an email address. A CloudOps engineer configures Amazon Simple Email Service (Amazon SES) with verified identities. The verified identities include an email address and a domain. The CloudOps engineer must automate the delivery of the reports. Which solution will meet this requirement?",
       options: [
         "Create an S3 Event Notification that invokes an AWS Lambda function. Configure the function to send an email by using Amazon SES when a new report is created in the S3 bucket.",
@@ -2824,7 +2880,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 79,
-      _questiontext: "Question 79",
+      domain: "Question 79",
       question: "A company has several AWS accounts. The company manages the accounts by using AWS Organizations. A CloudOps engineer needs to automate the process of stopping non-production Amazon EC2 instances across all member accounts outside of business hours. The solution must provide centralized management. Which solution will meet these requirements with the LEAST operational overhead?",
       options: [
         "Create IAM roles in each account with the appropriate permissions. Use AWS Systems Manager Automation with a delegated administrator account to execute a runbook that targets resources across the organization based on tags.",
@@ -2837,7 +2893,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 80,
-      _questiontext: "Question 80",
+      domain: "Question 80",
       question: "A company uses AWS Organizations. The company wants to simplify the management of resource deployments. A CloudOps engineer must deploy an AWS CloudFormation stack set. The stack set must provision IAM roles and Amazon CloudWatch alarms across multiple AWS accounts and AWS Regions. The CloudOps engineer wants to avoid manually setting up IAM roles in each target account for the stack set operations. Which solution will meet these requirements with the LEAST operational overhead?",
       options: [
         "Use the self-managed permissions model for role creation and management across the organization.",
@@ -2850,7 +2906,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 81,
-      _questiontext: "Question 81",
+      domain: "Question 81",
       question: "A CloudOps engineer needs to share a parameter between two AWS accounts. The parameter is stored in AWS Systems Manager Parameter Store. Which solution will meet this requirement with the LEAST operational overhead?",
       options: [
         "Use a Parameter Store parameter policy to grant access to the parameter for the target account.",
@@ -2863,7 +2919,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 82,
-      _questiontext: "Question 82",
+      domain: "Question 82",
       question: "A company is creating an AWS CloudFormation stack for a new application. The stack template contains Amazon EC2 instances and Amazon RDS databases as resources. During stack updates that require resource replacement, the company wants to preserve the database data. Which solution will meet this requirement?",
       options: [
         "Enable TerminationProtection on the stack.",
@@ -2876,7 +2932,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 83,
-      _questiontext: "Question 83",
+      domain: "Question 83",
       question: "A company uses Amazon CloudFront to deliver static website content to end users. Recently, users have reported that images on the company's website are not updating when changes are made. Which CloudFront distribution configuration is causing this issue?",
       options: [
         "An incorrect origin access control (OAC)",
@@ -2889,7 +2945,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 84,
-      _questiontext: "Question 84",
+      domain: "Question 84",
       question: "A CloudOps engineer is troubleshooting connection timeouts to an Amazon EC2 instance that has a public IP address. The instance has a private IP address of 172.31.16.139. When the CloudOps engineer attempts to ping the instance's public IP address from the remote IP address 203.0.113.12, the response is \"request timed out\". The flow logs contain the following information: 2 123456789010 eni-1235b8ca123456789 203.0.113.12 172.31.16.139 0 0 1 4 336 1432917027 1432917142 ACCEPT OK 2 123456789010 eni-1235b8ca123456789 172.31.16.139 203.0.113.12 0 0 1 4 336 1432917094 1432917142 REJECT OK. What is the cause of this issue?",
       options: [
         "The security group's inbound rules are blocking incoming Internet Control Message Protocol (ICMP) traffic from the source IP address.",
@@ -2902,7 +2958,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 85,
-      _questiontext: "Question 85",
+      domain: "Question 85",
       question: "A CloudOps engineer must set up VPC peering between VPC A and VPC B. VPC B is located in a different AWS account that is owned by another company. Additionally, the VPCs are in different AWS Regions, requiring an inter-Region VPC peering connection. The CloudOps engineer has not been successful in establishing a connection. What is the cause of this issue? (Select TWO.)",
       options: [
         "VPC peering cannot be established for Amazon VPCs that are not owned by the account that is setting up VPC peering.",
@@ -2916,7 +2972,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 86,
-      _questiontext: "Question 86",
+      domain: "Question 86",
       question: "A company has two Amazon EC2 instances. Instance A is in VPC A. Instance B is in VPC B. A CloudOps engineer correctly configured VPC peering between both VPCs. Instance A can ping instance B. However, instance B cannot ping instance A. Which step should the CloudOps engineer take to troubleshoot this issue?",
       options: [
         "Attach an internet gateway to VPC B.",
@@ -2929,7 +2985,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 87,
-      _questiontext: "Question 87",
+      domain: "Question 87",
       question: "A CloudOps engineer is troubleshooting connectivity issues for an Amazon EC2 instance. The CloudOps engineer is unable to connect to the instance by using EC2 Instance Connect and AWS Systems Manager Session Manager. The CloudOps engineer verified that the necessary ports and protocols are allowed by the instance's security groups. What is the cause of the connectivity issues?",
       options: [
         "The instance does not have a public IP address assigned.",
@@ -2942,7 +2998,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 88,
-      _questiontext: "Question 88",
+      domain: "Question 88",
       question: "A company runs a Java application on Amazon EC2 instances behind an Application Load Balancer (ALB) in multiple Availability Zones. A CloudOps engineer identifies that the application experiences memory leaks after several days of runtime. The instances need to be replaced periodically to maintain performance. However, the current manual replacements cause service disruption. The CloudOps engineer needs to implement an automated solution that maintains application availability by replacing instances based on the instance's health state. Which solution will meet these requirements with the LEAST operational overhead?",
       options: [
         "Create an Amazon CloudWatch alarm to monitor instance metrics and to invoke EC2 instance recovery actions.",
@@ -2955,7 +3011,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 89,
-      _questiontext: "Question 89",
+      domain: "Question 89",
       question: "A company receives files from customers on an irregular basis. The company stores the files in an Amazon S3 bucket. A CloudOps engineer creates an AWS Lambda function to automate the process of generating the metadata for the files. The Lambda function must be invoked as soon as a new file is received. Which solution will automate this process with the LEAST operational overhead?",
       options: [
         "Create an Amazon EventBridge scheduled rule that invokes the Lambda function. Set the rule to invoke every 5 minutes.",
@@ -2968,7 +3024,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 90,
-      _questiontext: "Question 90",
+      domain: "Question 90",
       question: "A company is using an Amazon Aurora database in a production environment to serve a customer-facing application. The database experiences increases in read traffic during business hours. A CloudOps engineer must ensure that the database can handle sudden increases in traffic. Which solution will meet this requirement MOST cost-effectively?",
       options: [
         "Deploy Amazon ElastiCache (Memcached) in front of the Aurora database. Configure Auto Discovery to automatically manage cache nodes based on memory utilization during peak read traffic periods.",
@@ -2981,7 +3037,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 91,
-      _questiontext: "Question 91",
+      domain: "Question 91",
       question: "A retail company runs a containerized application in two Amazon Elastic Container Service (Amazon ECS) tasks behind an Application Load Balancer (ALB). A few minutes after an unexpected promotion announcement, the application experiences a spike in traffic. Then, the CPU of the ECS tasks reaches 100% utilization for an hour. Users report that the application does not work during that hour. A CloudOps engineer must configure scaling to maintain CPU at 60% at all times. Which ECS service auto scaling method will meet these requirements with the LEAST operational overhead?",
       options: [
         "Use a predictive auto scaling policy. Scale out the service based on historical data.",
@@ -2994,7 +3050,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 92,
-      _questiontext: "Question 92",
+      domain: "Question 92",
       question: "A company uses an Amazon DynamoDB table to store user profile data. The table experiences incremental spikes in traffic during business hours with predictable patterns when millions of reads and writes occur. A CloudOps engineer must configure a solution to increase the throughput capacity of the table to match the observed traffic patterns. Which solution will meet these requirements in the MOST cost-effective way?",
       options: [
         "Increase the read and write capacity units of the table to their maximum limits.",
@@ -3007,7 +3063,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 93,
-      _questiontext: "Question 93",
+      domain: "Question 93",
       question: "A company uses an application that runs on Amazon EC2 instances. The company recently updated the application. After the update, a CloudOps engineer identifies that the EC2 instances that are registered with an Application Load Balancer (ALB) are failing health checks. The CloudOps engineer confirms that the application is functioning correctly. What is the cause of this issue?",
       options: [
         "The ALB attribute HTTP client keepalive duration must be updated to maintain the EC2 instance connection.",
@@ -3020,7 +3076,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 94,
-      _questiontext: "Question 94",
+      domain: "Question 94",
       question: "A company is deploying a two-tier web application. The web application consists of an Auto Scaling group of web servers behind an Application Load Balancer (ALB) and an Amazon RDS database. The company wants to ensure that both tiers of the web application are highly available across Availability Zones. Which solution will meet these requirements?",
       options: [
         "Configure the ALB with cross-zone load balancing and enable sticky sessions. Deploy the RDS database with Multi-AZ configured.",
@@ -3033,7 +3089,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 95,
-      _questiontext: "Question 95",
+      domain: "Question 95",
       question: "A company is deploying a web application that runs on multiple Amazon EC2 instances across multiple AWS Regions. The application is configured to use Auto Scaling groups in each Region behind an Application Load Balancer (ALB). A CloudOps engineer needs to ensure that the application is highly available. Which solution will meet this requirement?",
       options: [
         "Configure an Amazon Route 53 latency-based routing policy to distribute traffic between ALBs in each Region. Set up health checks to monitor each ALB's health status.",
@@ -3046,7 +3102,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 96,
-      _questiontext: "Question 96",
+      domain: "Question 96",
       question: "A CloudOps engineer needs to configure automated daily snapshots of multiple Amazon Elastic Block Store (Amazon EBS) volumes. The EBS volumes are attached to Amazon EC2 instances. Which solution will meet this requirement in the MOST cost-effective way?",
       options: [
         "Create a backup plan in AWS Backup that selects the EBS volumes and configures a daily schedule to create snapshots of the selected volumes.",
@@ -3059,7 +3115,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 97,
-      _questiontext: "Question 97",
+      domain: "Question 97",
       question: "A company uses AWS Organizations with multiple AWS accounts across several organizational units (OUs). A CloudOps engineer must configure AWS Backup with centralized administration and a centralized vault for backups across all accounts. Which configuration will meet these requirements?",
       options: [
         "Enable Organizations service control policies (SCPs) to require backups for all accounts and resources. Create individual backup plans and vaults in each member account.",
@@ -3072,7 +3128,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 98,
-      _questiontext: "Question 98",
+      domain: "Question 98",
       question: "A CloudOps engineer must establish Amazon S3 replication for backup and recovery compliance. The replication is between a source bucket in the us-east-1 AWS Region and a destination bucket in the us-west-1 Region. The CloudOps engineer has already configured a replication rule in the source bucket. The source bucket and destination buckets are in separate AWS accounts. Which combination of steps will meet these requirements? (Select THREE.)",
       options: [
         "Create an IAM role in the destination account that grants S3 permissions to replicate objects.",
@@ -3087,7 +3143,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 99,
-      _questiontext: "Question 99",
+      domain: "Question 99",
       question: "A company uses an AWS CloudFormation stack to create an Auto Scaling group of Amazon EC2 instances. The company needs to address a security vulnerability in the Amazon Machine Image (AMI) that the EC2 instances use. The company needs to update to the latest operating system to address the security concerns. The company's application runs on the EC2 instances and must stay online at all times. At least one EC2 instance must stay operational during the change operation. A CloudOps engineer is updating the AMI ID in the CloudFormation template. How can the CloudOps engineer apply the AMI update to meet these requirements?",
       options: [
         "Use a direct update of the stack.",
@@ -3100,7 +3156,7 @@ Where should you place the NAT Gateway?`,
     },
     {
       id: 100,
-      _questiontext: "Question 100",
+      domain: "Question 100",
       question: "A CloudOps engineer is installing Java and Python packages on several Amazon EC2 instances that have instance store root volumes. An EC2 Auto Scaling group created the instances. While checking the tags of the Auto Scaling group, the CloudOps engineer identifies that an AWS CloudFormation stack created the Auto Scaling group. The CloudOps engineer must modify the user data section of the EC2 resources. What will happen when the CloudOps engineer updates the user data section?",
       options: [
         "All the EC2 instances will reboot automatically.",
