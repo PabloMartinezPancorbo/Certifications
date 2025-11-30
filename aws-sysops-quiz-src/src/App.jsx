@@ -21,9 +21,14 @@ const AWSSysOpsExamApp = () => {
       if (scoreCardRef.current && activeTab === 'practice') {
         const rect = scoreCardRef.current.getBoundingClientRect();
         setShowFloatingScore(rect.bottom < 0);
+      } else {
+        setShowFloatingScore(false);
       }
     };
 
+    // Check on mount and tab change
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [activeTab]);
