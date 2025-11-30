@@ -3005,6 +3005,9 @@ const renderQuestion = (question) => {
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-3xl font-bold mb-2">AWS CloudOps Engineer Exam Reference</h1>
           <p className="text-orange-100">Complete guide to ace the SOA-C03 exam with a perfect score</p>
+          <p className="text-orange-200 text-xs mt-2 italic">
+            Disclaimer: This is unofficial study material. Not affiliated with, endorsed by, or sponsored by Amazon Web Services (AWS).
+          </p>
         </div>
       </div>
       
@@ -3157,27 +3160,38 @@ const renderQuestion = (question) => {
               const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
               
               // Determine color scheme based on percentage
-              let bgGradient, borderColor, textColor, percentageClass;
-              if (percentage === 100) {
+              let bgGradient, borderColor, textColor, percentageClass, showPercentage;
+              if (answeredQuestions === 0) {
+                // Not started yet
+                bgGradient = 'bg-gradient-to-r from-gray-50 to-slate-50';
+                borderColor = 'border-gray-300';
+                textColor = 'text-gray-700';
+                percentageClass = 'text-gray-500';
+                showPercentage = false;
+              } else if (percentage === 100) {
                 bgGradient = 'bg-gradient-to-r from-red-50 via-yellow-50 via-green-50 via-blue-50 to-purple-50';
                 borderColor = 'border-purple-400';
                 textColor = 'text-purple-600';
                 percentageClass = 'bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent';
+                showPercentage = true;
               } else if (percentage >= 95) {
                 bgGradient = 'bg-gradient-to-r from-green-50 to-emerald-50';
                 borderColor = 'border-green-200';
                 textColor = 'text-gray-700';
                 percentageClass = 'text-green-600';
+                showPercentage = true;
               } else if (percentage < 72) {
                 bgGradient = 'bg-gradient-to-r from-red-50 to-rose-50';
                 borderColor = 'border-red-200';
                 textColor = 'text-gray-700';
                 percentageClass = 'text-red-600';
+                showPercentage = true;
               } else {
                 bgGradient = 'bg-gradient-to-r from-blue-50 to-indigo-50';
                 borderColor = 'border-blue-200';
                 textColor = 'text-gray-700';
                 percentageClass = 'text-indigo-600';
+                showPercentage = true;
               }
             
               return (
@@ -3188,7 +3202,10 @@ const renderQuestion = (question) => {
                       alt="AWS Logo" 
                       className="h-12 w-auto"
                     />
-                  </div>                  <div className="text-center">
+                  </div>
+                  <div className="text-center">
+                    {showPercentage ? (
+                      <>
                     <div className={`text-6xl font-bold ${percentageClass} mb-2`}>
                       {percentage}%
                     </div>
@@ -3198,6 +3215,20 @@ const renderQuestion = (question) => {
                     <div className="text-sm text-gray-500">
                       {answeredQuestions} / {totalQuestions} questions completed
                     </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-4xl font-bold text-gray-400 mb-3">
+                          Ready to Start?
+                        </div>
+                        <div className="text-lg text-gray-600 mb-2">
+                          Answer the questions below to challenge your understanding
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          0 / {totalQuestions} questions completed
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               );
@@ -3344,23 +3375,33 @@ const renderQuestion = (question) => {
         const percentage = answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0;
         
         // Determine color scheme based on percentage
-        let bgGradient, borderColor, percentageClass;
-        if (percentage === 100) {
+        let bgGradient, borderColor, percentageClass, showPercentage;
+        if (answeredQuestions === 0) {
+          // Not started yet
+          bgGradient = 'bg-gradient-to-r from-gray-50 to-slate-50';
+          borderColor = 'border-gray-300';
+          percentageClass = 'text-gray-500';
+          showPercentage = false;
+        } else if (percentage === 100) {
           bgGradient = 'bg-gradient-to-r from-red-50 via-yellow-50 via-green-50 via-blue-50 to-purple-50';
           borderColor = 'border-purple-400';
           percentageClass = 'bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent';
+          showPercentage = true;
         } else if (percentage >= 95) {
           bgGradient = 'bg-gradient-to-r from-green-50 to-emerald-50';
           borderColor = 'border-green-300';
           percentageClass = 'text-green-600';
+          showPercentage = true;
         } else if (percentage < 72) {
           bgGradient = 'bg-gradient-to-r from-red-50 to-rose-50';
           borderColor = 'border-red-300';
           percentageClass = 'text-red-600';
+          showPercentage = true;
         } else {
           bgGradient = 'bg-gradient-to-r from-blue-50 to-indigo-50';
           borderColor = 'border-indigo-300';
           percentageClass = 'text-indigo-600';
+          showPercentage = true;
         }
       
         return (
@@ -3373,6 +3414,8 @@ const renderQuestion = (question) => {
               />
             </div>
             <div className="text-center">
+              {showPercentage ? (
+                <>
               <div className={`text-4xl md:text-3xl font-bold ${percentageClass} mb-1`}>
                 {percentage}%
               </div>
@@ -3382,6 +3425,17 @@ const renderQuestion = (question) => {
               <div className="text-xs text-gray-500">
                 {answeredQuestions}/{totalQuestions} done
               </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-2xl md:text-xl font-bold text-gray-400 mb-1">
+                    Ready?
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    0/{totalQuestions}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         );
