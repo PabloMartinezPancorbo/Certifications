@@ -2172,13 +2172,13 @@ const cheatsheet = {
               },
               resources: [
                 { name: 'CloudFront', url: 'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html' }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  };
+            ]
+          }
+        ]
+      }
+    ]
+  }  // <-- ADD THIS CLOSING BRACE for the 'networking' object
+};   // <-- This closes the 'cheatsheet' object
 
   let practiceQuestions = [
     {
