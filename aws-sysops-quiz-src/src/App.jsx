@@ -2170,6 +2170,8 @@ networking: {
     }
   ]
 }
+};   // <-- This closes the cheatsheet object and ends the const declaration
+
   let practiceQuestions = [
     {
       id: 1,
