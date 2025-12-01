@@ -1618,6 +1618,62 @@ networking: {
             { name: 'VPC Guide', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html' }
           ]
         },
+    {
+      topic: 'VPC Flow Logs',
+      details: [
+        {
+          name: 'Definition',
+          text: 'VPC Flow Logs capture information about IP traffic going to and from network interfaces (ENIs) in your VPC. They are used to troubleshoot connectivity, validate security group/NACL rules, and analyze traffic patterns. Logs can be sent to CloudWatch Logs or S3.'
+        },
+        {
+          name: 'Default log record format',
+          text: 'version account-id interface-id srcaddr dstaddr srcport dstport protocol packets bytes start end action log-status'
+        },
+        {
+          name: 'Key fields (exam view)',
+          text: [
+            'srcaddr: Source IP (client).',
+            'dstaddr: Destination IP (server/instance).',
+            'srcport: Client port (often ephemeral: 1024–65535).',
+            'dstport: Service port (e.g., 80, 443, 22, 3389).',
+            'protocol: 6 = TCP, 17 = UDP, 1 = ICMP.',
+            'action: ACCEPT or REJECT (did NACL/SG allow the traffic?).',
+            'log-status: OK, NODATA, or SKIPDATA (logging status).'
+          ]
+        },
+        {
+          name: 'Example (RDP blocked)',
+          text: '2 123456789010 eni-abc123de 110.217.100.70 172.31.8.11 49761 3389 6 20 4249 1718530010 1718530070 REJECT OK'
+        },
+        {
+          name: 'Reading the example',
+          text: [
+            'srcaddr 110.217.100.70 = user laptop on the internet.',
+            'dstaddr 172.31.8.11 = EC2 instance private IP.',
+            'srcport 49761 = ephemeral client port.',
+            'dstport 3389 = RDP (Windows remote desktop).',
+            'protocol 6 = TCP.',
+            'action REJECT = blocked by security group or NACL → allow RDP (3389) and ephemeral ports as needed.'
+          ]
+        },
+        {
+          name: 'Key ports to remember',
+          text: '80 HTTP, 443 HTTPS, 22 SSH (Linux admin), 3389 RDP (Windows admin).'
+        },
+        {
+          name: 'Ephemeral ports',
+          text: 'Clients use high-numbered source ports: typically 1024–65535. NACLs often need outbound rules allowing 1024–65535 for return traffic.'
+        },
+        {
+          name: 'Key protocols to remember',
+          text: '6 = TCP, 17 = UDP, 1 = ICMP. Most VPC Flow Log questions only use these.'
+        },
+        'Use VPC Flow Logs to answer: “Is traffic actually reaching the ENI?” and “Is it being ACCEPTed or REJECTed?” before changing security groups or NACLs.'
+      ],
+      resources: [
+        { name: 'VPC Flow Logs Docs', url: 'https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html' }
+      ]
+    },
         {
           topic: 'Secure your VPC: BPA, Security Groups & NACLs',
           details: [
