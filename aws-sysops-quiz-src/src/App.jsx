@@ -3603,6 +3603,136 @@ Where should you place the NAT Gateway?`,
     ],
     correct: 1,
     explanation: "Application Load Balancers are AWS resources that can be used as alias targets in Route 53. The recommended solution is to create alias A records for both api.example.com and the zone apex example.com that target the ALB DNS name. Route 53 resolves and tracks the correct IP addresses automatically and supports alias at the zone apex. Why the others are wrong? A CNAME record is not allowed at the zone apex and is not the preferred method when alias support exists. Static A records with IP addresses for an ALB are not supported and would break if AWS changes the underlying IPs. MX records are used only for inbound email routing and cannot route HTTPS traffic to an ALB."
+  },
+  {
+    id: 105,
+    domain: 'Question 105',
+    question: "A financial company is launching an online web portal that will be hosted in an Auto Scaling group of Amazon EC2 instances across multiple Availability Zones behind an Application Load Balancer (ALB). To allow HTTP and HTTPS traffic, the SysOps Administrator configured the network ACL and the security group of both the ALB and EC2 instances to allow inbound traffic on ports 80 and 443. However, the online portal is still unreachable over the public internet after the deployment. How can the Administrator fix this issue?",
+    options: [
+      "Allow ephemeral ports in the security group by adding a new rule to allow outbound traffic on ports 1024–65535.",
+      "In the security group, add a new rule to allow outbound traffic on ports 80 and 443.",
+      "In the network ACL, add a new rule to allow inbound traffic on ports 1024–65535.",
+      "Allow ephemeral ports in the network ACL by adding a new rule to allow outbound traffic on ports 1024–65535."
+    ],
+    correct: 3,
+    explanation: "Network ACLs are stateless. For internet clients to access a service in your VPC, the NACL must allow inbound traffic to the service ports (80/443) and outbound return traffic to the client’s ephemeral ports. Elastic Load Balancing uses ephemeral ports in the range 1024–65535 for return traffic, so you must explicitly allow outbound traffic on ports 1024–65535 in the NACL. Why the others are wrong? Security groups are stateful and do not require explicit ephemeral port rules. Adding outbound 80/443 in the security group does not fix the path for return traffic through the NACL. Adding inbound 1024–65535 in the NACL is only needed when instances in the VPC initiate connections and receive responses on ephemeral ports; here the clients are on the public internet and the key missing piece is outbound ephemeral ports on the NACL."
+  },
+  {
+    id: 106,
+    domain: 'Question 106',
+    question: "A financial organization has created a customer managed AWS KMS key with imported key material. The key is used to encrypt the data of a Java web application. To meet strict security compliance requirements, the KMS key must be rotated every 6 months. Which of the following actions will meet this requirement?",
+    options: [
+      "Set up a new customer managed KMS key with imported key material. Update the key alias or key ID that the application uses to point to the new KMS key.",
+      "Replace the existing key material of the current KMS key with a new one.",
+      "Rotate the keys automatically by using an AWS managed KMS key.",
+      "Enable automatic key rotation on the existing customer managed KMS key."
+    ],
+    correct: 0,
+    explanation: "When you import key material into a KMS key, that key is permanently bound to that specific key material. You cannot import different key material into the same KMS key, and automatic rotation is not supported for keys with imported key material. To rotate such a key, you must create a new customer managed KMS key, import new key material, and then update your application to use the new key (for example by switching a key alias). Why the others are wrong? You cannot replace existing key material on an imported-key KMS key. AWS managed keys rotate automatically only every ~365 days and would not satisfy a 6-month rotation requirement, and they also are not using imported material. Enabling automatic key rotation is not supported for keys with imported key material, so that option will fail."
+  },
+  {
+    id: 107,
+    domain: 'Question 107',
+    question: "A company uses Amazon Route 53 to register the domain name of an online timesheet application, www.example-timesheet.com, which is deployed on Amazon ECS. After a few months, a new version of the timesheet application is ready that includes bug fixes and new features. The DevOps team launched a separate ECS environment for the new version and instructed you to send only an initial portion of production traffic to the new version for verification. After validating that the new version works, all traffic from www.example-timesheet.com should be routed to the new ECS environment. Which Route 53 routing policy should you use to smoothly deploy the new application version?",
+    options: [
+      "Create a resource record that uses the latency routing policy.",
+      "Create a resource record that uses the geoproximity routing policy.",
+      "Create two resource records that use the weighted routing policy.",
+      "Create two resource records that use the failover routing policy."
+    ],
+    correct: 2,
+    explanation: "Weighted routing lets you associate multiple records with the same name and type and specify what proportion of traffic each target receives. You can start with a small weight for the new ECS environment (for example 1 vs 255), gradually increase it as verification progresses, and finally set the weight of the old environment to 0 to complete the cutover. Why the others are wrong? Latency routing chooses the region with the lowest latency and is not designed for canary-style deployments. Geoproximity routing sends users to resources based on geographic locations, not for traffic shifting between versions. Failover routing is for active/passive health-checked endpoints, not for gradually shifting live production traffic between two healthy versions."
+  },
+  {
+    id: 108,
+    domain: 'Question 108',
+    question: "A leading energy company is establishing a static AWS Site-to-Site VPN connection between an on-premises network and a VPC in AWS. As the SysOps Administrator, you created the virtual private gateway, customer gateway, and the VPN connection, and you applied the router configuration on the customer side. The VPN connection status shows as UP in the console, but instances in the VPC are still not reachable from the on-premises virtual machines. How can you resolve this issue?",
+    options: [
+      "Add a customer gateway (CGW) route with the destination of your on-premises network in the VPC route table.",
+      "Add a virtual private gateway (VGW) route with the destination of your on-premises network in the VPC route table.",
+      "Add an internet gateway (IGW) route with a destination of 0.0.0.0/0 for IPv4 traffic or ::/0 for IPv6 traffic in the VPC route table.",
+      "Create a VPC endpoint for the VPN connection."
+    ],
+    correct: 1,
+    explanation: "For instances in the VPC to send traffic to the on-premises network over a Site-to-Site VPN, the VPC route table must have a route for the on-premises network CIDR that targets the virtual private gateway (VGW). With static routing, you add this route explicitly; with dynamic routing, it can be propagated. Why the others are wrong? A customer gateway is on the on-premises side and is not used as a route target in the VPC route table. An internet gateway route is for internet-bound traffic, not for VPN traffic, and would not direct packets to the VGW. A VPC endpoint is used for private connectivity to supported AWS services (such as S3 or DynamoDB) and is unrelated to VPN routing."
+  },
+  {
+    id: 109,
+    domain: 'Question 109',
+    question: "A company is using AWS CloudFormation to provision a set of AWS resources across multiple Regions. The manager notices that the current infrastructure configuration is different from its previous state. As the SysOps Administrator, you must identify what configuration changes have been made to the resources managed by the stack. Which CloudFormation action should you use?",
+    options: [
+      "Update the stack by using a new CloudFormation template.",
+      "Use the drift detection action on the stack.",
+      "Select the continue update rollback action to return the stack to its previous state.",
+      "Create a new stack with the desired configuration and delete the existing stack."
+    ],
+    correct: 1,
+    explanation: "CloudFormation drift detection compares the actual configuration of stack resources with the configuration defined in the template and stack parameters. Resources are marked as drifted if any of their live property values differ from the expected values. Running drift detection on the stack shows which resources have changed and how. Why the others are wrong? Updating the stack or creating a new stack does not tell you what changed; it just applies new configuration. Continue update rollback is used to recover from a failed update and to return the stack to a stable state, not to analyze configuration drift."
+  },
+  {
+    id: 110,
+    domain: 'Question 110',
+    question: "A leading commercial bank discovered an issue with its online banking system that is hosted in an Auto Scaling group and has scaled out to over 60 Amazon EC2 instances. The Auto Scaling group is taking multiple nodes offline at the same time whenever you update the launch template. To perform updates more safely, the development team decided to use AWS CloudFormation and change a parameter to deploy the latest version of the code. What should you do in the CloudFormation template to limit the impact on customers while the update is being performed?",
+    options: [
+      "In the CloudFormation template, add a DependsOn attribute to the Auto Scaling group resource to depend on the launch template. Edit the user data script for each EC2 instance to signal the WaitCondition.",
+      "In the CloudFormation template, add the UpdatePolicy attribute for the Auto Scaling group and enable the WaitOnResourceSignals property. In the user data script, add a health check that signals CloudFormation when the update is successfully completed.",
+      "Reconfigure the Auto Scaling group to use 6 target groups with 10 EC2 instances each to more easily manage the service.",
+      "Configure the user data script to run the aws ec2 terminate-instances command against the next oldest instance ID after a successful deployment."
+    ],
+    correct: 1,
+    explanation: "The UpdatePolicy attribute for an AWS::AutoScaling::AutoScalingGroup resource lets you control how CloudFormation performs rolling updates. Enabling WaitOnResourceSignals causes CloudFormation to pause the update after launching new instances and wait for a success signal from each instance (for example, sent by cfn-signal from user data after application health checks pass) before terminating old instances. This limits customer impact by ensuring that new instances are fully healthy before traffic is shifted. Why the others are wrong? DependsOn does not control rolling behavior or instance replacement. Splitting instances across more target groups does not fix the update pattern and adds complexity. Manually terminating instances from user data is unsafe, brittle, and bypasses CloudFormation’s controlled update mechanisms."
+  },
+  {
+    id: 111,
+    domain: 'Question 111',
+    question: "A SysOps Administrator is managing a web application hosted on an Amazon EC2 instance. The security groups and network ACLs are configured to allow HTTP and HTTPS traffic to the instance. A manager receives a report that a customer cannot access the application. The Administrator is instructed to investigate whether the traffic is reaching the instance. Which of the following is the BEST approach to satisfy this requirement?",
+    options: [
+      "Use AWS CloudTrail logs.",
+      "Use Amazon CloudWatch Logs.",
+      "Use Elastic Load Balancing (ELB) access logs.",
+      "Use Amazon VPC Flow Logs."
+    ],
+    correct: 3,
+    explanation: "Amazon VPC Flow Logs capture information about IP traffic going to and from network interfaces in your VPC, allowing you to see whether traffic from a given source is actually reaching the instance. This is the best way to verify if packets are arriving or being rejected at the network interface. Why the others are wrong? CloudTrail logs API calls, not data-plane traffic. CloudWatch Logs is a destination for logs but does not itself capture network flow details unless fed by another service such as VPC Flow Logs. ELB access logs only apply if an elastic load balancer is in use and access logging is enabled, which is not stated in the scenario."
+  },
+  {
+    id: 112,
+    domain: 'Question 112',
+    question: "A media organization has deployed a public website to two AWS Regions, US East (Ohio) and Asia Pacific (Tokyo), to improve service for users in Asia. The company uses a hybrid cloud architecture and wants to ensure that users are consistently directed to the AWS Region nearest to them. As a SysOps Administrator, which of the following should you implement?",
+    options: [
+      "Configure the Application Load Balancer to route incoming traffic to the nearest AWS Region based on the user's country.",
+      "Use a third-party geolocation service and redirect users to the nearest AWS Region based on their country.",
+      "Set up a Route 53 geoproximity routing policy to direct users in Asia to their website.",
+      "Set up a Route 53 latency-based routing policy for the website."
+    ],
+    correct: 2,
+    explanation: "Route 53 geoproximity routing (using traffic flow) lets you route traffic based on the geographic location of users and resources, and it provides stable, geography-driven routing to specific endpoints. This matches the requirement to consistently send users to the nearest Region by geography. Why the others are wrong? An Application Load Balancer cannot route across multiple Regions. A third-party geolocation solution is unnecessary when Route 53 geoproximity can handle this. Latency-based routing focuses on minimizing latency and may move users dynamically based on measurements instead of consistently binding users in a given geography to a specific Region."
+  },
+  {
+    id: 113,
+    domain: 'Question 113',
+    question: "A company has recently adopted a hybrid cloud infrastructure. They plan to establish a dedicated connection between their on-premises network and their Amazon VPC. Over the next few months, they will migrate applications and data to AWS and require a more consistent network experience than internet-based connections can provide. Which solution should be implemented for this scenario?",
+    options: [
+      "Set up an AWS Direct Connect connection.",
+      "Set up a VPC peering connection.",
+      "Set up a VPN connection.",
+      "Set up an AWS VPN CloudHub."
+    ],
+    correct: 0,
+    explanation: "AWS Direct Connect provides a dedicated private network connection from the customer's premises to AWS, offering more consistent performance and lower jitter than internet-based VPNs. This directly satisfies the requirement for a dedicated, consistent network connection between on-premises and a VPC. Why the others are wrong? VPC peering connects VPCs, not on-premises networks. A VPN connection and AWS VPN CloudHub both use the public internet, which does not meet the requirement for a dedicated, non–internet-based connection."
+  },
+  {
+    id: 114,
+    domain: 'Question 114',
+    question: "A DevOps Engineer reports a problem accessing an EC2 instance with a private IP address of 172.31.8.11 from a corporate laptop. The EC2 instance hosts a web application that is working, but the engineer cannot establish a remote management connection. As the SysOps Administrator, you review the VPC flow log entry below:\n\n\"2 123456789010 eni-abc123de 110.217.100.70 172.31.8.11 49761 3389 6 20 4249 1418530010 1418530070 REJECT OK\"\n\nWhich option is the MOST suitable solution in this scenario?",
+    options: [
+      "Based on the log, the DevOps Engineer's IP address is 110.217.100.70, which is not whitelisted to access the instance. Add an inbound rule in the security group to allow SSH traffic to the instance from this specific IP address.",
+      "Allow incoming RDP traffic in the security group of the EC2 instance and ensure the inbound and outbound rules in the network ACL also allow RDP traffic.",
+      "Based on the log, the DevOps Engineer’s IP address is actually 172.31.8.11 and not 110.217.100.70. Instruct the user to connect to 110.217.100.70 instead.",
+      "Attach an Elastic IP address to the EC2 instance."
+    ],
+    correct: 1,
+    explanation: "The VPC flow log shows REJECT for traffic with destination port 3389 (RDP) and protocol 6 (TCP), from source IP 110.217.100.70 to the instance at 172.31.8.11. This indicates that RDP traffic is being blocked by the security group or network ACL. The correct fix is to allow RDP (port 3389) to the instance in the security group and ensure the NACL permits this traffic in both directions. Why the others are wrong? The issue is with RDP, not SSH, so opening SSH ports does not help. The source IP is 110.217.100.70 (the laptop), not 172.31.8.11 (the instance). Attaching an Elastic IP does not resolve blocked RDP traffic if security groups or NACLs still deny it."
   }
 ];
 
