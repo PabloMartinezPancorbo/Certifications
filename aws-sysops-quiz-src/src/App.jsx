@@ -2769,7 +2769,8 @@ Where should you place the NAT Gateway?`,
     options: [
       "Add a mail exchange (MX) record that points to the IP addresses of the Amazon SES service.",
       "Add a text (TXT) record with `v=spf1 include:amazonses.com -all`.",
-      "Add an alias (A) record that points to the IP addresses of the Amazon SES service.",
+      "Add an A record for `example.com` that maps the domain name to the IPv4 address of an Amazon SES SMTP endpoint so that recipient mail servers accept email sent from that address.",
+      "Add a Route 53 alias record of type A for `example.com` that targets an Amazon SES endpoint so that Route 53 automatically resolves the domain to the IP addresses used by Amazon SES when sending email.",
       "Enable DNS Security Extensions (DNSSEC) for example.com.",
     ],
     correct: 1,
@@ -3550,9 +3551,60 @@ Where should you place the NAT Gateway?`,
       ],
       correct: 3,
       explanation: "Correct. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. This action will terminate all the existing instances and launch a new set of instances after installing the required packages. Learn more about how to run commands when launching an EC2 instance with user data input. Learn more about CloudFormation stack updates for EC2 instances. Why not A? Incorrect. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. The instances will not reboot. Instead, the instances will terminate. Why not B? Incorrect. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. The instances will not continue to run. Instead, the instances will terminate. Why not C? Incorrect. If you update the user data section, the change set in the CloudFormation stack will show as the replacement for the EC2 resources. The instances will not stop. Instead, the instances will terminate."
-    }
+    },
+    {
+    id: 101,
+    domain: 'Question 101',
+    question: "A company hosts a static website on Amazon S3 and uses an Amazon CloudFront distribution in front of the S3 bucket. The company wants users to access the website by using https://www.example.com. The company manages example.com in Amazon Route 53. A CloudOps engineer must configure DNS so that www.example.com routes traffic to the CloudFront distribution with minimal management overhead and must support future changes of CloudFront IP addresses without DNS updates. Which Route 53 record should the CloudOps engineer create?",
+    options: [
+      "Create an A record for www.example.com that maps to the current public IP address of the CloudFront distribution.",
+      "Create a CNAME record for www.example.com that points to the S3 bucket static website endpoint.",
+      "Create an alias A record for www.example.com that targets the CloudFront distribution domain name.",
+      "Create an MX record for www.example.com that targets the CloudFront distribution domain name."
+    ],
+    correct: 2,
+    explanation: "CloudFront distributions are AWS managed resources with dynamic IP addresses. In Route 53 the recommended solution is an alias A record that targets the CloudFront distribution domain name. Route 53 then resolves and tracks the correct IP addresses automatically. Why the others are wrong? A standard A record with a fixed IP requires manual updates and is not supported for CloudFront because you do not control CloudFront IP addresses. A CNAME to the S3 static website bypasses CloudFront and sends traffic directly to S3, which does not meet the requirement to use CloudFront. MX records are used only for inbound email routing and cannot route HTTPS web traffic."
+  },
+  {
+    id: 102,
+    domain: 'Question 102',
+    question: "A company uses a third party email provider to host mailboxes for user@example.com. The company manages the example.com public hosted zone in Amazon Route 53. Users can send email, but external senders report that their emails to user@example.com are bouncing with errors such as no such user or mailbox unavailable. A CloudOps engineer inspects Route 53 and finds only an A record that points to the company web server and a TXT SPF record that includes v=spf1 include:amazonses.com -all for example.com. Which action will most likely restore inbound email delivery for the company?",
+    options: [
+      "Add an MX record for example.com that points to the mail servers of the third party email provider.",
+      "Replace the A record for example.com with a CNAME that points to the email provider domain.",
+      "Add a TXT record for DKIM that includes the email provider domain and remove the existing SPF record.",
+      "Change the existing A record to an alias A record that targets the email provider SMTP endpoint."
+    ],
+    correct: 0,
+    explanation: "Inbound email delivery depends on MX records, which tell other mail servers where to deliver mail for a domain. To deliver email to the third party provider, the hosted zone must include an MX record for example.com that points to the provider mail servers. Why the others are wrong? Web A and alias A records are not used for SMTP routing and do not affect where inbound email is delivered. A CNAME at the zone apex is not allowed by DNS standards and also does not solve mail routing. DKIM TXT records improve authentication but do not fix basic routing issues if the MX record is missing or incorrect."
+  },
+  {
+    id: 103,
+    domain: 'Question 103',
+    question: "A company uses several services to send email on behalf of example.com. An on premises SMTP server sends transactional emails, Amazon Simple Email Service (Amazon SES) sends marketing emails, and a SaaS ticketing system sends support emails as support@example.com. Some recipient domains reject emails with SPF fail errors. The company wants a single SPF policy that correctly authorizes all senders. Which TXT record should the CloudOps engineer configure in Route 53 for example.com?",
+    options: [
+      "v=spf1 ip4:198.51.100.10 -all",
+      "v=spf1 include:amazonses.com -all",
+      "v=spf1 ip4:198.51.100.10 include:amazonses.com include:_spf.saas-tickets.com ~all",
+      "v=spf1 mx a include:amazonses.com include:_spf.saas-tickets.com -all"
+    ],
+    correct: 2,
+    explanation: "The company uses three distinct sending sources, so the SPF policy must authorize all of them. The correct TXT record explicitly includes the on premises SMTP server by IP, Amazon SES, and the ticketing provider SPF domain in a single policy. The soft fail qualifier ~all is common in production to reduce hard rejections while still signalling that other senders are not authorized. Why the others are wrong? The first two options authorize only a single sender each and leave the other services unauthenticated, which leads to SPF failures. The last option uses mx and a mechanisms, which may unintentionally authorize additional hosts and does not clearly represent the specific on premises IP unless that IP is already the A record for the domain."
+  },
+  {
+    id: 104,
+    domain: 'Question 104',
+    question: "A company wants to expose an internal API through a public domain api.example.com. The API is hosted on an Application Load Balancer (ALB). The company also wants to know whether the same API can be exposed at the zone apex as https://example.com. The company uses Amazon Route 53 to manage DNS. Which configuration in Route 53 meets AWS best practices?",
+    options: [
+      "Create a CNAME record for api.example.com that points to the ALB DNS name and a CNAME record at example.com that also points to the same ALB DNS name.",
+      "Create an alias A record for api.example.com that targets the ALB. Create another alias A record for example.com that also targets the same ALB.",
+      "Create A records for api.example.com and example.com with the current public IP address of the ALB and update the records if the IP address changes.",
+      "Create MX records for api.example.com and example.com that point to the ALB DNS name so that HTTPS traffic is routed through the ALB."
+    ],
+    correct: 1,
+    explanation: "Application Load Balancers are AWS resources that can be used as alias targets in Route 53. The recommended solution is to create alias A records for both api.example.com and the zone apex example.com that target the ALB DNS name. Route 53 resolves and tracks the correct IP addresses automatically and supports alias at the zone apex. Why the others are wrong? A CNAME record is not allowed at the zone apex and is not the preferred method when alias support exists. Static A records with IP addresses for an ALB are not supported and would break if AWS changes the underlying IPs. MX records are used only for inbound email routing and cannot route HTTPS traffic to an ALB."
+  }
 ];
-
 
 // Use the function to update your questions
 practiceQuestions = assignDomainNames(practiceQuestions);
